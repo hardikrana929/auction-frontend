@@ -123,8 +123,6 @@ export function AuthProvider({ children }) {
     async (credentials) => {
       const response = await loginUser(credentials);
 
-      console.log("AuctionPro login response:", response);
-
       const authToken =
         response?.token ||
         response?.accessToken ||

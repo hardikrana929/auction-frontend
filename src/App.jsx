@@ -17,6 +17,13 @@ import PlayerDetails from "./pages/PlayerDetails";
 import AuctionRegistration from "./pages/AuctionRegistration";
 import LiveAuction from "./pages/LiveAuction";
 import LiveAuctions from "./pages/LiveAuctions";
+import AdminAuctionControl from "./pages/AdminAuctionControl";
+import Profile from "./pages/Profile";
+import AuctionStatistics from "./pages/AuctionStatistics";
+import AuctionHistory from "./pages/AuctionHistory";
+import AdminPlayers from "./pages/admin/AdminPlayers";
+import AdminTeams from "./pages/admin/AdminTeams";
+import AdminRegistrations from "./pages/admin/AdminRegistrations";
 
 export default function App() {
   return (
@@ -68,39 +75,36 @@ export default function App() {
 
           <Route path="/settings" element={<Settings />} />
 
-          <Route path="/players/:id" element={<PlayerDetails />} />
+          <Route path="/profile" element={<Profile />} />
 
-          <Route path="/live-auctions/:id" element={<LiveAuction />} />
+          <Route path="/players/:id" element={<PlayerDetails />} />
 
           <Route path="/live-auctions" element={<LiveAuctions />} />
 
-          <Route
-            path="/profile"
-            element={
-              <div>
-                <h1
-                  className="
-                    text-3xl
-                    font-bold
-                    text-navy-950
-                    dark:text-white
-                  "
-                >
-                  Profile
-                </h1>
+          <Route path="/live-auctions/:id" element={<LiveAuction />} />
 
-                <p
-                  className="
-                    mt-2
-                    text-gray-600
-                    dark:text-gray-400
-                  "
-                >
-                  Manage your AuctionPro profile.
-                </p>
-              </div>
-            }
+          {/* =================================================
+              ADMIN AUCTION CONTROL
+          ================================================= */}
+
+          <Route
+            path="/admin/auctions/:id/control"
+            element={<AdminAuctionControl />}
           />
+          <Route
+            path="/admin/auctions/:id/statistics"
+            element={<AuctionStatistics />}
+          />
+
+          <Route
+            path="/admin/auctions/:id/history"
+            element={<AuctionHistory />}
+          />
+          <Route path="/admin/players" element={<AdminPlayers />} />
+
+          <Route path="/admin/teams" element={<AdminTeams />} />
+
+          <Route path="/admin/registrations" element={<AdminRegistrations />} />
         </Route>
       </Route>
 

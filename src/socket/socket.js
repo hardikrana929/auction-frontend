@@ -36,9 +36,7 @@ export const disconnectSocket = () => {
 export const joinAuctionRoom = (auctionId) => {
     const s = getSocket();
 
-    if (!auctionId) {
-        return;
-    }
+    if (!auctionId) return;
 
     s.emit("join:auction", auctionId);
 };
@@ -46,9 +44,7 @@ export const joinAuctionRoom = (auctionId) => {
 export const leaveAuctionRoom = (auctionId) => {
     const s = getSocket();
 
-    if (!auctionId) {
-        return;
-    }
+    if (!auctionId) return;
 
     s.emit("leave:auction", auctionId);
 };
