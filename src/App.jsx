@@ -10,20 +10,42 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
+
 import Auctions from "./pages/Auctions";
 import AuctionDetails from "./pages/AuctionDetails";
-import PlayerDetails from "./pages/PlayerDetails";
 import AuctionRegistration from "./pages/AuctionRegistration";
+
+import PlayerDetails from "./pages/PlayerDetails";
+
 import LiveAuction from "./pages/LiveAuction";
 import LiveAuctions from "./pages/LiveAuctions";
+
 import AdminAuctionControl from "./pages/AdminAuctionControl";
-import Profile from "./pages/Profile";
 import AuctionStatistics from "./pages/AuctionStatistics";
 import AuctionHistory from "./pages/AuctionHistory";
+
+import Notifications from "./pages/Notifications";
+import AuctionParticipants from "./pages/AuctionParticipants";
+import TeamDashboard from "./pages/TeamDashboard";
+
+import AdminAuctions from "./pages/admin/AdminAuctions";
+import CreateAuction from "./pages/admin/CreateAuction";
+import EditAuction from "./pages/admin/EditAuction";
+
 import AdminPlayers from "./pages/admin/AdminPlayers";
+import CreatePlayer from "./pages/admin/CreatePlayer";
+import EditPlayer from "./pages/admin/EditPlayer";
+
 import AdminTeams from "./pages/admin/AdminTeams";
+import CreateTeam from "./pages/admin/CreateTeam";
+import EditTeam from "./pages/admin/EditTeam";
+
 import AdminRegistrations from "./pages/admin/AdminRegistrations";
+
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -43,8 +65,8 @@ export default function App() {
       </Route>
 
       {/* =====================================================
-          PROTECTED ROUTES WITH NAVBAR ONLY
-          No Sidebar
+          PROTECTED ROUTES
+          NAVBAR ONLY
       ===================================================== */}
 
       <Route element={<ProtectedRoute />}>
@@ -58,6 +80,11 @@ export default function App() {
             element={<AuctionRegistration />}
           />
 
+          <Route
+            path="/auctions/:id/participants"
+            element={<AuctionParticipants />}
+          />
+
           <Route path="/live-auctions" element={<LiveAuctions />} />
 
           <Route path="/live-auctions/:id" element={<LiveAuction />} />
@@ -66,22 +93,40 @@ export default function App() {
 
       {/* =====================================================
           PROTECTED DASHBOARD ROUTES
-          Navbar + Sidebar
+          NAVBAR + SIDEBAR
       ===================================================== */}
 
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* ================= USER ================= */}
 
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/profile" element={<Profile />} />
 
+          <Route path="/settings" element={<Settings />} />
+
+          <Route path="/notifications" element={<Notifications />} />
+
+          <Route path="/team-dashboard" element={<TeamDashboard />} />
+
           <Route path="/players/:id" element={<PlayerDetails />} />
+
+          {/* ================= LIVE AUCTION ================= */}
 
           <Route path="/live-auctions" element={<LiveAuctions />} />
 
           <Route path="/live-auctions/:id" element={<LiveAuction />} />
+
+          {/* =================================================
+              ADMIN AUCTION MANAGEMENT
+          ================================================= */}
+
+          <Route path="/admin/auctions" element={<AdminAuctions />} />
+
+          <Route path="/admin/auctions/create" element={<CreateAuction />} />
+
+          <Route path="/admin/auctions/:id/edit" element={<EditAuction />} />
 
           {/* =================================================
               ADMIN AUCTION CONTROL
@@ -91,6 +136,7 @@ export default function App() {
             path="/admin/auctions/:id/control"
             element={<AdminAuctionControl />}
           />
+
           <Route
             path="/admin/auctions/:id/statistics"
             element={<AuctionStatistics />}
@@ -100,11 +146,38 @@ export default function App() {
             path="/admin/auctions/:id/history"
             element={<AuctionHistory />}
           />
+
+          {/* =================================================
+              ADMIN PLAYER MANAGEMENT
+          ================================================= */}
+
           <Route path="/admin/players" element={<AdminPlayers />} />
+
+          <Route path="/admin/players/create" element={<CreatePlayer />} />
+
+          <Route path="/admin/players/:id/edit" element={<EditPlayer />} />
+
+          {/* =================================================
+              ADMIN TEAM MANAGEMENT
+          ================================================= */}
 
           <Route path="/admin/teams" element={<AdminTeams />} />
 
+          <Route path="/admin/teams/create" element={<CreateTeam />} />
+
+          <Route path="/admin/teams/:id/edit" element={<EditTeam />} />
+
+          {/* =================================================
+              ADMIN REGISTRATIONS
+          ================================================= */}
+
           <Route path="/admin/registrations" element={<AdminRegistrations />} />
+
+          {/* =================================================
+              404
+          ================================================= */}
+
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
 
@@ -123,6 +196,7 @@ export default function App() {
               justify-center
               bg-pitch-50
               dark:bg-navy-950
+              px-4
             "
           >
             <div className="text-center">

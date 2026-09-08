@@ -15,5 +15,10 @@ export const sellPlayer = async (data) =>
 export const markPlayerUnsold = async (data) =>
     (await api.post("/api/bidding/unsold", data)).data;
 
-export const getBidHistory = async (auctionId) =>
-    (await api.get(`/api/bidding/history/${auctionId}`)).data;
+export const getBidHistory = async (playerId) => {
+    const response = await api.get(
+        `/api/bidding/history/${playerId}`
+    );
+
+    return response.data;
+};

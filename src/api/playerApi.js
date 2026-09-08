@@ -41,3 +41,12 @@ export const deletePlayer = async (playerId) => {
 
     return response.data;
 };
+
+export const updatePlayerStatus = async (playerId, data) => {
+    const response = await api.patch(
+        `/api/players/${playerId}/status`,
+        data
+    );
+
+    return response.data;
+};
