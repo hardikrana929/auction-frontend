@@ -31,10 +31,11 @@ import Notifications from "./pages/Notifications";
 import AuctionParticipants from "./pages/AuctionParticipants";
 import TeamDashboard from "./pages/TeamDashboard";
 
+
 import AdminAuctions from "./pages/admin/AdminAuctions";
 import CreateAuction from "./pages/admin/CreateAuction";
 import EditAuction from "./pages/admin/EditAuction";
-
+import TeamDetails from "./pages/admin/TeamDetails";
 import AdminPlayers from "./pages/admin/AdminPlayers";
 import CreatePlayer from "./pages/admin/CreatePlayer";
 import EditPlayer from "./pages/admin/EditPlayer";
@@ -166,7 +167,14 @@ export default function App() {
           <Route path="/admin/teams/create" element={<CreateTeam />} />
 
           <Route path="/admin/teams/:id/edit" element={<EditTeam />} />
-
+          <Route
+            path="/admin/teams/view/:teamId"
+            element={
+              <ProtectedRoute adminOnly>
+                <TeamDetails />
+              </ProtectedRoute>
+            }
+          />
           {/* =================================================
               ADMIN REGISTRATIONS
           ================================================= */}

@@ -18,12 +18,10 @@ export const getTeamsByAuction = async (auctionId) => {
  * GET /api/teams/:id
  */
 export const getTeamById = async (teamId) => {
-    const response = await api.get(
-        `/api/teams/${teamId}`,
-    );
-
+    const response = await api.get(`/api/teams/${teamId}`);
     return response.data;
 };
+
 
 
 /*
@@ -49,11 +47,7 @@ export const createTeam = async (data) => {
  * `data` must match the actual backend request body.
  */
 export const updateTeam = async (teamId, data) => {
-    const response = await api.put(
-        `/api/teams/${teamId}`,
-        data,
-    );
-
+    const response = await api.put(`/api/teams/${teamId}`, data);
     return response.data;
 };
 

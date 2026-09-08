@@ -10,17 +10,17 @@ export const getAuctionById = async (auctionId) => {
     return response.data;
 };
 
-export const createAuction = async (data) => {
-    const response = await api.post("/api/auctions", data);
+export const createAuction = async (formData) => {
+    const response = await api.post(
+        "/api/auctions",
+        formData
+    );
+
     return response.data;
 };
 
 export const updateAuction = async (auctionId, data) => {
-    const response = await api.put(
-        `/api/auctions/${auctionId}`,
-        data,
-    );
-
+    const response = await api.put(`/api/auctions/${auctionId}`, data);
     return response.data;
 };
 

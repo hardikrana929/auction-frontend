@@ -1,12 +1,12 @@
-export default function formatDate(date) {
+const formatDate = (date) => {
     if (!date) {
-        return "—";
+        return "N/A";
     }
 
     const parsedDate = new Date(date);
 
     if (Number.isNaN(parsedDate.getTime())) {
-        return "—";
+        return "N/A";
     }
 
     return parsedDate.toLocaleDateString("en-IN", {
@@ -14,4 +14,7 @@ export default function formatDate(date) {
         month: "short",
         year: "numeric",
     });
-}
+};
+
+export { formatDate };
+export default formatDate;
