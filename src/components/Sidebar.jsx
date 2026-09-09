@@ -1,6 +1,7 @@
 import {
   FiActivity,
   FiBarChart2,
+  FiBell,
   FiCalendar,
   FiGrid,
   FiSettings,
@@ -10,8 +11,12 @@ import {
 } from "react-icons/fi";
 
 import { NavLink, useLocation } from "react-router-dom";
-
 import { useAuth } from "../hooks/useAuth";
+
+// ============================================================
+// COMMON LINKS
+// Visible for both Admin and normal Users
+// ============================================================
 
 const commonLinks = [
   {
@@ -25,6 +30,11 @@ const commonLinks = [
     icon: FiCalendar,
   },
   {
+    label: "Notifications",
+    path: "/notifications",
+    icon: FiBell,
+  },
+  {
     label: "Profile",
     path: "/profile",
     icon: FiUser,
@@ -36,6 +46,11 @@ const commonLinks = [
   },
 ];
 
+// ============================================================
+// USER LINKS
+// Visible only for normal users
+// ============================================================
+
 const userLinks = [
   {
     label: "Live Auctions",
@@ -43,6 +58,11 @@ const userLinks = [
     icon: FiActivity,
   },
 ];
+
+// ============================================================
+// ADMIN LINKS
+// Visible only for Admin
+// ============================================================
 
 const adminLinks = [
   {
@@ -62,6 +82,10 @@ const adminLinks = [
   },
 ];
 
+// ============================================================
+// SIDEBAR LINK COMPONENT
+// ============================================================
+
 function SidebarLink({ item, onNavigate }) {
   const Icon = item.icon;
 
@@ -80,6 +104,7 @@ function SidebarLink({ item, onNavigate }) {
         font-medium
         transition
         duration-200
+
         ${
           isActive
             ? `
@@ -100,30 +125,41 @@ function SidebarLink({ item, onNavigate }) {
       `}
     >
       <Icon size={19} />
+
       <span>{item.label}</span>
     </NavLink>
   );
 }
 
+// ============================================================
+// SIDEBAR
+// ============================================================
+
 export default function Sidebar({ onNavigate }) {
   const { isAdmin } = useAuth();
   const location = useLocation();
 
-  /*
-   * Get auction ID from URLs such as:
-   *
-   * /auctions/123
-   * /auctions/123/register
-   * /live-auctions/123
-   * /admin/auctions/123/control
-   * /admin/auctions/123/statistics
-   * /admin/auctions/123/history
-   */
+  // ==========================================================
+  // GET AUCTION ID FROM CURRENT URL
+  //
+  // Supported:
+  // /auctions/123
+  // /auctions/123/register
+  // /auctions/123/participants
+  // /live-auctions/123
+  // /admin/auctions/123/control
+  // /admin/auctions/123/statistics
+  // /admin/auctions/123/history
+  // ==========================================================
 
   const auctionId =
     location.pathname.match(/^\/admin\/auctions\/([^/]+)/)?.[1] ||
     location.pathname.match(/^\/live-auctions\/([^/]+)/)?.[1] ||
     location.pathname.match(/^\/auctions\/([^/]+)/)?.[1];
+
+  // ==========================================================
+  // CURRENT AUCTION ADMIN LINKS
+  // ==========================================================
 
   const adminAuctionLinks = auctionId
     ? [
@@ -145,25 +181,27 @@ export default function Sidebar({ onNavigate }) {
       ]
     : [];
 
-  /*
-   * Main navigation.
-   *
-   * Admin:
-   * Dashboard
-   * Auctions
-   * Profile
-   * Settings
-   * Teams
-   * Players
-   * Registrations
-   *
-   * User:
-   * Dashboard
-   * Auctions
-   * Profile
-   * Settings
-   * Live Auctions
-   */
+  // ==========================================================
+  // MAIN NAVIGATION
+  //
+  // Admin:
+  // Dashboard
+  // Auctions
+  // Notifications
+  // Profile
+  // Settings
+  // Teams
+  // Players
+  // Registrations
+  //
+  // User:
+  // Dashboard
+  // Auctions
+  // Notifications
+  // Profile
+  // Settings
+  // Live Auctions
+  // ==========================================================
 
   const links = [...commonLinks, ...(isAdmin ? adminLinks : userLinks)];
 
@@ -190,9 +228,9 @@ export default function Sidebar({ onNavigate }) {
           flex-col
         "
       >
-        {/* ================================
+        {/* ====================================================
             MAIN NAVIGATION
-        ================================= */}
+        ==================================================== */}
 
         <nav className="flex-1 overflow-y-auto p-4">
           <p
@@ -219,9 +257,9 @@ export default function Sidebar({ onNavigate }) {
             ))}
           </div>
 
-          {/* ================================
+          {/* ==================================================
               CURRENT AUCTION
-          ================================= */}
+          ================================================== */}
 
           {isAdmin && auctionId && (
             <div className="mt-7">
@@ -252,9 +290,9 @@ export default function Sidebar({ onNavigate }) {
           )}
         </nav>
 
-        {/* ================================
+        {/* ====================================================
             SIDEBAR FOOTER
-        ================================= */}
+        ==================================================== */}
 
         <div
           className="
@@ -276,6 +314,8 @@ export default function Sidebar({ onNavigate }) {
               dark:bg-navy-950
             "
           >
+            {/* Brand */}
+
             <div className="flex items-center gap-2">
               <div
                 className="
@@ -303,6 +343,8 @@ export default function Sidebar({ onNavigate }) {
                 AuctionPro
               </p>
             </div>
+
+            {/* Description */}
 
             <p
               className="

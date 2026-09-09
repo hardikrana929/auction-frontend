@@ -1,10 +1,21 @@
 import api from "./axios";
 
-export const getCurrentBid = async (auctionId) =>
-    (await api.get(`/api/bidding/current/${auctionId}`)).data;
+export const getCurrentBid = async (auctionId) => {
+    const response = await api.get(
+        `/api/bidding/current/${auctionId}`
+    );
 
-export const placeBid = async (data) =>
-    (await api.post("/api/bidding/bid", data)).data;
+    return response.data;
+};
+
+export const placeBid = async (data) => {
+    const response = await api.post(
+        "/api/bidding/bid",
+        data
+    );
+
+    return response.data;
+};
 
 export const startBidding = async (data) =>
     (await api.post("/api/bidding/start", data)).data;

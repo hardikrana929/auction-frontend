@@ -1,267 +1,337 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  FiBell,
-  FiCheck,
-  FiCheckCircle,
-  FiClock,
-  FiInfo,
-  FiTrash2,
-  FiX,
-} from "react-icons/fi";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
+import { FiBell } from "react-icons/fi";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+import useSocket from "../hooks/useSocket";
+import useNotificationSocket from "../hooks/useNotificationSocket";
+
+import NotificationDropdown from "./NotificationDropdown";
 
 import {
   getAuctionNotifications,
+  getAuctionNotificationCount,
   markAllNotificationsAsRead,
   markNotificationAsRead,
   deleteAuctionNotification,
 } from "../api/auctionNotificationApi";
 
-/**
- * AuctionPro Notification Bell
- *
- * Features:
- * - Displays unread notification count
- * - Opens notification dropdown
- * - Loads latest notifications
- * - Mark individual notification as read
- * - Mark all notifications as read
- * - Delete individual notification
- * - Refreshes notifications periodically
- * - Handles API errors safely
- *
- * Backend endpoints:
- * GET    /api/auction-notification
- * PUT    /api/auction-notification/read-all
- * PUT    /api/auction-notification/:notificationId/read
- * DELETE /api/auction-notification/:notificationId
- */
+/* =========================================================
+   CONSTANTS
+========================================================= */
 
 const MAX_VISIBLE_NOTIFICATIONS = 10;
 const POLLING_INTERVAL = 30000;
 
-const getNotificationId = (notification) =>
-  notification?._id ||
-  notification?.id ||
-  notification?.notificationId ||
-  null;
+/* =========================================================
+   HELPERS
+========================================================= */
 
-const isNotificationRead = (notification) =>
-  Boolean(notification?.read ?? notification?.isRead);
+const getNotificationId = (notification) => {
+  return (
+    notification?._id ||
+    notification?.id ||
+    notification?.notificationId ||
+    null
+  );
+};
 
-const getNotificationMessage = (notification) =>
-  notification?.message ||
-  notification?.description ||
-  notification?.text ||
-  "You have a new auction notification.";
+const getAuctionId = (notification) => {
+  return (
+    notification?.auction?._id ||
+    notification?.auction?.id ||
+    notification?.auctionId ||
+    null
+  );
+};
 
-const getNotificationTitle = (notification) =>
-  notification?.title ||
-  notification?.subject ||
-  "AuctionPro Notification";
-
-const getNotificationType = (notification) =>
-  String(notification?.type || notification?.notificationType || "info")
-    .toLowerCase()
-    .trim();
-
-const getNotificationDate = (notification) =>
-  notification?.createdAt ||
-  notification?.updatedAt ||
-  notification?.date ||
-  null;
+const isNotificationRead = (notification) => {
+  return (
+    notification?.read === true ||
+    notification?.isRead === true ||
+    notification?.status === "read"
+  );
+};
 
 const normalizeNotifications = (response) => {
-  const data = response?.data ?? response;
-
-  if (Array.isArray(data)) {
-    return data;
+  if (Array.isArray(response)) {
+    return response;
   }
 
-  if (Array.isArray(data?.notifications)) {
-    return data.notifications;
+  if (Array.isArray(response?.notifications)) {
+    return response.notifications;
   }
 
-  if (Array.isArray(data?.items)) {
-    return data.items;
+  if (Array.isArray(response?.data)) {
+    return response.data;
   }
 
-  if (Array.isArray(data?.data)) {
-    return data.data;
+  if (Array.isArray(response?.data?.notifications)) {
+    return response.data.notifications;
   }
 
   return [];
 };
 
-const getRelativeTime = (dateValue) => {
-  if (!dateValue) return "Recently";
-
-  const date = new Date(dateValue);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Recently";
+const getUnreadCountFromResponse = (response) => {
+  if (typeof response === "number") {
+    return response;
   }
 
-  const difference = Date.now() - date.getTime();
-  const seconds = Math.floor(difference / 1000);
-
-  if (seconds < 60) {
-    return "Just now";
+  if (typeof response?.count === "number") {
+    return response.count;
   }
 
-  const minutes = Math.floor(seconds / 60);
-
-  if (minutes < 60) {
-    return `${minutes}m ago`;
+  if (typeof response?.unreadCount === "number") {
+    return response.unreadCount;
   }
 
-  const hours = Math.floor(minutes / 60);
-
-  if (hours < 24) {
-    return `${hours}h ago`;
+  if (typeof response?.data === "number") {
+    return response.data;
   }
 
-  const days = Math.floor(hours / 24);
-
-  if (days < 7) {
-    return `${days}d ago`;
+  if (typeof response?.data?.count === "number") {
+    return response.data.count;
   }
 
-  return date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  if (typeof response?.data?.unreadCount === "number") {
+    return response.data.unreadCount;
+  }
+
+  return null;
 };
 
-const getNotificationIcon = (type) => {
-  if (
-    type.includes("success") ||
-    type.includes("sold") ||
-    type.includes("approved")
-  ) {
-    return <FiCheckCircle className="h-4 w-4" />;
-  }
+/* =========================================================
+   COMPONENT
+========================================================= */
 
-  if (
-    type.includes("warning") ||
-    type.includes("bid") ||
-    type.includes("auction")
-  ) {
-    return <FiClock className="h-4 w-4" />;
-  }
+const NotificationBell = ({ auctionId = null }) => {
+  const navigate = useNavigate();
 
-  return <FiInfo className="h-4 w-4" />;
-};
+  /* =====================================================
+       SOCKET
+    ===================================================== */
 
-const getNotificationIconClasses = (type) => {
-  if (
-    type.includes("success") ||
-    type.includes("sold") ||
-    type.includes("approved")
-  ) {
-    return "bg-emerald-50 text-emerald-600";
-  }
+  const { socket } = useSocket();
 
-  if (
-    type.includes("warning") ||
-    type.includes("bid") ||
-    type.includes("auction")
-  ) {
-    return "bg-amber-50 text-amber-600";
-  }
+  /* =====================================================
+       STATE
+    ===================================================== */
 
-  if (type.includes("error") || type.includes("rejected")) {
-    return "bg-red-50 text-red-600";
-  }
-
-  return "bg-blue-50 text-blue-600";
-};
-
-export default function NotificationBell({
-  className = "",
-  onNotificationClick,
-}) {
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [actionId, setActionId] = useState(null);
   const [hasError, setHasError] = useState(false);
 
-  const containerRef = useRef(null);
-  const mountedRef = useRef(true);
+  /* =====================================================
+       REFS
+    ===================================================== */
 
-  const unreadCount = notifications.filter(
-    (notification) => !isNotificationRead(notification)
-  ).length;
+  const bellRef = useRef(null);
+  const dropdownRef = useRef(null);
 
-  const loadNotifications = useCallback(async (showLoader = false) => {
-    if (showLoader && mountedRef.current) {
-      setLoading(true);
+  /* =========================================================
+       REAL-TIME NOTIFICATION
+    ========================================================= */
+
+  const handleNewNotification = useCallback((notification) => {
+    if (!notification) {
+      return;
     }
 
-    try {
-      const response = await getAuctionNotifications();
+    console.log("🔔 New notification received:", notification);
 
-      if (!mountedRef.current) return;
+    const notificationId = getNotificationId(notification);
 
-      const normalized = normalizeNotifications(response);
+    /* Prevent duplicate notifications */
 
-      const sorted = [...normalized]
-        .filter(Boolean)
-        .sort((a, b) => {
-          const first = new Date(
-            getNotificationDate(a) || 0
-          ).getTime();
-
-          const second = new Date(
-            getNotificationDate(b) || 0
-          ).getTime();
-
-          return second - first;
-        });
-
-      setNotifications(sorted);
-      setHasError(false);
-    } catch (error) {
-      if (!mountedRef.current) return;
-
-      setHasError(true);
-
-      if (showLoader) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Unable to load notifications."
-        );
+    setNotifications((previous) => {
+      if (
+        notificationId &&
+        previous.some((item) => getNotificationId(item) === notificationId)
+      ) {
+        return previous;
       }
-    } finally {
-      if (showLoader && mountedRef.current) {
-        setLoading(false);
-      }
+
+      return [notification, ...previous].slice(0, MAX_VISIBLE_NOTIFICATIONS);
+    });
+
+    /* Increase unread count */
+
+    if (!isNotificationRead(notification)) {
+      setUnreadCount((previous) => previous + 1);
     }
+
+    /* Toast */
+
+    const message =
+      notification?.message ||
+      notification?.description ||
+      notification?.content ||
+      "You have a new notification.";
+
+    toast(message, {
+      icon: "🔔",
+      duration: 4000,
+      position: "top-right",
+    });
   }, []);
 
+  /* =========================================================
+       CONNECT SOCKET NOTIFICATION EVENT
+    ========================================================= */
+
+  useNotificationSocket({
+    socket,
+    onNotification: handleNewNotification,
+    enabled: Boolean(socket),
+  });
+
+  /* =========================================================
+       LOAD NOTIFICATIONS
+    ========================================================= */
+
+  const loadNotifications = useCallback(
+    async ({ silent = false } = {}) => {
+      if (!silent) {
+        setLoading(true);
+      }
+
+      try {
+        const response = await getAuctionNotifications({
+          auctionId: auctionId || undefined,
+          page: 1,
+          limit: MAX_VISIBLE_NOTIFICATIONS,
+        });
+
+        const list = normalizeNotifications(response);
+
+        setNotifications(list);
+        setHasError(false);
+      } catch (error) {
+        console.error("Failed to load notifications:", error);
+
+        setHasError(true);
+
+        if (!silent) {
+          toast.error(
+            error?.response?.data?.message || "Failed to load notifications",
+          );
+        }
+      } finally {
+        if (!silent) {
+          setLoading(false);
+        }
+      }
+    },
+    [auctionId],
+  );
+
+  /* =========================================================
+       LOAD UNREAD COUNT
+    ========================================================= */
+
+  const loadUnreadCount = useCallback(
+    async ({ silent = true } = {}) => {
+      try {
+        /*
+         * Use dedicated count API
+         * when auctionId exists.
+         */
+
+        if (auctionId) {
+          const response = await getAuctionNotificationCount(auctionId);
+
+          const count = getUnreadCountFromResponse(response);
+
+          if (count !== null) {
+            setUnreadCount(Math.max(0, count));
+
+            return;
+          }
+        }
+
+        /*
+         * Fallback:
+         * calculate unread notifications.
+         */
+
+        const response = await getAuctionNotifications({
+          auctionId: auctionId || undefined,
+          page: 1,
+          limit: MAX_VISIBLE_NOTIFICATIONS,
+        });
+
+        const list = normalizeNotifications(response);
+
+        const unread = list.filter(
+          (notification) => !isNotificationRead(notification),
+        ).length;
+
+        setUnreadCount(unread);
+      } catch (error) {
+        console.error("Failed to load notification count:", error);
+
+        if (!silent) {
+          toast.error(
+            error?.response?.data?.message ||
+              "Failed to load notification count",
+          );
+        }
+      }
+    },
+    [auctionId],
+  );
+
+  /* =========================================================
+       INITIAL LOAD
+    ========================================================= */
+
   useEffect(() => {
-    mountedRef.current = true;
+    loadNotifications();
+    loadUnreadCount();
+  }, [loadNotifications, loadUnreadCount]);
 
-    loadNotifications(true);
+  /* =========================================================
+       POLLING FALLBACK
+    ========================================================= */
 
-    const interval = window.setInterval(() => {
-      loadNotifications(false);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadNotifications({
+        silent: true,
+      });
+
+      loadUnreadCount({
+        silent: true,
+      });
     }, POLLING_INTERVAL);
 
     return () => {
-      mountedRef.current = false;
-      window.clearInterval(interval);
+      clearInterval(interval);
     };
-  }, [loadNotifications]);
+  }, [loadNotifications, loadUnreadCount]);
+
+  /* =========================================================
+       CLOSE ON OUTSIDE CLICK
+    ========================================================= */
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
+      if (!isOpen) {
+        return;
+      }
+
+      const clickedBell =
+        bellRef.current && bellRef.current.contains(event.target);
+
+      const clickedDropdown =
+        dropdownRef.current && dropdownRef.current.contains(event.target);
+
+      if (!clickedBell && !clickedDropdown) {
         setIsOpen(false);
       }
     };
@@ -271,7 +341,11 @@ export default function NotificationBell({
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, []);
+  }, [isOpen]);
+
+  /* =========================================================
+       ESCAPE KEY
+    ========================================================= */
 
   useEffect(() => {
     const handleEscape = (event) => {
@@ -287,124 +361,249 @@ export default function NotificationBell({
     };
   }, []);
 
-  const handleToggle = () => {
-    setIsOpen((previous) => !previous);
+  /* =========================================================
+       TOGGLE DROPDOWN
+    ========================================================= */
+
+  const handleToggle = async () => {
+    const nextState = !isOpen;
+
+    setIsOpen(nextState);
+
+    if (nextState) {
+      await Promise.all([
+        loadNotifications(),
+        loadUnreadCount({
+          silent: true,
+        }),
+      ]);
+    }
   };
 
-  const handleMarkAsRead = async (notification) => {
-    const notificationId = getNotificationId(notification);
+  /* =========================================================
+       MARK ONE AS READ
+    ========================================================= */
 
-    if (!notificationId || isNotificationRead(notification)) {
+  const handleMarkAsRead = async (notificationId) => {
+    if (!notificationId) {
       return;
     }
 
-    setActionId(notificationId);
+    const currentNotification = notifications.find(
+      (notification) => getNotificationId(notification) === notificationId,
+    );
+
+    /*
+     * Already read.
+     */
+
+    if (currentNotification && isNotificationRead(currentNotification)) {
+      return;
+    }
 
     try {
+      setActionId(notificationId);
+
       await markNotificationAsRead(notificationId);
 
-      if (!mountedRef.current) return;
-
       setNotifications((previous) =>
-        previous.map((item) =>
-          getNotificationId(item) === notificationId
-            ? {
-                ...item,
-                read: true,
-                isRead: true,
-              }
-            : item
-        )
+        previous.map((notification) => {
+          const id = getNotificationId(notification);
+
+          if (id !== notificationId) {
+            return notification;
+          }
+
+          return {
+            ...notification,
+            read: true,
+            isRead: true,
+            status: "read",
+          };
+        }),
       );
+
+      setUnreadCount((previous) => Math.max(0, previous - 1));
     } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+
       toast.error(
-        error?.response?.data?.message ||
-          "Unable to mark notification as read."
+        error?.response?.data?.message || "Failed to mark notification as read",
       );
     } finally {
-      if (mountedRef.current) {
-        setActionId(null);
-      }
+      setActionId(null);
     }
   };
 
-  const handleMarkAllAsRead = async () => {
-    if (unreadCount === 0) return;
+  /* =========================================================
+       MARK ALL AS READ
+    ========================================================= */
 
-    setActionId("all");
+  const handleMarkAllAsRead = async () => {
+    if (unreadCount <= 0) {
+      return;
+    }
 
     try {
-      await markAllNotificationsAsRead();
+      setActionId("all");
 
-      if (!mountedRef.current) return;
+      await markAllNotificationsAsRead();
 
       setNotifications((previous) =>
         previous.map((notification) => ({
           ...notification,
           read: true,
           isRead: true,
-        }))
+          status: "read",
+        })),
       );
 
-      toast.success("All notifications marked as read.");
+      setUnreadCount(0);
+
+      toast.success("All notifications marked as read");
     } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+
       toast.error(
         error?.response?.data?.message ||
-          "Unable to mark all notifications as read."
+          "Failed to mark all notifications as read",
       );
     } finally {
-      if (mountedRef.current) {
-        setActionId(null);
-      }
+      setActionId(null);
     }
   };
 
-  const handleDelete = async (notification) => {
-    const notificationId = getNotificationId(notification);
+  /* =========================================================
+       DELETE NOTIFICATION
+    ========================================================= */
 
-    if (!notificationId) return;
-
-    setActionId(notificationId);
+  const handleDelete = async (notificationId) => {
+    if (!notificationId) {
+      return;
+    }
 
     try {
-      await deleteAuctionNotification(notificationId);
+      setActionId(notificationId);
 
-      if (!mountedRef.current) return;
+      const deletedNotification = notifications.find(
+        (notification) => getNotificationId(notification) === notificationId,
+      );
+
+      await deleteAuctionNotification(notificationId);
 
       setNotifications((previous) =>
         previous.filter(
-          (item) => getNotificationId(item) !== notificationId
-        )
+          (notification) => getNotificationId(notification) !== notificationId,
+        ),
       );
+
+      if (deletedNotification && !isNotificationRead(deletedNotification)) {
+        setUnreadCount((previous) => Math.max(0, previous - 1));
+      }
+
+      toast.success("Notification deleted");
     } catch (error) {
+      console.error("Failed to delete notification:", error);
+
       toast.error(
-        error?.response?.data?.message ||
-          "Unable to delete notification."
+        error?.response?.data?.message || "Failed to delete notification",
       );
     } finally {
-      if (mountedRef.current) {
-        setActionId(null);
-      }
+      setActionId(null);
     }
   };
 
-  const handleNotificationClick = async (notification) => {
-    await handleMarkAsRead(notification);
+  /* =========================================================
+       NOTIFICATION CLICK
+    ========================================================= */
 
-    onNotificationClick?.(notification);
+  const handleNotificationClick = async (notification) => {
+    if (!notification) {
+      return;
+    }
+
+    const notificationId = getNotificationId(notification);
+
+    /*
+     * Mark unread notification as read.
+     */
+
+    if (notificationId && !isNotificationRead(notification)) {
+      await handleMarkAsRead(notificationId);
+    }
+
+    /*
+     * Custom notification URL.
+     */
+
+    const targetUrl =
+      notification?.url ||
+      notification?.link ||
+      notification?.actionUrl ||
+      notification?.redirectUrl ||
+      notification?.route ||
+      null;
+
+    if (targetUrl) {
+      setIsOpen(false);
+
+      /*
+       * Internal React route.
+       */
+
+      if (typeof targetUrl === "string" && targetUrl.startsWith("/")) {
+        navigate(targetUrl);
+        return;
+      }
+
+      /*
+       * External URL.
+       */
+
+      if (typeof targetUrl === "string" && /^https?:\/\//i.test(targetUrl)) {
+        window.location.href = targetUrl;
+
+        return;
+      }
+    }
+
+    /*
+     * Fallback:
+     * related auction.
+     */
+
+    const relatedAuctionId = getAuctionId(notification);
+
+    if (relatedAuctionId) {
+      setIsOpen(false);
+
+      navigate(`/auctions/${relatedAuctionId}`);
+    }
   };
 
-  const visibleNotifications = notifications.slice(
-    0,
-    MAX_VISIBLE_NOTIFICATIONS
-  );
+  /* =========================================================
+       REFRESH
+    ========================================================= */
+
+  const handleRefresh = async () => {
+    await Promise.all([
+      loadNotifications(),
+      loadUnreadCount({
+        silent: false,
+      }),
+    ]);
+  };
+
+  /* =========================================================
+       RENDER
+    ========================================================= */
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative ${className}`}
-    >
-      {/* Bell Button */}
+    <div className="relative" ref={bellRef}>
+      {/* =================================================
+                NOTIFICATION BUTTON
+            ================================================= */}
+
       <button
         type="button"
         onClick={handleToggle}
@@ -414,231 +613,98 @@ export default function NotificationBell({
             : "Notifications"
         }
         aria-expanded={isOpen}
-        className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
+        aria-haspopup="true"
+        className="
+                    relative
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    text-gray-600
+                    transition
+                    duration-200
+                    hover:bg-gray-100
+                    hover:text-gray-900
+                    focus:outline-none
+                    focus:ring-2
+                    focus:ring-indigo-500
+                    dark:text-gray-300
+                    dark:hover:bg-gray-800
+                    dark:hover:text-white
+                "
       >
         <FiBell className="h-5 w-5" />
 
+        {/* =================================================
+                    UNREAD BADGE
+                ================================================= */}
+
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex min-h-[19px] min-w-[19px] items-center justify-center rounded-full border-2 border-white bg-red-500 px-1 text-[10px] font-bold leading-none text-white">
+          <span
+            className="
+                            absolute
+                            -right-0.5
+                            -top-0.5
+                            flex
+                            min-h-[18px]
+                            min-w-[18px]
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-red-500
+                            px-1
+                            text-[10px]
+                            font-bold
+                            leading-none
+                            text-white
+                            ring-2
+                            ring-white
+                            dark:ring-gray-900
+                        "
+          >
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </button>
 
-      {/* Dropdown */}
+      {/* =================================================
+                DROPDOWN
+            ================================================= */}
+
       {isOpen && (
-        <div className="absolute right-0 top-[calc(100%+10px)] z-50 w-[360px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3.5">
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">
-                Notifications
-              </h3>
-
-              <p className="mt-0.5 text-xs text-slate-500">
-                {unreadCount > 0
-                  ? `${unreadCount} unread notification${
-                      unreadCount > 1 ? "s" : ""
-                    }`
-                  : "You're all caught up"}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {unreadCount > 0 && (
-                <button
-                  type="button"
-                  onClick={handleMarkAllAsRead}
-                  disabled={actionId === "all"}
-                  className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-blue-600 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {actionId === "all"
-                    ? "Updating..."
-                    : "Mark all read"}
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                aria-label="Close notifications"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-              >
-                <FiX className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="max-h-[420px] overflow-y-auto">
-            {loading && notifications.length === 0 ? (
-              <div className="space-y-3 p-4">
-                {[1, 2, 3].map((item) => (
-                  <div
-                    key={item}
-                    className="flex animate-pulse gap-3"
-                  >
-                    <div className="h-9 w-9 shrink-0 rounded-xl bg-slate-100" />
-
-                    <div className="min-w-0 flex-1">
-                      <div className="h-3 w-2/3 rounded bg-slate-100" />
-                      <div className="mt-2 h-3 w-full rounded bg-slate-100" />
-                      <div className="mt-2 h-2.5 w-1/4 rounded bg-slate-100" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : hasError && notifications.length === 0 ? (
-              <div className="px-6 py-10 text-center">
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-500">
-                  <FiBell className="h-5 w-5" />
-                </div>
-
-                <p className="mt-3 text-sm font-semibold text-slate-800">
-                  Notifications unavailable
-                </p>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Something went wrong while loading notifications.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => loadNotifications(true)}
-                  className="mt-4 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
-                >
-                  Try again
-                </button>
-              </div>
-            ) : visibleNotifications.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-                  <FiBell className="h-6 w-6" />
-                </div>
-
-                <p className="mt-4 text-sm font-semibold text-slate-800">
-                  No notifications
-                </p>
-
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Auction updates, bids and important alerts
-                  will appear here.
-                </p>
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-100">
-                {visibleNotifications.map((notification) => {
-                  const notificationId =
-                    getNotificationId(notification);
-
-                  const read = isNotificationRead(notification);
-                  const type = getNotificationType(notification);
-                  const busy = actionId === notificationId;
-
-                  return (
-                    <div
-                      key={
-                        notificationId ||
-                        `${getNotificationTitle(notification)}-${getNotificationDate(
-                          notification
-                        )}`
-                      }
-                      className={`group relative px-4 py-3 transition ${
-                        read
-                          ? "bg-white hover:bg-slate-50"
-                          : "bg-blue-50/50 hover:bg-blue-50"
-                      }`}
-                    >
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleNotificationClick(notification)
-                        }
-                        className="flex w-full gap-3 text-left"
-                      >
-                        {/* Icon */}
-                        <div
-                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${getNotificationIconClasses(
-                            type
-                          )}`}
-                        >
-                          {getNotificationIcon(type)}
-                        </div>
-
-                        {/* Text */}
-                        <div className="min-w-0 flex-1 pr-8">
-                          <div className="flex items-start gap-2">
-                            <h4
-                              className={`line-clamp-1 text-sm ${
-                                read
-                                  ? "font-medium text-slate-700"
-                                  : "font-bold text-slate-900"
-                              }`}
-                            >
-                              {getNotificationTitle(
-                                notification
-                              )}
-                            </h4>
-
-                            {!read && (
-                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
-                            )}
-                          </div>
-
-                          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">
-                            {getNotificationMessage(
-                              notification
-                            )}
-                          </p>
-
-                          <div className="mt-1.5 flex items-center gap-1 text-[11px] text-slate-400">
-                            <FiClock className="h-3 w-3" />
-                            {getRelativeTime(
-                              getNotificationDate(notification)
-                            )}
-                          </div>
-                        </div>
-                      </button>
-
-                      {/* Delete */}
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(notification)}
-                        disabled={busy}
-                        aria-label="Delete notification"
-                        className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-lg text-slate-300 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 focus:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {busy ? (
-                          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
-                        ) : (
-                          <FiTrash2 className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-
-                      {/* Read indicator */}
-                      {!read && (
-                        <span className="absolute bottom-3 right-3 hidden text-blue-500 sm:block">
-                          <FiCheck className="h-3 w-3" />
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Footer */}
-          {notifications.length > MAX_VISIBLE_NOTIFICATIONS && (
-            <div className="border-t border-slate-100 bg-slate-50 px-4 py-2.5 text-center">
-              <span className="text-xs font-medium text-slate-500">
-                Showing latest {MAX_VISIBLE_NOTIFICATIONS}{" "}
-                notifications
-              </span>
-            </div>
-          )}
+        <div
+          ref={dropdownRef}
+          className="
+                        absolute
+                        right-0
+                        z-50
+                        mt-3
+                        w-[calc(100vw-2rem)]
+                        max-w-[400px]
+                    "
+        >
+          <NotificationDropdown
+            notifications={notifications}
+            loading={loading}
+            actionId={actionId}
+            hasError={hasError}
+            onClose={() => setIsOpen(false)}
+            onRead={handleMarkAsRead}
+            onMarkAllAsRead={handleMarkAllAsRead}
+            onDelete={handleDelete}
+            onNotificationClick={handleNotificationClick}
+            onRefresh={handleRefresh}
+            onViewAll={() => {
+              setIsOpen(false);
+              navigate("/notifications");
+            }}
+          />
         </div>
       )}
     </div>
   );
-}
+};
+
+export default NotificationBell;

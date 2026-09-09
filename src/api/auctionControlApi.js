@@ -1,17 +1,14 @@
 import api from "./axios";
 
 // Start auction
-export const startAuction = async (auctionId) => {
+export const startAuction = async ({ auctionId }) => {
     const response = await api.post(
         "/api/auction-control/start",
-        {
-            auctionId,
-        }
+        { auctionId }
     );
 
     return response.data;
 };
-
 // Pause auction
 export const pauseAuction = async (auctionId) => {
     const response = await api.post(
@@ -46,12 +43,10 @@ export const getAuctionSession = async (auctionId) => {
 };
 
 // Start next player
-export const nextPlayer = async (auctionId) => {
+export const startNextPlayer = async ({ auctionId }) => {
     const response = await api.post(
         "/api/auction-control/next-player",
-        {
-            auctionId,
-        }
+        { auctionId }
     );
 
     return response.data;
@@ -76,6 +71,15 @@ export const completeAuction = async (auctionId) => {
         {
             auctionId,
         }
+    );
+
+    return response.data;
+};
+
+export const completeCurrentPlayer = async (data) => {
+    const response = await api.post(
+        "/api/auction-control/complete-player",
+        data
     );
 
     return response.data;
