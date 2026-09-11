@@ -1,17 +1,27 @@
 import api from "./axios";
 
 /*
- * Register a team for an auction
+ * Register team for an auction
  */
-export const registerForAuction = async (data) => {
+export const registerForAuction = async ({ auctionId, teamId }) => {
+  if (!auctionId) {
+    throw new Error("Auction ID is required");
+  }
+
+  if (!teamId) {
+    throw new Error("Team ID is required");
+  }
+
   const response = await api.post(
     "/api/auction-registration/register",
-    data
+    {
+      auctionId,
+      teamId,
+    }
   );
 
   return response.data;
 };
-
 
 /*
  * Admin approves registration
@@ -28,7 +38,6 @@ export const approveRegistration = async (
   return response.data;
 };
 
-
 /*
  * Admin rejects registration
  */
@@ -43,7 +52,6 @@ export const rejectRegistration = async (
 
   return response.data;
 };
-
 
 /*
  * User cancels registration
@@ -60,13 +68,14 @@ export const cancelRegistration = async (
   return response.data;
 };
 
-
 /*
  * Get all registrations for an auction
  */
-export const getAuctionRegistrations = async (
-  auctionId
-) => {
+export const getAuctionRegistrations = async (auctionId) => {
+  if (!auctionId) {
+    throw new Error("Auction ID is required");
+  }
+
   const response = await api.get(
     `/api/auction-registration/${auctionId}`
   );
@@ -74,14 +83,17 @@ export const getAuctionRegistrations = async (
   return response.data;
 };
 
-
 /*
- * Check registration status for a team
+ * Check registration status
  */
 export const getRegistrationStatus = async (
   auctionId,
   teamId
 ) => {
+  if (!auctionId || !teamId) {
+    throw new Error("Auction ID and Team ID are required");
+  }
+
   const response = await api.get(
     `/api/auction-registration/status/${auctionId}/${teamId}`
   );
@@ -89,13 +101,14 @@ export const getRegistrationStatus = async (
   return response.data;
 };
 
-
 /*
- * Get a single registration
+ * Get single registration
  */
-export const getRegistrationById = async (
-  registrationId
-) => {
+export const getRegistrationById = async (registrationId) => {
+  if (!registrationId) {
+    throw new Error("Registration ID is required");
+  }
+
   const response = await api.get(
     `/api/auction-registration/detail/${registrationId}`
   );
