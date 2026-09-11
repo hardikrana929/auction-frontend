@@ -1,0 +1,17 @@
+import { useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FiArrowLeft, FiCheck, FiEye, FiEyeOff, FiLock } from "react-icons/fi";
+import toast from "react-hot-toast";
+import AuthShell from "../components/AuthShell";
+import { resetPassword } from "../api/authApi";
+
+export default function ResetPassword() {
+  const { token } = useParams(); const navigate = useNavigate();
+  const [password, setPassword] = useState(""); const [confirm, setConfirm] = useState(""); const [show, setShow] = useState(false); const [submitting, setSubmitting] = useState(false); const [done, setDone] = useState(false);
+  const rules = useMemo(() => ({ length: password.length >= 8, match: password && password === confirm }), [password, confirm]);
+  const submit = async (e) => { e.preventDefault(); if (!token) return toast.error("Invalid reset link."); if (!rules.length) return toast.error("Password must be at least 8 characters."); if (!rules.match) return toast.error("Passwords do not match."); setSubmitting(true); try { const data = await resetPassword(token, password); setDone(true); toast.success(data.message || "Password reset successfully."); setTimeout(() => navigate("/login", { replace: true }), 1200); } catch (error) { toast.error(error.response?.data?.message || "Invalid or expired reset link."); } finally { setSubmitting(false); } };
+  return <AuthShell title="Reset password" subtitle="Choose a new password for your AuctionPro account.">
+    {done ? <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center"><div className="mx-auto grid size-12 place-items-center rounded-full bg-slate-950 text-white"><FiCheck /></div><h2 className="mt-4 font-bold text-slate-900">Password updated</h2><p className="mt-2 text-sm text-slate-600">Redirecting you to login…</p></div> : <form onSubmit={submit} className="space-y-5"><PasswordInput label="New password" value={password} onChange={setPassword} show={show} setShow={setShow} /><PasswordInput label="Confirm password" value={confirm} onChange={setConfirm} show={show} setShow={setShow} /><div className="space-y-2 text-sm"><p className={rules.length ? "text-slate-900" : "text-slate-500"}>{rules.length ? "✓" : "○"} At least 8 characters</p><p className={rules.match ? "text-slate-900" : "text-slate-500"}>{rules.match ? "✓" : "○"} Passwords match</p></div><button disabled={submitting} className="w-full rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white disabled:opacity-60">{submitting ? "Updating…" : "Update password"}</button><Link to="/login" className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700"><FiArrowLeft /> Back to login</Link></form>}
+  </AuthShell>;
+}
+function PasswordInput({ label, value, onChange, show, setShow }) { return <div><label className="mb-2 block text-sm font-semibold text-slate-700">{label}</label><div className="relative"><FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input type={show ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-xl border border-slate-200 py-3 pl-11 pr-12 outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-200" autoComplete="new-password" /><button type="button" onClick={() => setShow((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500">{show ? <FiEyeOff /> : <FiEye />}</button></div></div>; }

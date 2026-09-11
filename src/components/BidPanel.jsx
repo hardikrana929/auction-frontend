@@ -11,6 +11,7 @@ export default function BidPanel({
   currentBid = 0,
   minimumBid = 0,
   bidIncrement = 0,
+  teamId = "",
   disabled = false,
   disabledReason = "",
   onBidPlaced,
@@ -50,8 +51,8 @@ export default function BidPanel({
       return;
     }
 
-    if (!auctionId || !playerId) {
-      toast.error("Auction or player information is missing.");
+    if (!auctionId || !playerId || !teamId) {
+      toast.error("Auction, player, or team information is missing.");
       return;
     }
 
@@ -71,6 +72,7 @@ export default function BidPanel({
       const response = await placeBid({
         auctionId,
         playerId,
+        teamId,
         amount: numericAmount,
       });
 

@@ -60,9 +60,7 @@ export default function LiveAuctions() {
     return auctions.filter((auction) => {
       const status = String(auction?.status || "").toLowerCase();
 
-      return ["live", "started", "running", "active", "in-progress"].includes(
-        status,
-      );
+      return status === "live";
     });
   }, [auctions]);
 
@@ -74,7 +72,7 @@ export default function LiveAuctions() {
     return auctions.filter((auction) => {
       const status = String(auction?.status || "").toLowerCase();
 
-      return ["upcoming", "scheduled", "pending"].includes(status);
+      return ["upcoming", "draft"].includes(status);
     });
   }, [auctions]);
 
@@ -85,13 +83,11 @@ export default function LiveAuctions() {
   const getStatus = (auction) => {
     const status = String(auction?.status || "").toLowerCase();
 
-    if (
-      ["live", "started", "running", "active", "in-progress"].includes(status)
-    ) {
+    if (status === "live") {
       return "LIVE";
     }
 
-    if (["upcoming", "scheduled", "pending"].includes(status)) {
+    if (["upcoming", "draft"].includes(status)) {
       return "UPCOMING";
     }
 

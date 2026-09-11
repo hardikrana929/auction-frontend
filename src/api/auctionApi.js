@@ -1,42 +1,8 @@
 import api from "./axios";
 
-export const getAuctions = async () => {
-    const response = await api.get("/api/auctions");
-    return response.data;
-};
-
-export const getAuctionById = async (auctionId) => {
-    const response = await api.get(`/api/auctions/${auctionId}`);
-    return response.data;
-};
-
-export const createAuction = async (formData) => {
-    const response = await api.post(
-        "/api/auctions",
-        formData
-    );
-
-    return response.data;
-};
-
-export const updateAuction = async (auctionId, data) => {
-    const response = await api.put(`/api/auctions/${auctionId}`, data);
-    return response.data;
-};
-
-export const updateAuctionStatus = async (auctionId, data) => {
-    const response = await api.patch(
-        `/api/auctions/${auctionId}/status`,
-        data,
-    );
-
-    return response.data;
-};
-
-export const deleteAuction = async (auctionId) => {
-    const response = await api.delete(
-        `/api/auctions/${auctionId}`,
-    );
-
-    return response.data;
-};
+export const getAuctions = async () => (await api.get("/api/auctions")).data;
+export const getAuction = async (id) => (await api.get(`/api/auctions/${id}`)).data;
+export const createAuction = async (payload) => (await api.post("/api/auctions", payload)).data;
+export const updateAuction = async (id, payload) => (await api.put(`/api/auctions/${id}`, payload)).data;
+export const updateAuctionStatus = async (id, status) => (await api.patch(`/api/auctions/${id}/status`, { status })).data;
+export const deleteAuction = async (id) => (await api.delete(`/api/auctions/${id}`)).data;

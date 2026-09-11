@@ -1,192 +1,21 @@
 import { useState } from "react";
-import { FiArrowRight, FiMail } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { FiArrowLeft, FiMail } from "react-icons/fi";
 import toast from "react-hot-toast";
-
-import { forgotPassword } from "../api/passwordApi";
-import AuthBrandPanel from "../components/AuthBrandPanel";
+import AuthShell from "../components/AuthShell";
+import { forgotPassword } from "../api/authApi";
 
 export default function ForgotPassword() {
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
-  const validate = () => {
-    if (!email.trim()) {
-      setError("Email is required.");
-      return false;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Enter a valid email.");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!validate()) return;
-
+  const [email, setEmail] = useState(""); const [submitting, setSubmitting] = useState(false); const [sent, setSent] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault(); const normalized = email.trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(normalized)) return toast.error("Enter a valid email address.");
     setSubmitting(true);
-
-    try {
-      await forgotPassword({
-        email: email.trim(),
-      });
-
-      toast.success("OTP sent to your email.");
-
-      navigate("/verify-otp", {
-        state: {
-          email: email.trim(),
-        },
-      });
-    } catch (err) {
-      toast.error(
-        err.normalizedMessage || err.message || "Unable to send OTP.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
+    try { const data = await forgotPassword(normalized); setSent(true); toast.success(data.message || "If an account exists, a reset link has been sent."); }
+    catch (error) { toast.error(error.response?.data?.message || "Unable to process request."); }
+    finally { setSubmitting(false); }
   };
-
-  return (
-    <div className="min-h-[calc(100vh-64px)] bg-pitch-50 dark:bg-navy-950 lg:flex">
-      {/* =========================================
-          LEFT BRAND PANEL
-      ========================================== */}
-      <AuthBrandPanel />
-
-      {/* =========================================
-          RIGHT FORM
-      ========================================== */}
-      <div className="flex flex-1 items-center justify-center px-6 py-12 sm:px-8 lg:px-12">
-        <div className="w-full max-w-md">
-          {/* Heading */}
-          <div className="mb-8">
-            <h2
-              className="
-                font-display text-3xl font-bold
-                text-navy-950
-                dark:text-white
-              "
-            >
-              Forgot your password?
-            </h2>
-
-            <p
-              className="
-                mt-2
-                text-gray-600
-                dark:text-gray-400
-              "
-            >
-              Enter your email address and we'll send you an OTP to reset your
-              password.
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="
-                  mb-2 block text-sm font-medium
-                  text-navy-950
-                  dark:text-white
-                "
-              >
-                Email
-              </label>
-
-              <div className="relative">
-                <FiMail
-                  size={18}
-                  className="
-                    pointer-events-none
-                    absolute left-4 top-1/2
-                    -translate-y-1/2
-                    text-gray-400
-                  "
-                />
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    setError("");
-                  }}
-                  placeholder="Enter your email address"
-                  disabled={submitting}
-                  className={`w-full rounded-xl border bg-white py-3 pl-11 pr-4 outline-none transition focus:ring-2 dark:bg-navy-850 dark:text-white ${
-                    error
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-gray-300 focus:border-cyan-500 dark:border-navy-700"
-                  }`}
-                />
-              </div>
-
-              {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="
-                flex w-full
-                items-center justify-center gap-2
-                rounded-xl
-                bg-cyan-500
-                px-5 py-3
-                font-semibold text-white
-                transition
-                hover:bg-cyan-400
-                disabled:cursor-not-allowed
-                disabled:opacity-60
-              "
-            >
-              {submitting ? "Sending OTP..." : "Send OTP"}
-
-              {!submitting && <FiArrowRight size={18} />}
-            </button>
-          </form>
-
-          {/* Back to Login */}
-          <p
-            className="
-              mt-8 text-center text-sm
-              text-gray-600
-              dark:text-gray-400
-            "
-          >
-            Remember your password?{" "}
-            <Link
-              to="/login"
-              className="
-                font-semibold
-                text-cyan-600
-                hover:text-cyan-500
-                dark:text-cyan-400
-              "
-            >
-              Back to Login
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  return <AuthShell title="Forgot your password?" subtitle="Enter your email and we'll send a secure reset link if an account exists.">
+    {sent ? <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5"><p className="font-bold text-slate-900">Check your inbox</p><p className="mt-2 text-sm leading-6 text-slate-600">If an account exists for this email, a password reset link has been sent. The link expires after 30 minutes.</p><Link to="/login" className="mt-5 inline-flex items-center gap-2 font-bold text-slate-900"><FiArrowLeft /> Back to login</Link></div> : <form onSubmit={submit} className="space-y-5"><div><label className="mb-2 block text-sm font-semibold text-slate-700">Email</label><div className="relative"><FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" className="w-full rounded-xl border border-slate-200 py-3 pl-11 pr-4 outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-200" /></div></div><button disabled={submitting} className="w-full rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white disabled:opacity-60">{submitting ? "Sending…" : "Send reset link"}</button><Link to="/login" className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700"><FiArrowLeft /> Back to login</Link></form>}
+  </AuthShell>;
 }

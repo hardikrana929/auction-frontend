@@ -22,6 +22,7 @@ import useSocket from "../hooks/useSocket";
 import useAuctionEvents from "../hooks/useAuctionEvents";
 
 import { getAuctionById } from "../api/auctionApi";
+import { checkAuctionAccess, verifyTeamAuctionAccess } from "../api/auctionAccessApi";
 
 import { getCurrentBid, getBidHistory, placeBid } from "../api/biddingApi";
 
@@ -153,6 +154,10 @@ const LiveAuction = () => {
   const [error, setError] = useState("");
 
   const [auctionStatus, setAuctionStatus] = useState("waiting");
+  const [approvedTeams, setApprovedTeams] = useState([]);
+  const [selectedTeamId, setSelectedTeamId] = useState("");
+  const [accessLoading, setAccessLoading] = useState(true);
+  const [accessError, setAccessError] = useState("");
 
   /* =====================================================
        USER / ROLE
@@ -291,6 +296,41 @@ const LiveAuction = () => {
   }, [currentPlayer]);
 
   /* =====================================================
+       LOAD PARTICIPATION ACCESS
+    ===================================================== */
+
+  const loadAccess = useCallback(async () => {
+    if (!auctionId) return;
+
+    try {
+      setAccessLoading(true);
+      setAccessError("");
+
+      const response = await checkAuctionAccess(auctionId);
+      const data = response?.data || response;
+      const registrations = Array.isArray(data?.registrations) ? data.registrations : [];
+      const teams = registrations
+        .filter((registration) => registration?.status === "approved" && registration?.team?.status === "active")
+        .map((registration) => registration.team)
+        .filter(Boolean);
+
+      setApprovedTeams(teams);
+
+      setSelectedTeamId((current) => {
+        if (current && teams.some((team) => getId(team) === current)) return current;
+        return teams.length === 1 ? getId(teams[0]) || "" : "";
+      });
+    } catch (err) {
+      console.error("Failed to load auction access:", err);
+      setAccessError(err?.response?.data?.message || "Unable to verify auction participation access.");
+      setApprovedTeams([]);
+      setSelectedTeamId("");
+    } finally {
+      setAccessLoading(false);
+    }
+  }, [auctionId]);
+
+  /* =====================================================
        INITIAL DATA
     ===================================================== */
 
@@ -306,7 +346,7 @@ const LiveAuction = () => {
       setLoading(true);
       setError("");
 
-      await Promise.all([loadAuction(), loadSession(), loadCurrentBid()]);
+      await Promise.all([loadAuction(), loadSession(), loadCurrentBid(), loadAccess()]);
     } catch (err) {
       console.error("Failed to load live auction:", err);
 
@@ -314,7 +354,7 @@ const LiveAuction = () => {
     } finally {
       setLoading(false);
     }
-  }, [auctionId, loadAuction, loadSession, loadCurrentBid]);
+  }, [auctionId, loadAuction, loadSession, loadCurrentBid, loadAccess]);
 
   useEffect(() => {
     loadData();
@@ -555,9 +595,17 @@ const LiveAuction = () => {
 
       const playerId = getId(currentPlayer);
 
+      if (!selectedTeamId) {
+        toast.error("Select an approved team before bidding.");
+        return;
+      }
+
+      await verifyTeamAuctionAccess(auctionId, selectedTeamId);
+
       await placeBid({
         auctionId,
         playerId,
+        teamId: selectedTeamId,
         amount: Number(amount),
       });
 
@@ -898,28 +946,46 @@ const LiveAuction = () => {
                     ========================================= */}
 
           <div>
+            {!isAdmin && (
+              <div className="mb-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-cyan-500">Bidding Team</p>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Select an approved active team.</p>
+                  </div>
+                  {accessLoading && <FiRefreshCw className="animate-spin text-cyan-500" />}
+                </div>
+                {accessError ? (
+                  <p className="mt-3 text-sm text-red-600 dark:text-red-400">{accessError}</p>
+                ) : approvedTeams.length === 0 ? (
+                  <div className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-950/20 dark:text-amber-300">No approved active team is available for this auction.</div>
+                ) : (
+                  <select value={selectedTeamId} onChange={(event) => setSelectedTeamId(event.target.value)} disabled={accessLoading || auctionStatus !== "live"} className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 outline-none focus:border-cyan-500 dark:border-navy-700 dark:bg-navy-850 dark:text-white">
+                    <option value="">Select approved team</option>
+                    {approvedTeams.map((team) => (
+                      <option key={getId(team)} value={getId(team)}>{team?.name || "Team"}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            )}
+
             {currentPlayer ? (
               <BidPanel
+                auctionId={auctionId}
+                playerId={getId(currentPlayer)}
                 currentBid={displayCurrentBid}
                 minimumBid={minimumBid}
                 bidIncrement={bidIncrement}
-                onPlaceBid={handlePlaceBid}
-                loading={bidding}
-                disabled={auctionStatus !== "live" || isAdmin}
+                disabled={auctionStatus !== "live" || isAdmin || !selectedTeamId}
+                disabledReason={isAdmin ? "Administrators cannot place team bids." : auctionStatus !== "live" ? "Bidding is not currently active." : !selectedTeamId ? "Select an approved team before bidding." : ""}
+                onBidPlaced={async () => { await loadCurrentBid(); await loadBidHistory(); }}
               />
             ) : (
-              <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                  <FiFlag className="h-6 w-6" />
-                </div>
-
-                <h2 className="mt-4 text-lg font-bold text-gray-900 dark:text-white">
-                  Bidding unavailable
-                </h2>
-
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  Waiting for the administrator to start a player.
-                </p>
+              <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"><FiFlag className="h-6 w-6" /></div>
+                <h2 className="mt-4 text-lg font-bold text-gray-900 dark:text-white">Bidding unavailable</h2>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Waiting for the administrator to start a player.</p>
               </div>
             )}
           </div>

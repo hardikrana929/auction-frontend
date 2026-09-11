@@ -1,234 +1,97 @@
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { getUserProfile, loginUser, registerUser } from "../api/authApi";
 
-import { getCurrentUser, loginUser, registerUser } from "../api/authApi";
+const AuthContext = createContext(null);
+const TOKEN_KEY = "auctionpro_token";
+const USER_KEY = "auctionpro_user";
 
-import { STORAGE_KEYS } from "../utils/constants";
+const readUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+  } catch {
+    return null;
+  }
+};
 
-export const AuthContext = createContext(null);
-
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-
-  const [token, setToken] = useState(() =>
-    sessionStorage.getItem(STORAGE_KEYS.TOKEN),
-  );
-
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [user, setUser] = useState(readUser);
   const [loading, setLoading] = useState(true);
 
-  /*
-   * Save authentication session
-   */
-  const saveSession = useCallback((authToken, authUser = null) => {
-    if (authToken) {
-      sessionStorage.setItem(STORAGE_KEYS.TOKEN, authToken);
-      setToken(authToken);
-    }
+  const persistAuth = (data) => {
+    localStorage.setItem(TOKEN_KEY, data.token);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user);
+  };
 
-    if (authUser) {
-      sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(authUser));
+  const login = async (credentials) => {
+    const data = await loginUser(credentials);
+    persistAuth(data);
+    return data;
+  };
 
-      setUser(authUser);
-    }
-  }, []);
+  const register = async (payload) => {
+    const data = await registerUser(payload);
+    persistAuth(data);
+    return data;
+  };
 
-  /*
-   * Clear authentication session
-   */
-  const clearSession = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
-    sessionStorage.removeItem(STORAGE_KEYS.USER);
-
+  const logout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
-  }, []);
+  };
 
-  /*
-   * Normalize /api/auth/me response
-   *
-   * We support the response shapes already used
-   * by your frontend without changing the backend.
-   */
-  const extractUser = useCallback((response) => {
-    if (!response) {
-      return null;
-    }
+  const refreshUser = async () => {
+    const data = await getUserProfile();
+    setUser(data.user);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    return data.user;
+  };
 
-    // { user: {...} }
-    if (response.user) {
-      return response.user;
-    }
-
-    // { data: { user: {...} } }
-    if (response.data?.user) {
-      return response.data.user;
-    }
-
-    // { data: {...user fields...} }
-    if (
-      response.data &&
-      typeof response.data === "object" &&
-      !Array.isArray(response.data)
-    ) {
-      return response.data;
-    }
-
-    // Direct user object
-    if (typeof response === "object" && !Array.isArray(response)) {
-      return response;
-    }
-
-    return null;
-  }, []);
-
-  /*
-   * Load authenticated user from backend
-   */
-  const loadCurrentUser = useCallback(
-    async (authToken) => {
-      if (!authToken) {
-        return null;
-      }
-
-      const response = await getCurrentUser();
-
-      console.log("AuctionPro /api/auth/me response:", response);
-
-      const currentUser = extractUser(response);
-
-      if (!currentUser) {
-        throw new Error(
-          "Authenticated user information was not returned by the server.",
-        );
-      }
-
-      setUser(currentUser);
-
-      sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-
-      return currentUser;
-    },
-    [extractUser],
-  );
-
-  /*
-   * Login
-   */
-  const login = useCallback(
-    async (credentials) => {
-      const response = await loginUser(credentials);
-
-      const authToken =
-        response?.token ||
-        response?.accessToken ||
-        response?.data?.token ||
-        response?.data?.accessToken;
-
-      if (!authToken) {
-        throw new Error(
-          "Login succeeded but no authentication token was returned.",
-        );
-      }
-
-      /*
-       * Save token FIRST.
-       *
-       * This is important because /api/auth/me
-       * uses the token from sessionStorage.
-       */
-      sessionStorage.setItem(STORAGE_KEYS.TOKEN, authToken);
-
-      setToken(authToken);
-
-      /*
-       * Try to get user directly from login response.
-       */
-      let authUser = response?.user || response?.data?.user || null;
-
-      /*
-       * If login does not return user information,
-       * immediately call /api/auth/me.
-       */
-      if (!authUser) {
-        authUser = await loadCurrentUser(authToken);
-      } else {
-        setUser(authUser);
-
-        sessionStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(authUser));
-      }
-
-      return response;
-    },
-    [loadCurrentUser],
-  );
-
-  /*
-   * Register
-   */
-  const register = useCallback(async (data) => {
-    return registerUser(data);
-  }, []);
-
-  /*
-   * Logout
-   */
-  const logout = useCallback(() => {
-    clearSession();
-  }, [clearSession]);
-
-  /*
-   * Restore session when application starts
-   */
-  const restoreSession = useCallback(async () => {
-    const storedToken = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
-
-    if (!storedToken) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setToken(storedToken);
-
-      await loadCurrentUser(storedToken);
-    } catch (error) {
-      console.error("AuctionPro session restore failed:", error);
-
-      clearSession();
-    } finally {
-      setLoading(false);
-    }
-  }, [clearSession, loadCurrentUser]);
-
-  /*
-   * Run once when application starts
-   */
   useEffect(() => {
-    restoreSession();
-  }, [restoreSession]);
+    let mounted = true;
+    const bootstrap = async () => {
+      if (!localStorage.getItem(TOKEN_KEY)) {
+        if (mounted) setLoading(false);
+        return;
+      }
+      try {
+        await refreshUser();
+      } catch {
+        if (mounted) logout();
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    bootstrap();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const value = useMemo(
     () => ({
       user,
       token,
       loading,
-
-      isAuthenticated: Boolean(token && user),
-
-      isAdmin: user?.role === "admin",
-
       login,
       register,
       logout,
-      restoreSession,
+      refreshUser,
+      isAuthenticated: Boolean(token && user),
+      isAdmin: user?.role === "admin",
     }),
-    [user, token, loading, login, register, logout, restoreSession],
+    [user, token, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used inside AuthProvider");
+  return context;
+};

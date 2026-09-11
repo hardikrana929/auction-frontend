@@ -1,49 +1,9 @@
-import { createContext, useEffect, useState } from "react";
-import { STORAGE_KEYS } from "../utils/constants";
-
-export const ThemeContext = createContext(null);
-
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+const ThemeContext = createContext(null);
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
-
-    if (savedTheme === "dark" || savedTheme === "light") {
-      return savedTheme;
-    }
-
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    localStorage.setItem(STORAGE_KEYS.THEME, theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((previous) => (previous === "dark" ? "light" : "dark"));
-  };
-
-  const isDark = theme === "dark";
-
-  return (
-    <ThemeContext.Provider
-      value={{
-        theme,
-        setTheme,
-        toggleTheme,
-        isDark,
-      }}
-    >
-      {children}
-    </ThemeContext.Provider>
-  );
+  const [theme, setTheme] = useState(() => localStorage.getItem("auctionpro_theme") || "light");
+  useEffect(() => { document.documentElement.classList.toggle("dark", theme === "dark"); localStorage.setItem("auctionpro_theme", theme); }, [theme]);
+  const value = useMemo(() => ({ theme, setTheme, toggleTheme: () => setTheme(t => t === "dark" ? "light" : "dark") }), [theme]);
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
+export const useTheme = () => { const c=useContext(ThemeContext); if(!c) throw new Error("useTheme must be used inside ThemeProvider"); return c; };

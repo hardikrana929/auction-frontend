@@ -1,22 +1,14 @@
-import { Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import MobileNav from "../components/MobileNav";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FiActivity, FiBarChart2, FiBell, FiChevronLeft, FiChevronRight, FiGrid, FiLogOut, FiMenu, FiSettings, FiUser, FiX } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext";
+import ThemeToggle from "../components/ThemeToggle";
 
-export default function DashboardLayout() {
-  return (
-    <div className="min-h-screen bg-pitch-50 dark:bg-navy-950">
-      <Navbar />
-
-      <div className="flex">
-        <Sidebar />
-
-        <main className="min-w-0 flex-1 px-4 py-6 pb-24 sm:px-6 lg:px-8 lg:pb-8">
-          <Outlet />
-        </main>
-      </div>
-
-      <MobileNav />
-    </div>
-  );
-}
+const baseLinks=[{to:"/dashboard",label:"Dashboard",icon:FiGrid},{to:"/auctions",label:"Auctions",icon:FiActivity},{to:"/live-auctions",label:"Live Auctions",icon:FiActivity},{to:"/notifications",label:"Notifications",icon:FiBell},{to:"/statistics",label:"Statistics",icon:FiBarChart2},{to:"/profile",label:"Profile",icon:FiUser},{to:"/settings",label:"Settings",icon:FiSettings}];
+export default function DashboardLayout(){ const [open,setOpen]=useState(false); const [collapsed,setCollapsed]=useState(false); const {user,isAdmin,logout}=useAuth(); const navigate=useNavigate(); const links=isAdmin?[...baseLinks,{to:"/admin/auctions",label:"Auction Management",icon:FiActivity},{to:"/admin/teams",label:"Team Management",icon:FiUser},{to:"/admin/players",label:"Player Management",icon:FiUser},{to:"/admin/registrations",label:"Registrations",icon:FiBell},{to:"/admin/auction-control",label:"Auction Control",icon:FiActivity}]:baseLinks; const doLogout=()=>{logout();navigate("/login",{replace:true});}; return <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+<div className={`fixed inset-y-0 left-0 z-40 w-72 transform border-r border-slate-200 bg-white transition-transform dark:border-slate-800 dark:bg-slate-900 lg:translate-x-0 ${open?"translate-x-0":"-translate-x-full"} ${collapsed?"lg:w-20":""}`}>
+<div className="flex h-16 items-center justify-between border-b border-slate-200 px-4 dark:border-slate-800"><div className={`flex items-center gap-3 overflow-hidden ${collapsed?"lg:justify-center lg:w-full":""}`}><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950"><FiActivity/></span>{!collapsed&&<span className="text-lg font-black">AuctionPro</span>}</div><button className="lg:hidden" onClick={()=>setOpen(false)}><FiX/></button></div>
+<nav className="space-y-1 p-3">{links.map(({to,label,icon:Icon})=><NavLink key={to} to={to} onClick={()=>setOpen(false)} className={({isActive})=>`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${isActive?"bg-slate-950 text-white dark:bg-white dark:text-slate-950":"text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"} ${collapsed?"lg:justify-center":""}`}><Icon className="shrink-0 text-lg"/>{!collapsed&&<span>{label}</span>}</NavLink>)}</nav>
+<div className="absolute bottom-0 w-full border-t border-slate-200 p-3 dark:border-slate-800"><button onClick={doLogout} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 ${collapsed?"lg:justify-center":""}`}><FiLogOut/>{!collapsed&&"Logout"}</button></div></div>
+{open&&<div onClick={()=>setOpen(false)} className="fixed inset-0 z-30 bg-slate-950/50 lg:hidden"/>}
+<div className={`${collapsed?"lg:pl-20":"lg:pl-72"} min-h-screen transition-all`}><header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 sm:px-6"><div className="flex items-center gap-3"><button className="lg:hidden" onClick={()=>setOpen(true)}><FiMenu className="text-xl"/></button><button className="hidden rounded-lg p-2 hover:bg-slate-100 lg:block dark:hover:bg-slate-800" onClick={()=>setCollapsed(v=>!v)}>{collapsed?<FiChevronRight/>:<FiChevronLeft/>}</button><div><p className="text-sm font-black">Welcome{user?.name?`, ${user.name}`:""}</p><p className="hidden text-xs text-slate-500 sm:block">Professional cricket auction management</p></div></div><div className="flex items-center gap-2"><ThemeToggle compact/><div className="hidden rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold dark:border-slate-700 sm:block">{user?.role||"user"}</div></div></header><main className="p-4 sm:p-6 lg:p-8"><Outlet/></main></div></div>; }
