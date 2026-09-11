@@ -76,7 +76,6 @@ export const completeAuction = async (auctionId) => {
     return response.data;
 };
 
-
 export const completeCurrentPlayer = async (data) => {
     const response = await api.post(
         "/api/auction-control/complete-player",
