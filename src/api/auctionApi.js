@@ -2,6 +2,8 @@ import api from "./axios";
 
 export const getAuctions = async () => (await api.get("/api/auctions")).data;
 export const getAuction = async (id) => (await api.get(`/api/auctions/${id}`)).data;
+// Alias kept for pages that import getAuctionById — same endpoint as getAuction.
+export const getAuctionById = getAuction;
 export const createAuction = async (payload) => (await api.post("/api/auctions", payload)).data;
 export const updateAuction = async (id, payload) => (await api.put(`/api/auctions/${id}`, payload)).data;
 export const updateAuctionStatus = async (id, status) => (await api.patch(`/api/auctions/${id}/status`, { status })).data;

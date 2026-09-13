@@ -13,7 +13,13 @@ const initial = {
   status: "active",
 };
 
-export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }) {
+export default function TeamForm({
+  auctions,
+  team,
+  loading,
+  onSubmit,
+  onCancel,
+}) {
   const [form, setForm] = useState(initial);
   const [logo, setLogo] = useState(null);
   const [preview, setPreview] = useState("");
@@ -37,7 +43,8 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
     setLogo(null);
   }, [team]);
 
-  const update = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+  const update = (key, value) =>
+    setForm((current) => ({ ...current, [key]: value }));
 
   const chooseLogo = (event) => {
     const file = event.target.files?.[0];
@@ -62,7 +69,12 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
   const submit = async (event) => {
     event.preventDefault();
 
-    if (!form.name.trim() || !form.owner || !form.ownerName.trim() || !form.auction) {
+    if (
+      !form.name.trim() ||
+      !form.owner ||
+      !form.ownerName.trim() ||
+      !form.auction
+    ) {
       toast.error("Please complete all required fields.");
       return;
     }
@@ -94,24 +106,45 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
           <label className="group block cursor-pointer">
             <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
               {preview ? (
-                <img src={preview} alt="Logo preview" className="h-full w-full object-cover" />
+                <img
+                  src={preview}
+                  alt="Logo preview"
+                  className="h-full w-full object-cover"
+                />
               ) : (
-                <div className="text-center text-slate-400">
+                <div className="text-center text-slate-400 dark:text-slate-500">
                   <FiImage className="mx-auto text-3xl" />
                   <span className="mt-2 block text-xs">JPG/PNG · max 2 MB</span>
                 </div>
               )}
             </div>
-            <span className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-emerald-600">
+            <span className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
               <FiUpload /> Choose logo
             </span>
-            <input type="file" accept="image/jpeg,image/png" onChange={chooseLogo} className="hidden" />
+            <input
+              type="file"
+              accept="image/jpeg,image/png"
+              onChange={chooseLogo}
+              className="hidden"
+            />
           </label>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Team name" required value={form.name} onChange={(e) => update("name", e.target.value)} />
-          <Field label="Owner name" required value={form.ownerName} onChange={(e) => update("ownerName", e.target.value)} />
+          <Field
+            label="Team name"
+            required
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            placeholder="e.g. Mumbai Strikers"
+          />
+          <Field
+            label="Owner name"
+            required
+            value={form.ownerName}
+            onChange={(e) => update("ownerName", e.target.value)}
+            placeholder="e.g. Priya Sharma"
+          />
           <Field
             label="Owner User ID"
             required
@@ -120,7 +153,9 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
             placeholder="MongoDB User ObjectId"
           />
           <div>
-            <label className="label">Auction <span className="text-red-500">*</span></label>
+            <label className="label">
+              Auction <span className="text-red-500">*</span>
+            </label>
             <select
               className="input"
               value={form.auction}
@@ -138,7 +173,11 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
           {team && (
             <div>
               <label className="label">Status</label>
-              <select className="input" value={form.status} onChange={(e) => update("status", e.target.value)}>
+              <select
+                className="input"
+                value={form.status}
+                onChange={(e) => update("status", e.target.value)}
+              >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -149,13 +188,20 @@ export default function TeamForm({ auctions, team, loading, onSubmit, onCancel }
 
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300">
         Budget fields are intentionally not editable. The backend initializes
-        <strong> totalBudget</strong> and <strong>remainingBudget</strong> from the selected auction and controls purse changes.
+        <strong> totalBudget</strong> and <strong>remainingBudget</strong> from
+        the selected auction and controls purse changes.
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <button type="button" className="secondary-btn" onClick={onCancel}>Cancel</button>
-        <button disabled={loading} className="primary-btn disabled:cursor-not-allowed disabled:opacity-60">
-          <FiSave /> {loading ? "Saving..." : team ? "Save changes" : "Create team"}
+        <button type="button" className="secondary-btn" onClick={onCancel}>
+          Cancel
+        </button>
+        <button
+          disabled={loading}
+          className="primary-btn disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <FiSave />{" "}
+          {loading ? "Saving..." : team ? "Save changes" : "Create team"}
         </button>
       </div>
     </form>

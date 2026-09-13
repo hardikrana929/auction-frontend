@@ -10,8 +10,8 @@ export default function RecentTransactions({ transactions = [] }) {
       className="
         rounded-2xl
         border
-        border-navy-700
-        bg-navy-900
+        border-slate-200 dark:border-navy-700
+        bg-white dark:bg-navy-900
         p-6
       "
     >
@@ -21,20 +21,20 @@ export default function RecentTransactions({ transactions = [] }) {
             Activity
           </p>
 
-          <h2 className="mt-1 text-xl font-bold text-white">
+          <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white">
             Recent Transactions
           </h2>
         </div>
 
-        <FiArrowUpRight size={20} className="text-gray-500" />
+        <FiArrowUpRight size={20} className="text-slate-500 dark:text-gray-500" />
       </div>
 
       <div className="mt-6 space-y-3">
         {items.length === 0 ? (
           <div className="py-8 text-center">
-            <FiUser size={28} className="mx-auto text-gray-600" />
+            <FiUser size={28} className="mx-auto text-slate-600 dark:text-gray-400" />
 
-            <p className="mt-3 text-sm text-gray-400">
+            <p className="mt-3 text-sm text-slate-500 dark:text-gray-400">
               No transactions available.
             </p>
           </div>
@@ -71,16 +71,16 @@ export default function RecentTransactions({ transactions = [] }) {
                   justify-between
                   gap-4
                   rounded-xl
-                  bg-navy-850
+                  bg-slate-50 dark:bg-navy-850
                   p-4
                 "
               >
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-white">
+                  <p className="truncate font-semibold text-slate-900 dark:text-white">
                     {playerName}
                   </p>
 
-                  <p className="mt-1 truncate text-xs text-gray-400">
+                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-gray-400">
                     {teamName} · {type}
                   </p>
                 </div>

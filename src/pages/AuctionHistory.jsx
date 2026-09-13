@@ -85,7 +85,7 @@ export default function AuctionHistory() {
       <div className="mb-8">
         <Link
           to={`/auctions/${id}`}
-          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-cyan-400"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-gray-400 hover:text-cyan-400"
         >
           <FiArrowLeft size={16} />
           Back to Auction
@@ -103,13 +103,13 @@ export default function AuctionHistory() {
                   AuctionPro
                 </p>
 
-                <h1 className="mt-1 text-3xl font-bold text-white">
+                <h1 className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">
                   Auction History
                 </h1>
               </div>
             </div>
 
-            <p className="mt-3 text-sm text-gray-400">
+            <p className="mt-3 text-sm text-slate-500 dark:text-gray-400">
               {auction?.name ||
                 auction?.title ||
                 "Complete auction transaction history"}
@@ -127,14 +127,14 @@ export default function AuctionHistory() {
               gap-2
               rounded-xl
               border
-              border-navy-700
-              bg-navy-900
+              border-slate-200 dark:border-navy-700
+              bg-white dark:bg-navy-900
               px-4
               py-3
               text-sm
               font-semibold
               text-white
-              hover:bg-navy-850
+              hover:bg-slate-50 dark:bg-navy-850
               disabled:opacity-50
             "
           >
@@ -151,12 +151,12 @@ export default function AuctionHistory() {
 
       {/* TABLE */}
       {loading ? (
-        <div className="rounded-2xl border border-navy-700 bg-navy-900 p-6">
+        <div className="rounded-2xl border border-slate-200 dark:border-navy-700 bg-white dark:bg-navy-900 p-6">
           <div className="animate-pulse space-y-4">
             {Array.from({
               length: 6,
             }).map((_, index) => (
-              <div key={index} className="h-16 rounded-xl bg-navy-850" />
+              <div key={index} className="h-16 rounded-xl bg-slate-50 dark:bg-navy-850" />
             ))}
           </div>
         </div>
@@ -174,8 +174,8 @@ export default function AuctionHistory() {
             className="
                 rounded-xl
                 border
-                border-navy-700
-                bg-navy-900
+                border-slate-200 dark:border-navy-700
+                bg-white dark:bg-navy-900
                 px-4
                 py-2.5
                 text-sm
@@ -188,7 +188,7 @@ export default function AuctionHistory() {
             Previous
           </button>
 
-          <span className="rounded-xl bg-navy-850 px-4 py-2.5 text-sm font-semibold text-gray-300">
+          <span className="rounded-xl bg-slate-50 dark:bg-navy-850 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-gray-300">
             Page {currentPage} of {totalPages}
           </span>
 
@@ -199,8 +199,8 @@ export default function AuctionHistory() {
             className="
                 rounded-xl
                 border
-                border-navy-700
-                bg-navy-900
+                border-slate-200 dark:border-navy-700
+                bg-white dark:bg-navy-900
                 px-4
                 py-2.5
                 text-sm

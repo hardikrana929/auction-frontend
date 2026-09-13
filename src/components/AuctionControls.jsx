@@ -56,7 +56,7 @@ export default function AuctionControls({
             Auction Controls
           </h2>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
             Control the live auction session.
           </p>
         </div>
@@ -138,8 +138,8 @@ export default function AuctionControls({
 
       {/* LOADING */}
       {loading && (
-        <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-600 border-t-cyan-400" />
+        <div className="mt-4 flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-cyan-500 dark:border-gray-600 dark:border-t-cyan-400" />
           Processing auction control...
         </div>
       )}

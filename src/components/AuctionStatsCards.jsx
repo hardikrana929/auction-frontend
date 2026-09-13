@@ -82,19 +82,19 @@ export default function AuctionStatsCards({ summary = {} }) {
             className="
               rounded-2xl
               border
-              border-navy-700
-              bg-navy-900
+              border-slate-200 dark:border-navy-700
+              bg-white dark:bg-navy-900
               p-5
               shadow-sm
             "
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-400">
+                <p className="text-sm font-medium text-slate-500 dark:text-gray-400">
                   {card.label}
                 </p>
 
-                <p className="mt-3 text-2xl font-bold text-white">
+                <p className="mt-3 text-2xl font-bold text-slate-900 dark:text-white">
                   {card.value}
                 </p>
               </div>

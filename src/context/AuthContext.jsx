@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getUserProfile, loginUser, registerUser } from "../api/authApi";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 const TOKEN_KEY = "auctionpro_token";
 const USER_KEY = "auctionpro_user";
 

@@ -25,7 +25,7 @@ export default function RegistrationStatusBadge({ status }) {
     cancelled: {
       label: "Cancelled",
       icon: FiSlash,
-      classes: "bg-gray-500/10 text-gray-500",
+      classes: "bg-slate-500/10 text-slate-600 dark:text-slate-400",
     },
   };
 

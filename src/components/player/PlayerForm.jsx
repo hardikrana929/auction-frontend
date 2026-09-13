@@ -140,13 +140,13 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
               {preview ? (
                 <img src={preview} alt="Player preview" className="h-full w-full object-cover" />
               ) : (
-                <div className="flex h-full flex-col items-center justify-center text-slate-400">
+                <div className="flex h-full flex-col items-center justify-center text-slate-400 dark:text-slate-500">
                   <FiImage className="text-3xl" />
                   <span className="mt-2 text-xs">JPG/PNG · max 2 MB</span>
                 </div>
               )}
             </div>
-            <span className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-emerald-600">
+            <span className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
               <FiUpload /> Choose photo
             </span>
             <input type="file" accept="image/jpeg,image/png" onChange={choosePhoto} className="hidden" />
@@ -170,12 +170,12 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
             </select>
           </Field>
 
-          <Field label="First name" required><input className="input" value={form.fullName} onChange={(e) => set("fullName", e.target.value)} /></Field>
-          <Field label="Last name" required><input className="input" value={form.lastName} onChange={(e) => set("lastName", e.target.value)} /></Field>
-          <Field label="Contact number"><input className="input" value={form.contactNo} onChange={(e) => set("contactNo", e.target.value)} /></Field>
-          <Field label="WhatsApp number"><input className="input" value={form.whatsappNo} onChange={(e) => set("whatsappNo", e.target.value)} /></Field>
-          <Field label="Village / Town" required><input className="input" value={form.villageTown} onChange={(e) => set("villageTown", e.target.value)} /></Field>
-          <Field label="Age"><input type="number" min="10" max="60" className="input" value={form.age} onChange={(e) => set("age", e.target.value)} /></Field>
+          <Field label="First name" required><input className="input" placeholder="e.g. Rohit" value={form.fullName} onChange={(e) => set("fullName", e.target.value)} /></Field>
+          <Field label="Last name" required><input className="input" placeholder="e.g. Sharma" value={form.lastName} onChange={(e) => set("lastName", e.target.value)} /></Field>
+          <Field label="Contact number"><input className="input" placeholder="e.g. 9876543210" value={form.contactNo} onChange={(e) => set("contactNo", e.target.value)} /></Field>
+          <Field label="WhatsApp number"><input className="input" placeholder="e.g. 9876543210" value={form.whatsappNo} onChange={(e) => set("whatsappNo", e.target.value)} /></Field>
+          <Field label="Village / Town" required><input className="input" placeholder="e.g. Nagpur" value={form.villageTown} onChange={(e) => set("villageTown", e.target.value)} /></Field>
+          <Field label="Age"><input type="number" min="10" max="60" className="input" placeholder="e.g. 24" value={form.age} onChange={(e) => set("age", e.target.value)} /></Field>
 
           <Field label="Gender">
             <select className="input" value={form.gender} onChange={(e) => set("gender", e.target.value)}>
@@ -195,15 +195,15 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
             </select>
           </Field>
 
-          <Field label="Base price" required><input type="number" min="1" className="input" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
-          <Field label="Auction order"><input type="number" min="0" className="input" value={form.auctionOrder} onChange={(e) => set("auctionOrder", e.target.value)} /></Field>
-          <Field label="Experience (years)"><input type="number" min="0" className="input" value={form.experience} onChange={(e) => set("experience", e.target.value)} /></Field>
+          <Field label="Base price" required><input type="number" min="1" className="input" placeholder="e.g. 200000" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
+          <Field label="Auction order"><input type="number" min="0" className="input" placeholder="e.g. 1" value={form.auctionOrder} onChange={(e) => set("auctionOrder", e.target.value)} /></Field>
+          <Field label="Experience (years)"><input type="number" min="0" className="input" placeholder="e.g. 3" value={form.experience} onChange={(e) => set("experience", e.target.value)} /></Field>
           <Field label="Specialization"><input className="input" value={form.specialization} onChange={(e) => set("specialization", e.target.value)} placeholder="Batting, Fielding, Power hitter" /></Field>
         </div>
       </div>
 
       <Field label="Bio">
-        <textarea className="input min-h-28 resize-y" maxLength={500} value={form.bio} onChange={(e) => set("bio", e.target.value)} />
+        <textarea className="input min-h-28 resize-y" maxLength={500} placeholder="A short note about this player's background, achievements, or playing style..." value={form.bio} onChange={(e) => set("bio", e.target.value)} />
       </Field>
 
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300">

@@ -10,8 +10,8 @@ export default function TeamSpendingCard({ teams = [] }) {
       className="
         rounded-2xl
         border
-        border-navy-700
-        bg-navy-900
+        border-slate-200 dark:border-navy-700
+        bg-white dark:bg-navy-900
         p-6
       "
     >
@@ -36,13 +36,13 @@ export default function TeamSpendingCard({ teams = [] }) {
             Team Analytics
           </p>
 
-          <h2 className="text-xl font-bold text-white">Team Spending</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Team Spending</h2>
         </div>
       </div>
 
       <div className="mt-6 space-y-4">
         {normalizedTeams.length === 0 ? (
-          <p className="py-6 text-center text-sm text-gray-400">
+          <p className="py-6 text-center text-sm text-slate-500 dark:text-gray-400">
             No team spending data available.
           </p>
         ) : (
@@ -65,15 +65,15 @@ export default function TeamSpendingCard({ teams = [] }) {
                 key={team?._id || team?.team?._id || name}
                 className="
                   rounded-xl
-                  bg-navy-850
+                  bg-slate-50 dark:bg-navy-850
                   p-4
                 "
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="truncate font-semibold text-white">{name}</p>
+                    <p className="truncate font-semibold text-slate-900 dark:text-white">{name}</p>
 
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-gray-400">
                       {players} player
                       {players === 1 ? "" : "s"}
                     </p>

@@ -50,17 +50,17 @@ export default function AuctionStatistics() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 w-72 rounded-lg bg-navy-800" />
+          <div className="h-8 w-72 rounded-lg bg-slate-100 dark:bg-navy-800" />
 
           <div className="grid gap-4 md:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="h-32 rounded-2xl bg-navy-800" />
+              <div key={index} className="h-32 rounded-2xl bg-slate-100 dark:bg-navy-800" />
             ))}
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="h-72 rounded-2xl bg-navy-800" />
-            <div className="h-72 rounded-2xl bg-navy-800" />
+            <div className="h-72 rounded-2xl bg-slate-100 dark:bg-navy-800" />
+            <div className="h-72 rounded-2xl bg-slate-100 dark:bg-navy-800" />
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default function AuctionStatistics() {
         <div>
           <Link
             to={`/auctions/${id}`}
-            className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-gray-400 transition hover:text-cyan-400"
+            className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-gray-400 transition hover:text-cyan-400"
           >
             <FiArrowLeft size={16} />
             Back to Auction
@@ -102,7 +102,7 @@ export default function AuctionStatistics() {
                 AuctionPro Analytics
               </p>
 
-              <h1 className="mt-1 text-3xl font-bold text-white">
+              <h1 className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">
                 {auction?.name || auction?.title || "Auction Statistics"}
               </h1>
             </div>
@@ -120,15 +120,15 @@ export default function AuctionStatistics() {
             gap-2
             rounded-xl
             border
-            border-navy-700
-            bg-navy-900
+            border-slate-200 dark:border-navy-700
+            bg-white dark:bg-navy-900
             px-4
             py-3
             text-sm
             font-semibold
             text-white
             transition
-            hover:bg-navy-850
+            hover:bg-slate-50 dark:bg-navy-850
             disabled:opacity-50
           "
         >

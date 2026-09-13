@@ -49,7 +49,7 @@ export default function HistoryFilter({ value, onChange }) {
               ${
                 active
                   ? "bg-cyan-500 text-white"
-                  : "border border-navy-700 bg-navy-900 text-gray-400 hover:bg-navy-850 hover:text-white"
+                  : "border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
               }
             `}
           >

@@ -1,88 +1,56 @@
-import { FiActivity, FiUser } from "react-icons/fi";
-import { formatCurrency } from "../utils/formatCurrency";
+import { Link } from "react-router-dom";
+import { FiActivity } from "react-icons/fi";
 
-export default function BidHistory({ bids = [] }) {
-  if (!Array.isArray(bids) || bids.length === 0) {
-    return (
-      <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-navy-700 dark:bg-navy-900">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500">
-            <FiActivity size={19} />
-          </div>
-
+export default function AuthShell({ title, subtitle, children }) {
+  return (
+    <main className="min-h-screen bg-slate-950 p-4 sm:p-6 dark:bg-black">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900 lg:grid-cols-2">
+        <section className="hidden bg-slate-100 p-10 dark:bg-slate-800 lg:flex lg:flex-col lg:justify-between">
+          <Link
+            to="/login"
+            className="flex items-center gap-3 text-xl font-extrabold text-slate-950 dark:text-white"
+          >
+            <span className="grid size-10 place-items-center rounded-xl bg-slate-950 text-white">
+              <FiActivity />
+            </span>
+            AuctionPro
+          </Link>
           <div>
-            <h2 className="font-bold text-navy-950 dark:text-white">
-              Bid History
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              Cricket Auction Platform
+            </p>
+            <h2 className="max-w-md text-4xl font-black leading-tight text-slate-950 dark:text-white">
+              Manage auctions with confidence.
             </h2>
-
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              No bids yet
+            <p className="mt-5 max-w-md text-slate-600 dark:text-slate-300">
+              Secure authentication for administrators, teams and auction
+              participants.
             </p>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-navy-700 dark:bg-navy-900">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500">
-          <FiActivity size={19} />
-        </div>
-
-        <div>
-          <h2 className="font-bold text-navy-950 dark:text-white">
-            Bid History
-          </h2>
-
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Latest bids
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            AuctionPro • Professional Auction Management
           </p>
-        </div>
-      </div>
-
-      <div className="mt-5 space-y-3">
-        {bids.map((bid, index) => {
-          const bidder =
-            bid?.teamName ||
-            bid?.team?.name ||
-            bid?.userName ||
-            bid?.user?.name ||
-            "Team";
-
-          const value = bid?.amount ?? bid?.bidAmount ?? bid?.price ?? 0;
-
-          const key = bid?._id || bid?.id || `${value}-${index}`;
-
-          return (
-            <div
-              key={key}
-              className="flex items-center justify-between gap-4 rounded-2xl bg-pitch-50 p-4 dark:bg-navy-850"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-500">
-                  <FiUser size={16} />
-                </div>
-
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-navy-950 dark:text-white">
-                    {bidder}
-                  </p>
-
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Bid #{bids.length - index}
-                  </p>
-                </div>
-              </div>
-
-              <p className="shrink-0 text-sm font-bold text-cyan-600 dark:text-cyan-400">
-                {formatCurrency(value)}
-              </p>
+        </section>
+        <section className="flex items-center p-6 sm:p-10">
+          <div className="mx-auto w-full max-w-md">
+            <div className="mb-8 lg:hidden">
+              <Link
+                to="/login"
+                className="text-2xl font-black text-slate-950 dark:text-white"
+              >
+                AuctionPro
+              </Link>
             </div>
-          );
-        })}
+            <h1 className="text-3xl font-black text-slate-950 dark:text-white">
+              {title}
+            </h1>
+            <p className="mt-2 text-slate-500 dark:text-slate-400">
+              {subtitle}
+            </p>
+            <div className="mt-8">{children}</div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
