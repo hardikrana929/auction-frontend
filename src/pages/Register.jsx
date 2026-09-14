@@ -92,7 +92,7 @@ export default function Register() {
         />
         <button
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
         >
           {submitting ? "Creating account…" : "Create account"}{" "}
           {!submitting && <FiArrowRight />}
@@ -101,7 +101,7 @@ export default function Register() {
           Already registered?{" "}
           <Link
             to="/login"
-            className="font-bold text-slate-950 hover:underline"
+            className="font-bold text-slate-950 hover:underline dark:text-white"
           >
             Sign in
           </Link>

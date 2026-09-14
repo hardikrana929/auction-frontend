@@ -114,7 +114,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
               return (
                 <tr
                   key={transaction?._id || transaction?.id || index}
-                  className="transition hover:bg-slate-50 dark:bg-navy-850"
+                  className="transition hover:bg-slate-50 dark:bg-navy-850 dark:hover:bg-navy-800"
                 >
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">

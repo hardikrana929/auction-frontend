@@ -39,7 +39,7 @@ export default function TeamDetails() {
 
   return (
     <section className="page-container">
-      <Link to="/admin/teams" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
+      <Link to="/admin/teams" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
         <FiArrowLeft /> Back to teams
       </Link>
 
@@ -49,7 +49,7 @@ export default function TeamDetails() {
             {team.logo?.url ? (
               <img src={team.logo.url} alt={`${team.name} logo`} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-2xl font-black text-slate-400">
+              <div className="flex h-full items-center justify-center text-2xl font-black text-slate-400 dark:text-slate-500">
                 {team.name?.slice(0, 2).toUpperCase()}
               </div>
             )}
@@ -60,7 +60,7 @@ export default function TeamDetails() {
               <TeamStatusBadge status={team.status} />
             </div>
             <p className="page-subtitle">Owner: {team.ownerName}</p>
-            <p className="mt-1 text-sm text-slate-500">{team.auction?.name || "Auction"}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{team.auction?.name || "Auction"}</p>
           </div>
         </div>
 

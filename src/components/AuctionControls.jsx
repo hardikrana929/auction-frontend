@@ -44,7 +44,7 @@ export default function AuctionControls({
     "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <section className="rounded-2xl border border-navy-700 bg-navy-900 p-5 shadow-sm">
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
       {/* HEADER */}
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -52,7 +52,7 @@ export default function AuctionControls({
             Admin Control
           </p>
 
-          <h2 className="mt-1 text-xl font-bold text-white">
+          <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white">
             Auction Controls
           </h2>
 
@@ -61,7 +61,7 @@ export default function AuctionControls({
           </p>
         </div>
 
-        <div className="rounded-full border border-navy-700 px-3 py-1.5 text-xs font-semibold text-gray-300">
+        <div className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:border-navy-700 dark:text-gray-300">
           Status:
           <span className="ml-1 text-cyan-400">{status || "Unknown"}</span>
         </div>
@@ -107,7 +107,7 @@ export default function AuctionControls({
           type="button"
           onClick={onNextPlayer}
           disabled={loading || !canNextPlayer}
-          className={`${button} bg-navy-800 text-white hover:bg-navy-700`}
+          className={`${button} bg-slate-700 text-white hover:bg-slate-800 dark:bg-navy-800 dark:hover:bg-navy-700`}
         >
           <FiChevronRight size={17} />
           Next Player
@@ -118,7 +118,7 @@ export default function AuctionControls({
           type="button"
           onClick={onCompletePlayer}
           disabled={loading || !canCompletePlayer}
-          className={`${button} border border-navy-700 bg-navy-850 text-white hover:bg-navy-800`}
+          className={`${button} border border-slate-300 bg-slate-600 text-white hover:bg-slate-700 dark:border-navy-700 dark:bg-navy-850 dark:hover:bg-navy-800`}
         >
           <FiCheckCircle size={17} />
           Complete Player

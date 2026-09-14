@@ -57,9 +57,9 @@ export default function AuctionAccess() {
           <AuctionAccessStatus loading={loading} allowed={allowed} status={approved.length ? "approved" : pending.length ? "pending" : ""} message={message} />
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiUsers className="text-xl" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400">Registrations</p><p className="mt-1 text-2xl font-black">{registrations.length}</p></div>
-            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiCheckCircle className="text-xl text-emerald-500" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400">Approved active teams</p><p className="mt-1 text-2xl font-black">{approved.length}</p></div>
-            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiClock className="text-xl text-amber-500" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400">Pending</p><p className="mt-1 text-2xl font-black">{pending.length}</p></div>
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiUsers className="text-xl" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">Registrations</p><p className="mt-1 text-2xl font-black">{registrations.length}</p></div>
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiCheckCircle className="text-xl text-emerald-500" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">Approved active teams</p><p className="mt-1 text-2xl font-black">{approved.length}</p></div>
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800"><FiClock className="text-xl text-amber-500" /><p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">Pending</p><p className="mt-1 text-2xl font-black">{pending.length}</p></div>
           </div>
 
           <div>
@@ -73,7 +73,7 @@ export default function AuctionAccess() {
               ) : registrations.map((registration) => {
                 const team = registration?.team;
                 return <div key={registration._id || registration.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
-                  <div><p className="font-black">{team?.name || "Team"}</p><p className="text-sm text-slate-500">{statusLabel(registration.status)}{team?.status ? ` · Team ${team.status}` : ""}</p></div>
+                  <div><p className="font-black">{team?.name || "Team"}</p><p className="text-sm text-slate-500 dark:text-slate-400">{statusLabel(registration.status)}{team?.status ? ` · Team ${team.status}` : ""}</p></div>
                   <span className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${registration.status === "approved" ? "bg-emerald-500/10 text-emerald-600" : registration.status === "pending" ? "bg-amber-500/10 text-amber-600" : "bg-slate-500/10 text-slate-500"}`}>
                     {registration.status === "approved" ? <FiCheckCircle /> : registration.status === "pending" ? <FiClock /> : <FiXCircle />}{statusLabel(registration.status)}
                   </span>

@@ -169,7 +169,7 @@ export default function PlayerManagement() {
         <div>
           <label className="label">Search</label>
           <div className="relative">
-            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input className="input pl-10" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name, role, town" />
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function PlayerManagement() {
                   </div>
                   <button className="secondary-btn" onClick={() => setSelected(null)}>Close</button>
                 </div>
-                <p className="mt-1 text-slate-500">{selected.role} · {selected.villageTown}</p>
+                <p className="mt-1 text-slate-500 dark:text-slate-400">{selected.role} · {selected.villageTown}</p>
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <Info label="Age" value={selected.age || "—"} />
                   <Info label="Experience" value={`${selected.experience || 0} years`} />
@@ -246,7 +246,7 @@ export default function PlayerManagement() {
 }
 
 function Info({ label, value }) {
-  return <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-bold text-slate-900 dark:text-white">{value}</p></div>;
+  return <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><p className="text-xs text-slate-500 dark:text-slate-400">{label}</p><p className="mt-1 font-bold text-slate-900 dark:text-white">{value}</p></div>;
 }
 
 function money(value) {

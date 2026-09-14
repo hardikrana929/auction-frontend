@@ -7,5 +7,5 @@ const styles = {
 };
 export default function AuctionStatusBadge({ status }) {
   const value = status || "unknown";
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold capitalize ${styles[value] || "bg-slate-100 text-slate-600"}`}>{value}</span>;
+  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold capitalize ${styles[value] || "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"}`}>{value}</span>;
 }

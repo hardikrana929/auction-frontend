@@ -22,7 +22,6 @@ import PublicLayout from "./layouts/PublicLayout";
 // Dashboard shell
 import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
-import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
 // Auctions
@@ -53,10 +52,6 @@ import TeamManagement from "./pages/admin/TeamManagement";
 import PlayerManagement from "./pages/admin/PlayerManagement";
 import AdminRegistrations from "./pages/admin/AdminRegistrations";
 import AdminAuctionControl from "./pages/AdminAuctionControl";
-
-const P = ({ title, description }) => (
-  <PlaceholderPage title={title} description={description} />
-);
 
 /**
  * A handful of admin/global nav links (Statistics, Registrations, Auction

@@ -32,7 +32,7 @@ export default function PlayerDetails() {
 
   return (
     <section className="page-container">
-      <Link to="/admin/players" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
+      <Link to="/admin/players" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
         <FiArrowLeft /> Back to players
       </Link>
 
@@ -42,7 +42,7 @@ export default function PlayerDetails() {
             {player.photo?.url ? (
               <img src={player.photo.url} alt={player.fullName} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-6xl font-black text-slate-300">
+              <div className="flex h-full items-center justify-center text-6xl font-black text-slate-300 dark:text-slate-600">
                 {player.fullName?.slice(0, 1)}
               </div>
             )}
@@ -86,7 +86,7 @@ export default function PlayerDetails() {
 }
 
 function Info({ label, value }) {
-  return <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-bold text-slate-900 dark:text-white">{value || "—"}</p></div>;
+  return <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><p className="text-xs text-slate-500 dark:text-slate-400">{label}</p><p className="mt-1 font-bold text-slate-900 dark:text-white">{value || "—"}</p></div>;
 }
 function money(value) {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Number(value || 0));

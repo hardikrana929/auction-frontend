@@ -189,7 +189,7 @@ export default function TeamManagement() {
         <div>
           <label className="label">Search teams</label>
           <div className="relative">
-            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input
               className="input pl-10"
               value={search}

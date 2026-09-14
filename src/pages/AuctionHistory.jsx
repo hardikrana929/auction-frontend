@@ -134,7 +134,7 @@ export default function AuctionHistory() {
               text-sm
               font-semibold
               text-white
-              hover:bg-slate-50 dark:bg-navy-850
+              hover:bg-slate-50 dark:bg-navy-850 dark:hover:bg-navy-800
               disabled:opacity-50
             "
           >
