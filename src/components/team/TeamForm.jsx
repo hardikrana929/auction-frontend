@@ -7,8 +7,9 @@ const ACCEPTED_TYPES = ["image/jpeg", "image/png"];
 
 const initial = {
   name: "",
-  owner: "",
   ownerName: "",
+  ownerEmail: "",
+  ownerPhone: "",
   auction: "",
   status: "active",
 };
@@ -34,8 +35,9 @@ export default function TeamForm({
 
     setForm({
       name: team.name || "",
-      owner: team.owner?._id || team.owner || "",
       ownerName: team.ownerName || "",
+      ownerEmail: team.ownerEmail || team.owner?.email || "",
+      ownerPhone: team.ownerPhone || "",
       auction: team.auction?._id || team.auction || "",
       status: team.status || "active",
     });
@@ -71,29 +73,26 @@ export default function TeamForm({
 
     if (
       !form.name.trim() ||
-      !form.owner ||
       !form.ownerName.trim() ||
+      !form.ownerEmail.trim() ||
       !form.auction
     ) {
       toast.error("Please complete all required fields.");
       return;
     }
 
-    const data = new FormData();
-    data.append("name", form.name.trim());
-    data.append("owner", form.owner);
-    data.append("ownerName", form.ownerName.trim());
-    data.append("auction", form.auction);
-
-    if (!team) {
-      data.append("status", "active");
-    } else if (form.status) {
-      data.append("status", form.status);
-    }
-
-    if (logo) data.append("logo", logo);
-
-    await onSubmit(data);
+    // Plain object out — CreateTeam.jsx (or EditTeam.jsx) is
+    // responsible for turning this into FormData, since it also
+    // needs to decide status/logo handling per create vs edit.
+    onSubmit({
+      name: form.name.trim(),
+      ownerName: form.ownerName.trim(),
+      ownerEmail: form.ownerEmail.trim(),
+      ownerPhone: form.ownerPhone.trim(),
+      auctionId: form.auction,
+      status: form.status,
+      logo,
+    });
   };
 
   return (
@@ -146,12 +145,20 @@ export default function TeamForm({
             placeholder="e.g. Priya Sharma"
           />
           <Field
-            label="Owner User ID"
+            label="Owner email"
             required
-            value={form.owner}
-            onChange={(e) => update("owner", e.target.value)}
-            placeholder="MongoDB User ObjectId"
+            type="email"
+            value={form.ownerEmail}
+            onChange={(e) => update("ownerEmail", e.target.value)}
+            placeholder="e.g. priya@example.com"
           />
+          <Field
+            label="Owner phone"
+            value={form.ownerPhone}
+            onChange={(e) => update("ownerPhone", e.target.value)}
+            placeholder="Optional"
+          />
+
           <div>
             <label className="label">
               Auction <span className="text-red-500">*</span>
@@ -187,7 +194,9 @@ export default function TeamForm({
       </div>
 
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300">
-        Budget fields are intentionally not editable. The backend initializes
+        The owner's account is matched or created automatically from their email
+        — no manual user ID needed. Budget fields are also intentionally not
+        editable here. The backend initializes
         <strong> totalBudget</strong> and <strong>remainingBudget</strong> from
         the selected auction and controls purse changes.
       </div>

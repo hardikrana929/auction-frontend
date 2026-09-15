@@ -21,26 +21,9 @@ const CreateTeam = () => {
     const loadAuctions = async () => {
       try {
         setLoadingAuctions(true);
-
         const response = await getAuctions();
-
         if (!mounted) return;
 
-        /*
-         * Support common API response formats:
-         *
-         * [
-         *   {...}
-         * ]
-         *
-         * {
-         *   auctions: [...]
-         * }
-         *
-         * {
-         *   data: [...]
-         * }
-         */
         const data = Array.isArray(response)
           ? response
           : Array.isArray(response?.auctions)
@@ -52,32 +35,24 @@ const CreateTeam = () => {
         setAuctions(data);
       } catch (error) {
         console.error("Failed to load auctions:", error);
-
         if (mounted) {
           setAuctions([]);
-
           toast.error(
             error?.response?.data?.message || "Unable to load auctions.",
           );
         }
       } finally {
-        if (mounted) {
-          setLoadingAuctions(false);
-        }
+        if (mounted) setLoadingAuctions(false);
       }
     };
 
     loadAuctions();
-
     return () => {
       mounted = false;
     };
   }, []);
 
   const handleSubmit = async (teamData) => {
-    /*
-     * Extra protection before sending data to the API.
-     */
     if (!teamData?.auctionId) {
       toast.error("Please select a valid auction.");
       return;
@@ -85,11 +60,7 @@ const CreateTeam = () => {
 
     const auctionExists = auctions.some((auction) => {
       const auctionId = auction?._id || auction?.id;
-
-      if (!auctionId) {
-        return false;
-      }
-
+      if (!auctionId) return false;
       return String(auctionId) === String(teamData.auctionId);
     });
 
@@ -102,11 +73,8 @@ const CreateTeam = () => {
       setSubmitting(true);
 
       const formData = new FormData();
-
       formData.append("name", teamData.name.trim());
-
       formData.append("ownerName", teamData.ownerName.trim());
-
       formData.append("ownerEmail", teamData.ownerEmail.trim());
 
       if (teamData.ownerPhone?.trim()) {
@@ -120,18 +88,14 @@ const CreateTeam = () => {
       }
 
       await createTeam(formData);
-
       toast.success("Team created successfully.");
-
       navigate("/admin/teams");
     } catch (error) {
       console.error("Create team error:", error);
-
       const message =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         "Failed to create team.";
-
       toast.error(message);
     } finally {
       setSubmitting(false);
@@ -140,7 +104,6 @@ const CreateTeam = () => {
 
   const handleCancel = () => {
     if (submitting) return;
-
     navigate("/admin/teams");
   };
 
@@ -150,11 +113,9 @@ const CreateTeam = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Header */}
       <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            {/* Page title */}
             <div className="flex items-center gap-4">
               <Link
                 to="/admin/teams"
@@ -163,27 +124,21 @@ const CreateTeam = () => {
               >
                 <FiArrowLeft size={19} />
               </Link>
-
               <div>
                 <div className="flex items-center gap-2">
                   <FiUsers className="text-indigo-600 dark:text-indigo-400" />
-
                   <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
                     Team Management
                   </span>
                 </div>
-
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                   Create Team
                 </h1>
-
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Add a new team to an AuctionPro auction.
                 </p>
               </div>
             </div>
-
-            {/* Admin badge */}
             <div className="flex w-fit items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-400">
               <FiShield size={16} />
               <span>Admin action</span>
@@ -192,7 +147,6 @@ const CreateTeam = () => {
         </div>
       </header>
 
-      {/* Main */}
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <TeamForm
           auctions={auctions}
