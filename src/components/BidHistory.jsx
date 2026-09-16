@@ -1,56 +1,111 @@
-import { Link } from "react-router-dom";
-import { FiActivity } from "react-icons/fi";
+import { FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
 
-export default function AuthShell({ title, subtitle, children }) {
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+};
+
+const getId = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  return String(value._id || value.id || value.teamId || "");
+};
+
+const getTeamName = (bid) => {
+  if (bid?.team?.name) {
+    return bid.team.name;
+  }
+
+  if (bid?.teamName) {
+    return bid.teamName;
+  }
+
+  if (bid?.team?.teamName) {
+    return bid.team.teamName;
+  }
+
+  return "Team";
+};
+
+const BidHistory = ({ bids = [], currentBid = 0 }) => {
+  const sortedBids = [...bids].sort((a, b) => {
+    const first = new Date(a?.createdAt || a?.timestamp || 0).getTime();
+
+    const second = new Date(b?.createdAt || b?.timestamp || 0).getTime();
+
+    return second - first;
+  });
+
   return (
-    <main className="min-h-screen bg-slate-950 p-4 sm:p-6 dark:bg-black">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900 lg:grid-cols-2">
-        <section className="hidden bg-slate-100 p-10 dark:bg-slate-800 lg:flex lg:flex-col lg:justify-between">
-          <Link
-            to="/login"
-            className="flex items-center gap-3 text-xl font-extrabold text-slate-950 dark:text-white"
-          >
-            <span className="grid size-10 place-items-center rounded-xl bg-slate-950 text-white">
-              <FiActivity />
-            </span>
-            AuctionPro
-          </Link>
-          <div>
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-              Cricket Auction Platform
-            </p>
-            <h2 className="max-w-md text-4xl font-black leading-tight text-slate-950 dark:text-white">
-              Manage auctions with confidence.
-            </h2>
-            <p className="mt-5 max-w-md text-slate-600 dark:text-slate-300">
-              Secure authentication for administrators, teams and auction
-              participants.
-            </p>
-          </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            AuctionPro • Professional Auction Management
-          </p>
-        </section>
-        <section className="flex items-center p-6 sm:p-10">
-          <div className="mx-auto w-full max-w-md">
-            <div className="mb-8 lg:hidden">
-              <Link
-                to="/login"
-                className="text-2xl font-black text-slate-950 dark:text-white"
-              >
-                AuctionPro
-              </Link>
-            </div>
-            <h1 className="text-3xl font-black text-slate-950 dark:text-white">
-              {title}
-            </h1>
-            <p className="mt-2 text-slate-500 dark:text-slate-400">
-              {subtitle}
-            </p>
-            <div className="mt-8">{children}</div>
-          </div>
-        </section>
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
+        <div className="flex items-center gap-2">
+          <FiUsers className="h-5 w-5 text-blue-500" />
+
+          <h2 className="font-bold text-slate-900 dark:text-white">
+            Bid History
+          </h2>
+        </div>
+
+        <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+          {formatCurrency(currentBid)}
+        </span>
       </div>
-    </main>
+
+      {sortedBids.length === 0 ? (
+        <div className="px-5 py-10 text-center">
+          <FiDollarSign className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
+
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+            No bids yet.
+          </p>
+        </div>
+      ) : (
+        <div className="max-h-80 overflow-y-auto">
+          {sortedBids.map((bid, index) => {
+            const bidId = bid?._id || bid?.id || `${getId(bid?.team)}-${index}`;
+
+            const amount = bid?.amount || bid?.bidAmount || bid?.value || 0;
+
+            const date = bid?.createdAt || bid?.timestamp;
+
+            return (
+              <div
+                key={bidId}
+                className="flex items-center justify-between border-b border-slate-100 px-5 py-4 last:border-b-0 dark:border-slate-800"
+              >
+                <div>
+                  <p className="font-semibold text-slate-900 dark:text-white">
+                    {getTeamName(bid)}
+                  </p>
+
+                  {date && (
+                    <div className="mt-1 flex items-center gap-1 text-xs text-slate-400">
+                      <FiClock />
+
+                      {new Date(date).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                <p className="font-bold text-emerald-600 dark:text-emerald-400">
+                  {formatCurrency(amount)}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
-}
+};
+
+export default BidHistory;

@@ -24,10 +24,10 @@ import { useAuth } from "../hooks/useAuth";
 // ============================================================
 
 const commonLinks = [
+  { label: "Profile", path: "/profile", icon: FiUser },
   { label: "Dashboard", path: "/dashboard", icon: FiGrid },
   { label: "Auctions", path: "/auctions", icon: FiCalendar },
   { label: "Notifications", path: "/notifications", icon: FiBell },
-  { label: "Profile", path: "/profile", icon: FiUser },
   { label: "Settings", path: "/settings", icon: FiSettings },
 ];
 

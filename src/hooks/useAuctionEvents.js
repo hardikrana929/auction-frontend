@@ -1,282 +1,224 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import toast from "react-hot-toast";
 
-/**
- * useAuctionEvents
- *
- * Centralized Socket.IO event listener for AuctionPro.
- *
- * Supported events:
- * - auction:started
- * - auction:paused
- * - auction:resumed
- * - player:started
- * - bid:new
- * - player:sold
- * - player:unsold
- * - auction:next-player
- * - auction:completed
- *
- * Usage:
- *
- * useAuctionEvents({
- *     socket,
- *     enabled: Boolean(socket),
- *     onAuctionStarted: handleAuctionStarted,
- *     onAuctionPaused: handleAuctionPaused,
- *     onAuctionResumed: handleAuctionResumed,
- *     onPlayerStarted: handlePlayerStarted,
- *     onBidNew: handleBidNew,
- *     onPlayerSold: handlePlayerSold,
- *     onPlayerUnsold: handlePlayerUnsold,
- *     onNextPlayer: handleNextPlayer,
- *     onAuctionCompleted: handleAuctionCompleted,
- * });
- */
+import { getSocket } from "../socket/socket";
 
 const useAuctionEvents = ({
-    socket,
-    enabled = true,
-
+    auctionId,
     onAuctionStarted,
     onAuctionPaused,
     onAuctionResumed,
-
     onPlayerStarted,
-
     onBidNew,
-
     onPlayerSold,
     onPlayerUnsold,
-
     onNextPlayer,
-
     onAuctionCompleted,
 }) => {
+    const handleAuctionStarted = useCallback(
+        (data) => {
+            console.log("📢 auction:started", data);
+
+            onAuctionStarted?.(data);
+        },
+        [onAuctionStarted],
+    );
+
+    const handleAuctionPaused = useCallback(
+        (data) => {
+            console.log("⏸️ auction:paused", data);
+
+            onAuctionPaused?.(data);
+        },
+        [onAuctionPaused],
+    );
+
+    const handleAuctionResumed = useCallback(
+        (data) => {
+            console.log("▶️ auction:resumed", data);
+
+            onAuctionResumed?.(data);
+        },
+        [onAuctionResumed],
+    );
+
+    const handlePlayerStarted = useCallback(
+        (data) => {
+            console.log("🏏 player:started", data);
+
+            onPlayerStarted?.(data);
+
+            toast.success("New player is now up for auction");
+        },
+        [onPlayerStarted],
+    );
+
+    const handleBidNew = useCallback(
+        (data) => {
+            console.log("💰 bid:new", data);
+
+            onBidNew?.(data);
+        },
+        [onBidNew],
+    );
+
+    const handlePlayerSold = useCallback(
+        (data) => {
+            console.log("🔨 player:sold", data);
+
+            onPlayerSold?.(data);
+
+            toast.success("Player sold");
+        },
+        [onPlayerSold],
+    );
+
+    const handlePlayerUnsold = useCallback(
+        (data) => {
+            console.log("❌ player:unsold", data);
+
+            onPlayerUnsold?.(data);
+
+            toast("Player marked unsold", {
+                icon: "❌",
+            });
+        },
+        [onPlayerUnsold],
+    );
+
+    const handleNextPlayer = useCallback(
+        (data) => {
+            console.log("➡️ auction:next-player", data);
+
+            onNextPlayer?.(data);
+        },
+        [onNextPlayer],
+    );
+
+    const handleAuctionCompleted = useCallback(
+        (data) => {
+            console.log("🏆 auction:completed", data);
+
+            onAuctionCompleted?.(data);
+
+            toast.success("Auction completed");
+        },
+        [onAuctionCompleted],
+    );
+
     useEffect(() => {
-        if (!socket || !enabled) {
-            return;
+        if (!auctionId) {
+            return undefined;
         }
 
-        /* =====================================================
-           EVENT HANDLERS
-        ===================================================== */
+        const socket = getSocket();
 
-        const handleAuctionStarted = (data) => {
-            console.log(
-                "🟢 Auction started:",
-                data
-            );
-
-            if (onAuctionStarted) {
-                onAuctionStarted(data);
-            }
-        };
-
-        const handleAuctionPaused = (data) => {
-            console.log(
-                "⏸️ Auction paused:",
-                data
-            );
-
-            if (onAuctionPaused) {
-                onAuctionPaused(data);
-            }
-        };
-
-        const handleAuctionResumed = (data) => {
-            console.log(
-                "▶️ Auction resumed:",
-                data
-            );
-
-            if (onAuctionResumed) {
-                onAuctionResumed(data);
-            }
-        };
-
-        const handlePlayerStarted = (data) => {
-            console.log(
-                "🏏 Player started:",
-                data
-            );
-
-            if (onPlayerStarted) {
-                onPlayerStarted(data);
-            }
-        };
-
-        const handleBidNew = (data) => {
-            console.log(
-                "💰 New bid:",
-                data
-            );
-
-            if (onBidNew) {
-                onBidNew(data);
-            }
-        };
-
-        const handlePlayerSold = (data) => {
-            console.log(
-                "🔨 Player sold:",
-                data
-            );
-
-            if (onPlayerSold) {
-                onPlayerSold(data);
-            }
-        };
-
-        const handlePlayerUnsold = (data) => {
-            console.log(
-                "❌ Player unsold:",
-                data
-            );
-
-            if (onPlayerUnsold) {
-                onPlayerUnsold(data);
-            }
-        };
-
-        const handleNextPlayer = (data) => {
-            console.log(
-                "➡️ Next player:",
-                data
-            );
-
-            if (onNextPlayer) {
-                onNextPlayer(data);
-            }
-        };
-
-        const handleAuctionCompleted = (data) => {
-            console.log(
-                "🏆 Auction completed:",
-                data
-            );
-
-            if (onAuctionCompleted) {
-                onAuctionCompleted(data);
-            }
-        };
-
-        /* =====================================================
-           REGISTER SOCKET EVENTS
-        ===================================================== */
+        if (!socket) {
+            return undefined;
+        }
 
         socket.on(
             "auction:started",
-            handleAuctionStarted
+            handleAuctionStarted,
         );
 
         socket.on(
             "auction:paused",
-            handleAuctionPaused
+            handleAuctionPaused,
         );
 
         socket.on(
             "auction:resumed",
-            handleAuctionResumed
+            handleAuctionResumed,
         );
 
         socket.on(
             "player:started",
-            handlePlayerStarted
+            handlePlayerStarted,
         );
 
         socket.on(
             "bid:new",
-            handleBidNew
+            handleBidNew,
         );
 
         socket.on(
             "player:sold",
-            handlePlayerSold
+            handlePlayerSold,
         );
 
         socket.on(
             "player:unsold",
-            handlePlayerUnsold
+            handlePlayerUnsold,
         );
 
         socket.on(
             "auction:next-player",
-            handleNextPlayer
+            handleNextPlayer,
         );
 
         socket.on(
             "auction:completed",
-            handleAuctionCompleted
+            handleAuctionCompleted,
         );
-
-        /* =====================================================
-           CLEANUP
-        ===================================================== */
 
         return () => {
             socket.off(
                 "auction:started",
-                handleAuctionStarted
+                handleAuctionStarted,
             );
 
             socket.off(
                 "auction:paused",
-                handleAuctionPaused
+                handleAuctionPaused,
             );
 
             socket.off(
                 "auction:resumed",
-                handleAuctionResumed
+                handleAuctionResumed,
             );
 
             socket.off(
                 "player:started",
-                handlePlayerStarted
+                handlePlayerStarted,
             );
 
             socket.off(
                 "bid:new",
-                handleBidNew
+                handleBidNew,
             );
 
             socket.off(
                 "player:sold",
-                handlePlayerSold
+                handlePlayerSold,
             );
 
             socket.off(
                 "player:unsold",
-                handlePlayerUnsold
+                handlePlayerUnsold,
             );
 
             socket.off(
                 "auction:next-player",
-                handleNextPlayer
+                handleNextPlayer,
             );
 
             socket.off(
                 "auction:completed",
-                handleAuctionCompleted
+                handleAuctionCompleted,
             );
         };
     }, [
-        socket,
-        enabled,
-
-        onAuctionStarted,
-        onAuctionPaused,
-        onAuctionResumed,
-
-        onPlayerStarted,
-
-        onBidNew,
-
-        onPlayerSold,
-        onPlayerUnsold,
-
-        onNextPlayer,
-
-        onAuctionCompleted,
+        auctionId,
+        handleAuctionStarted,
+        handleAuctionPaused,
+        handleAuctionResumed,
+        handlePlayerStarted,
+        handleBidNew,
+        handlePlayerSold,
+        handlePlayerUnsold,
+        handleNextPlayer,
+        handleAuctionCompleted,
     ]);
 };
 

@@ -1,225 +1,194 @@
-import { useEffect, useMemo, useState } from "react";
-import { FiArrowUp, FiCheckCircle, FiLock } from "react-icons/fi";
+import { useMemo, useState } from "react";
+import { FiDollarSign, FiTrendingUp } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 import { placeBid } from "../api/biddingApi";
-import { formatCurrency } from "../utils/formatCurrency";
 
-export default function BidPanel({
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+};
+
+const BidPanel = ({
   auctionId,
-  playerId,
+  player,
+  team,
   currentBid = 0,
-  minimumBid = 0,
-  bidIncrement = 0,
-  teamId = "",
+  bidIncrement = 10000,
+  auctionStatus,
   disabled = false,
-  disabledReason = "",
   onBidPlaced,
-}) {
-  const [amount, setAmount] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+}) => {
+  const [processing, setProcessing] = useState(false);
 
-  const numericCurrentBid = Number(currentBid) || 0;
-  const numericMinimumBid = Number(minimumBid) || 0;
-  const numericIncrement = Number(bidIncrement) || 0;
+  const teamId = team?._id || team?.id;
 
-  const calculatedMinimum = useMemo(() => {
-    if (numericMinimumBid > numericCurrentBid) {
-      return numericMinimumBid;
+  const playerId = player?._id || player?.id;
+
+  const minimumBid = useMemo(() => {
+    const current = Number(
+      currentBid || player?.currentBid || player?.basePrice || 0,
+    );
+
+    const increment = Number(bidIncrement || 0);
+
+    /*
+     * First bid:
+     *
+     * current = 0
+     * minimum = base price
+     *
+     * Existing bid:
+     *
+     * minimum = current + increment
+     */
+    if (current <= 0) {
+      return Number(player?.basePrice || 0);
     }
 
-    if (numericIncrement > 0) {
-      return numericCurrentBid + numericIncrement;
-    }
+    return current + increment;
+  }, [currentBid, player, bidIncrement]);
 
-    return numericCurrentBid + 1;
-  }, [numericCurrentBid, numericMinimumBid, numericIncrement]);
+  const canBid =
+    Boolean(auctionId) &&
+    Boolean(playerId) &&
+    Boolean(teamId) &&
+    auctionStatus === "player_auction" &&
+    !disabled &&
+    !processing;
 
-  useEffect(() => {
-    setAmount(String(calculatedMinimum));
-  }, [calculatedMinimum]);
-
-  const numericAmount = Number(amount);
-
-  const amountValid =
-    Number.isFinite(numericAmount) && numericAmount >= calculatedMinimum;
-
-  const handleBid = async (event) => {
-    event.preventDefault();
-
-    if (submitting || disabled) {
+  const handleBid = async () => {
+    if (!teamId) {
+      toast.error("Your team information is not available.");
       return;
     }
 
-    if (!auctionId || !playerId || !teamId) {
-      toast.error("Auction, player, or team information is missing.");
+    if (!playerId) {
+      toast.error("No active player is available.");
       return;
     }
 
-    if (!amountValid) {
-      toast.error(`Bid must be at least ${formatCurrency(calculatedMinimum)}.`);
+    if (!auctionId) {
+      toast.error("Auction ID is missing.");
       return;
     }
 
-    setSubmitting(true);
+    if (auctionStatus !== "player_auction") {
+      toast.error("Bidding is not currently active.");
+      return;
+    }
 
     try {
-      /*
-       * IMPORTANT:
-       * Verify the exact request body against your backend controller/Postman.
-       * Do not add fields that your backend does not expect.
-       */
+      setProcessing(true);
+
       const response = await placeBid({
         auctionId,
         playerId,
         teamId,
-        amount: numericAmount,
+        amount: minimumBid,
       });
 
       toast.success("Bid placed successfully.");
 
-      if (onBidPlaced) {
-        onBidPlaced(response);
-      }
+      onBidPlaced?.(response);
     } catch (error) {
+      console.error("Place bid error:", error);
+
       const message =
-        error?.normalizedMessage ||
         error?.response?.data?.message ||
+        error?.response?.data?.error ||
         error?.message ||
         "Unable to place bid.";
 
       toast.error(message);
     } finally {
-      setSubmitting(false);
+      setProcessing(false);
     }
   };
 
-  return (
-    <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-900">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-cyan-500">
-            Place Your Bid
-          </p>
+  if (!player) {
+    return null;
+  }
 
-          <h2 className="mt-1 text-xl font-bold text-navy-950 dark:text-white">
-            {formatCurrency(numericCurrentBid)}
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <div className="mb-5">
+        <div className="flex items-center gap-2">
+          <FiTrendingUp className="h-5 w-5 text-blue-500" />
+
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            Place Your Bid
           </h2>
         </div>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500">
-          <FiArrowUp size={21} />
-        </div>
-      </div>
-
-      <div className="mt-5 rounded-2xl bg-pitch-50 p-4 dark:bg-navy-850">
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          Minimum next bid
-        </p>
-
-        <p className="mt-1 text-lg font-bold text-navy-950 dark:text-white">
-          {formatCurrency(calculatedMinimum)}
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Your next valid bid is calculated automatically.
         </p>
       </div>
 
-      {disabled ? (
-        <div className="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4 dark:border-orange-900/50 dark:bg-orange-950/20">
-          <div className="flex gap-3">
-            <FiLock className="mt-0.5 text-orange-600" />
+      {/* Team */}
+      <div className="mb-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+        <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Your Team
+        </p>
 
-            <div>
-              <p className="font-semibold text-orange-700 dark:text-orange-400">
-                Bidding unavailable
-              </p>
+        <p className="mt-1 font-semibold text-slate-900 dark:text-white">
+          {team?.name || "Team"}
+        </p>
 
-              <p className="mt-1 text-sm text-orange-700/80 dark:text-orange-400/80">
-                {disabledReason || "Bidding is currently unavailable."}
-              </p>
-            </div>
-          </div>
+        {team?.remainingBudget !== undefined && (
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Remaining Budget:{" "}
+            <span className="font-semibold">
+              {formatCurrency(team.remainingBudget)}
+            </span>
+          </p>
+        )}
+      </div>
+
+      {/* Next bid */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900/50 dark:bg-blue-900/20">
+        <p className="text-sm text-blue-600 dark:text-blue-400">
+          Next Minimum Bid
+        </p>
+
+        <div className="mt-1 flex items-center gap-2">
+          <FiDollarSign className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+
+          <span className="text-3xl font-bold text-blue-700 dark:text-blue-400">
+            {formatCurrency(minimumBid)}
+          </span>
         </div>
-      ) : (
-        <form onSubmit={handleBid} className="mt-5">
-          <label
-            htmlFor="bidAmount"
-            className="text-sm font-semibold text-navy-950 dark:text-white"
-          >
-            Bid Amount
-          </label>
+      </div>
 
-          <input
-            id="bidAmount"
-            type="number"
-            min={calculatedMinimum}
-            step="1"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-            disabled={submitting}
-            className="
-              mt-2
-              w-full
-              rounded-xl
-              border
-              border-gray-200
-              bg-white
-              px-4
-              py-3
-              text-lg
-              font-bold
-              text-navy-950
-              outline-none
-              transition
-              focus:border-cyan-500
-              focus:ring-2
-              focus:ring-cyan-500/20
-              dark:border-navy-700
-              dark:bg-navy-850
-              dark:text-white
-            "
-          />
+      <button
+        type="button"
+        onClick={handleBid}
+        disabled={!canBid}
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <FiTrendingUp />
 
-          {!amountValid && amount !== "" && (
-            <p className="mt-2 text-xs font-medium text-red-500">
-              Enter at least {formatCurrency(calculatedMinimum)}.
-            </p>
-          )}
+        {processing ? "Placing Bid..." : "Place Bid"}
+      </button>
 
-          <button
-            type="submit"
-            disabled={submitting || !amountValid}
-            className="
-              mt-4
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-xl
-              bg-cyan-500
-              px-5
-              py-3
-              font-bold
-              text-white
-              transition
-              hover:bg-cyan-400
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-              focus:outline-none
-              focus:ring-2
-              focus:ring-cyan-400
-            "
-          >
-            {submitting ? (
-              "Placing Bid..."
-            ) : (
-              <>
-                <FiCheckCircle size={18} />
-                Place Bid
-              </>
-            )}
-          </button>
-        </form>
+      {!teamId && (
+        <p className="mt-3 text-center text-xs text-red-500">
+          Your team is not available. You cannot bid yet.
+        </p>
+      )}
+
+      {auctionStatus !== "player_auction" && (
+        <p className="mt-3 text-center text-xs text-slate-500 dark:text-slate-400">
+          Bidding will become available when the administrator starts the
+          player.
+        </p>
       )}
     </div>
   );
-}
+};
+
+export default BidPanel;

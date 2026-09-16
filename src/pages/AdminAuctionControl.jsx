@@ -34,7 +34,7 @@ import {
   completeAuction,
 } from "../api/auctionControlApi";
 
-import { startBidding, sellPlayer, markPlayerUnsold } from "../api/biddingApi";
+import { sellPlayer, markPlayerUnsold } from "../api/biddingApi";
 
 import PageLoader from "../components/PageLoader";
 import ErrorState from "../components/ErrorState";
@@ -108,6 +108,7 @@ const AdminAuctionControl = () => {
   const [auction, setAuction] = useState(null);
   const [session, setSession] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [currentPlayerFinished, setCurrentPlayerFinished] = useState(false);
 
   const [currentBid, setCurrentBid] = useState(0);
 
@@ -228,7 +229,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handleAuctionStarted = useCallback((data) => {
-    setStatus("live");
+    setStatus(data?.status || data?.auctionSession?.status || "player_auction");
 
     if (data?.auction) {
       setAuction((previous) => ({
@@ -311,15 +312,26 @@ const AdminAuctionControl = () => {
 
     setStatus("player-sold");
 
+    setSession((previous) => ({
+      ...previous,
+      currentPlayer: null,
+      status: "live",
+    }));
+
     toast.success("Player sold");
   }, []);
-
   /* =====================================================
        PLAYER UNSOLD
     ===================================================== */
 
   const handlePlayerUnsold = useCallback(() => {
     setStatus("player-unsold");
+
+    setSession((previous) => ({
+      ...previous,
+      currentPlayer: null,
+      status: "live",
+    }));
 
     toast("Player marked unsold", {
       icon: "❌",
@@ -329,7 +341,6 @@ const AdminAuctionControl = () => {
   /* =====================================================
        NEXT PLAYER
     ===================================================== */
-
   const handleNextPlayer = useCallback((data) => {
     const player = getPlayer(data);
 
@@ -337,11 +348,20 @@ const AdminAuctionControl = () => {
       setCurrentPlayer(player);
     }
 
+    setCurrentPlayerFinished(false);
+
     const bid = getBidAmount(data);
 
     setCurrentBid(Number(bid || 0));
 
-    setStatus("live");
+    setStatus(data?.status || data?.auctionSession?.status || "player_auction");
+
+    if (data?.auctionSession) {
+      setSession((previous) => ({
+        ...previous,
+        ...data.auctionSession,
+      }));
+    }
   }, []);
 
   /* =====================================================
@@ -412,13 +432,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handleStartAuction = () => {
-    executeAction(
-      () =>
-        startAuction({
-          auctionId,
-        }),
-      "Auction started",
-    );
+    executeAction(() => startAuction(auctionId), "Auction started");
   };
 
   /* =====================================================
@@ -426,13 +440,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handlePauseAuction = () => {
-    executeAction(
-      () =>
-        pauseAuction({
-          auctionId,
-        }),
-      "Auction paused",
-    );
+    executeAction(() => pauseAuction(auctionId), "Auction paused");
   };
 
   /* =====================================================
@@ -440,13 +448,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handleResumeAuction = () => {
-    executeAction(
-      () =>
-        resumeAuction({
-          auctionId,
-        }),
-      "Auction resumed",
-    );
+    executeAction(() => resumeAuction(auctionId), "Auction resumed");
   };
 
   /* =====================================================
@@ -454,36 +456,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handleStartNextPlayer = () => {
-    executeAction(
-      () =>
-        startNextPlayer({
-          auctionId,
-        }),
-      "Next player started",
-    );
-  };
-
-  /* =====================================================
-       START BIDDING
-    ===================================================== */
-
-  const handleStartBidding = () => {
-    const playerId = getId(currentPlayer);
-
-    if (!playerId) {
-      toast.error("No current player available.");
-
-      return;
-    }
-
-    executeAction(
-      () =>
-        startBidding({
-          auctionId,
-          playerId,
-        }),
-      "Bidding started",
-    );
+    executeAction(() => startNextPlayer(auctionId), "Next player started");
   };
 
   /* =====================================================
@@ -495,13 +468,11 @@ const AdminAuctionControl = () => {
 
     if (!playerId) {
       toast.error("No current player available.");
-
       return;
     }
 
     if (currentBid <= 0) {
       toast.error("There is no valid bid to sell.");
-
       return;
     }
 
@@ -510,7 +481,6 @@ const AdminAuctionControl = () => {
         sellPlayer({
           auctionId,
           playerId,
-          amount: currentBid,
         }),
       "Player sold successfully",
     );
@@ -525,7 +495,6 @@ const AdminAuctionControl = () => {
 
     if (!playerId) {
       toast.error("No current player available.");
-
       return;
     }
 
@@ -556,23 +525,23 @@ const AdminAuctionControl = () => {
   /* =====================================================
        COMPLETE AUCTION
     ===================================================== */
-
   const handleCompleteAuction = () => {
+    if (currentPlayer && !currentPlayerFinished) {
+      toast.error(
+        "Complete the current player's sale or mark the player unsold first.",
+      );
+      return;
+    }
+
     const confirmed = window.confirm(
-      "Are you sure you want to complete this auction? This action should only be performed after all players have been processed.",
+      "Are you sure you want to complete this auction? All players must be processed first.",
     );
 
     if (!confirmed) {
       return;
     }
 
-    executeAction(
-      () =>
-        completeAuction({
-          auctionId,
-        }),
-      "Auction completed",
-    );
+    executeAction(() => completeAuction(auctionId), "Auction completed");
   };
 
   /* =====================================================
@@ -641,23 +610,21 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const auctionStarted =
-    status === "live" ||
-    status === "paused" ||
-    status === "player-sold" ||
-    status === "player-unsold";
+    status === "live" || status === "player_auction" || status === "paused";
 
-  const canPause = status === "live";
+  const isPlayerAuctioning =
+    Boolean(currentPlayer) && status === "player_auction";
+
+  const canPause = status === "live" || status === "player_auction";
 
   const canResume = status === "paused";
 
   const canStartPlayer =
     auctionStarted && !currentPlayer && status !== "completed";
 
-  const canStartBidding = Boolean(currentPlayer) && status === "live";
+  const canSell = isPlayerAuctioning && currentBid > 0;
 
-  const canSell = Boolean(currentPlayer) && currentBid > 0 && status === "live";
-
-  const canUnsold = Boolean(currentPlayer) && status === "live";
+  const canUnsold = isPlayerAuctioning;
 
   /* =====================================================
        RENDER
@@ -1087,53 +1054,27 @@ const AdminAuctionControl = () => {
               <button
                 type="button"
                 onClick={handleStartNextPlayer}
-                disabled={processing || Boolean(currentPlayer)}
+                disabled={
+                  processing || !canStartPlayer || !currentPlayerFinished
+                }
                 className="
-                                        flex
-                                        items-center
-                                        justify-center
-                                        gap-2
-                                        rounded-2xl
-                                        bg-indigo-600
-                                        px-5
-                                        py-3
-                                        font-bold
-                                        text-white
-                                        hover:bg-indigo-700
-                                        disabled:cursor-not-allowed
-                                        disabled:opacity-50
-                                    "
+                    flex
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-2xl
+                    bg-indigo-600
+                    px-5
+                    py-3
+                    font-bold
+                    text-white
+                    hover:bg-indigo-700
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
+                    "
               >
                 <FiSkipForward />
                 Next Player
-              </button>
-            )}
-
-            {/* START BIDDING */}
-
-            {currentPlayer && (
-              <button
-                type="button"
-                onClick={handleStartBidding}
-                disabled={processing || !canStartBidding}
-                className="
-                                    flex
-                                    items-center
-                                    justify-center
-                                    gap-2
-                                    rounded-2xl
-                                    bg-blue-600
-                                    px-5
-                                    py-3
-                                    font-bold
-                                    text-white
-                                    hover:bg-blue-700
-                                    disabled:cursor-not-allowed
-                                    disabled:opacity-50
-                                "
-              >
-                <FiFlag />
-                Start Bidding
               </button>
             )}
 
@@ -1233,7 +1174,11 @@ const AdminAuctionControl = () => {
               <button
                 type="button"
                 onClick={handleCompleteAuction}
-                disabled={processing}
+                disabled={
+                  processing ||
+                  Boolean(currentPlayer && !currentPlayerFinished) ||
+                  status === "completed"
+                }
                 className="
                                         flex
                                         items-center
