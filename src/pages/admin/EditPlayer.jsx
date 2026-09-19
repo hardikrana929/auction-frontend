@@ -183,7 +183,7 @@ export default function EditPlayer() {
       payload.append("basePrice", Number(form.basePrice));
 
       if (newImage) {
-        payload.append("image", newImage);
+        payload.append("photo", newImage);
       }
 
       await updatePlayer(id, payload);

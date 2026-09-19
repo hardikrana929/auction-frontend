@@ -1,39 +1,90 @@
 import api from "./axios";
 
-/**
- * Check whether current user has access to an auction
+/*
+ * Check current user's access to an auction.
  */
-export const checkAuctionAccess = async (auctionId) =>
-    (
-        await api.get(`/api/auction-access/${auctionId}/check`)
-    ).data;
+export const checkAuctionAccess = async (auctionId) => {
+    if (!auctionId) {
+        throw new Error("Auction ID is required.");
+    }
 
-/**
- * Check access for a specific team
- */
-export const getTeamAuctionAccess = async (auctionId, teamId) =>
-    (
-        await api.get(
-            `/api/auction-access/${auctionId}/team/${teamId}`
-        )
-    ).data;
+    const response = await api.get(
+        `/api/auction-access/${auctionId}/check`,
+    );
 
-/**
- * Get auction participants
- */
-export const getAuctionParticipants = async (auctionId) =>
-    (
-        await api.get(
-            `/api/auction-access/${auctionId}/participants`
-        )
-    ).data;
+    return response.data;
+};
 
-/**
- * Verify whether a team can participate
+/*
+ * Alias.
  */
-export const verifyTeamAuctionAccess = async (auctionId, teamId) =>
-    (
-        await api.get(
-            `/api/auction-access/${auctionId}/team/${teamId}/verify`
-        )
-    ).data;
+export const getAuctionAccess = async (auctionId) => {
+    if (!auctionId) {
+        throw new Error("Auction ID is required.");
+    }
+
+    const response = await api.get(
+        `/api/auction-access/${auctionId}/check`,
+    );
+
+    return response.data;
+};
+
+/*
+ * Get auction participants.
+ */
+export const getAuctionParticipants = async (auctionId) => {
+    if (!auctionId) {
+        throw new Error("Auction ID is required.");
+    }
+
+    const response = await api.get(
+        `/api/auction-access/${auctionId}/participants`,
+    );
+
+    return response.data;
+};
+
+/*
+ * Check access for a specific team.
+ */
+export const checkTeamAuctionAccess = async (
+    auctionId,
+    teamId,
+) => {
+    if (!auctionId) {
+        throw new Error("Auction ID is required.");
+    }
+
+    if (!teamId) {
+        throw new Error("Team ID is required.");
+    }
+
+    const response = await api.get(
+        `/api/auction-access/${auctionId}/team/${teamId}`,
+    );
+
+    return response.data;
+};
+
+/*
+ * Verify access for a specific team.
+ */
+export const verifyTeamAuctionAccess = async (
+    auctionId,
+    teamId,
+) => {
+    if (!auctionId) {
+        throw new Error("Auction ID is required.");
+    }
+
+    if (!teamId) {
+        throw new Error("Team ID is required.");
+    }
+
+    const response = await api.get(
+        `/api/auction-access/${auctionId}/team/${teamId}/verify`,
+    );
+
+    return response.data;
+};

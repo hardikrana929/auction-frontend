@@ -155,7 +155,7 @@ export default function AuctionStatistics() {
       {/* HISTORY LINK */}
       <div className="mt-6 flex justify-center">
         <Link
-          to={`/admin/auctions/${id}/history`}
+          to={`/auctions/${id}/history`}
           className="
             inline-flex
             items-center

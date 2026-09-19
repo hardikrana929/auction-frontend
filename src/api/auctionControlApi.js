@@ -1,77 +1,35 @@
 import api from "./axios";
 
-/*
- * Start auction
- *
- * Backend:
- * POST /api/auction-control/start
- */
-export const startAuction = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const startAuction = async (data) => {
     const response = await api.post(
         "/api/auction-control/start",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
 };
 
-/*
- * Pause auction
- *
- * Backend:
- * POST /api/auction-control/pause
- */
-export const pauseAuction = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const pauseAuction = async (data) => {
     const response = await api.post(
         "/api/auction-control/pause",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
 };
 
-/*
- * Resume auction
- *
- * Backend:
- * POST /api/auction-control/resume
- */
-export const resumeAuction = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const resumeAuction = async (data) => {
     const response = await api.post(
         "/api/auction-control/resume",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
 };
 
-/*
- * Get auction session
- *
- * Backend:
- * GET /api/auction-control/session/:auctionId
- */
 export const getAuctionSession = async (auctionId) => {
     if (!auctionId) {
-        throw new Error("Auction ID is required");
+        throw new Error("Auction ID is required.");
     }
 
     const response = await api.get(
@@ -81,70 +39,39 @@ export const getAuctionSession = async (auctionId) => {
     return response.data;
 };
 
-/*
- * Start next player
- *
- * Backend:
- * POST /api/auction-control/next-player
- */
-export const startNextPlayer = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const startNextPlayer = async (data) => {
     const response = await api.post(
         "/api/auction-control/next-player",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
 };
 
-/*
- * Complete current player session
- *
- * IMPORTANT:
- * This does NOT sell the player.
- *
- * Selling/unsold is handled by bidding API.
- *
- * Backend:
- * POST /api/auction-control/complete-player
- */
-export const completeCurrentPlayer = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const completeCurrentPlayer = async (data) => {
     const response = await api.post(
         "/api/auction-control/complete-player",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
 };
 
-/*
- * Complete entire auction
- *
- * Backend:
- * POST /api/auction-control/complete
- */
-export const completeAuction = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required");
-    }
-
+export const completeAuction = async (data) => {
     const response = await api.post(
         "/api/auction-control/complete",
-        {
-            auctionId,
-        }
+        data
     );
 
     return response.data;
+};
+
+export default {
+    startAuction,
+    pauseAuction,
+    resumeAuction,
+    getAuctionSession,
+    startNextPlayer,
+    completeCurrentPlayer,
+    completeAuction,
 };

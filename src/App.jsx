@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -48,6 +56,11 @@ import Notifications from "./pages/Notifications";
 // Admin
 import AdminAuctionManagement from "./pages/admin/AdminAuctionManagement";
 import AuctionFormPage from "./pages/admin/AuctionFormPage";
+import CreatePlayer from "./pages/admin/CreatePlayer";
+import EditPlayer from "./pages/admin/EditPlayer";
+import CreateTeam from "./pages/admin/CreateTeam";
+import EditTeam from "./pages/admin/EditTeam";
+import AdminTeamDetails from "./pages/admin/TeamDetails";
 import TeamManagement from "./pages/admin/TeamManagement";
 import PlayerManagement from "./pages/admin/PlayerManagement";
 import AdminRegistrations from "./pages/admin/AdminRegistrations";
@@ -136,92 +149,140 @@ export default function App() {
           <Toaster position="top-right" toastOptions={{ duration: 3500 }} />
           <RouteErrorBoundary>
             <Routes>
-            {/* Public marketing landing page */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<Home />} />
-            </Route>
+              {/* Public marketing landing page */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<Home />} />
+              </Route>
 
-            {/* Auth */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
+              {/* Auth */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
+              />
 
-            {/* Authenticated app */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<DashboardLayout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
+              {/* Authenticated app */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<DashboardLayout />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
 
-                {/* Auctions */}
-                <Route path="/auctions" element={<Auctions />} />
-                <Route path="/auctions/:id" element={<AuctionDetails />} />
-                <Route path="/auctions/:id/access" element={<AuctionAccess />} />
-                <Route path="/auctions/:id/register" element={<AuctionRegistration />} />
-                <Route path="/auctions/:id/participants" element={<AuctionParticipants />} />
-                <Route path="/auctions/:id/history" element={<AuctionHistory />} />
-                <Route path="/auctions/:id/statistics" element={<AuctionStatistics />} />
-                <Route
-                  path="/statistics"
-                  element={
-                    <AuctionPicker
-                      title="Auction Statistics"
-                      description="Choose an auction to view its statistics."
-                      buildPath={(id) => `/auctions/${id}/statistics`}
+                  {/* Auctions */}
+                  <Route path="/auctions" element={<Auctions />} />
+                  <Route path="/auctions/:id" element={<AuctionDetails />} />
+                  <Route
+                    path="/auctions/:id/access"
+                    element={<AuctionAccess />}
+                  />
+                  <Route
+                    path="/auctions/:id/register"
+                    element={<AuctionRegistration />}
+                  />
+                  <Route
+                    path="/auctions/:id/participants"
+                    element={<AuctionParticipants />}
+                  />
+                  <Route
+                    path="/auctions/:id/history"
+                    element={<AuctionHistory />}
+                  />
+                  <Route
+                    path="/auctions/:id/statistics"
+                    element={<AuctionStatistics />}
+                  />
+                  <Route
+                    path="/statistics"
+                    element={
+                      <AuctionPicker
+                        title="Auction Statistics"
+                        description="Choose an auction to view its statistics."
+                        buildPath={(id) => `/auctions/${id}/statistics`}
+                      />
+                    }
+                  />
+
+                  {/* Live auctions */}
+                  <Route path="/live-auctions" element={<LiveAuctions />} />
+                  <Route path="/auction/:id/live" element={<LiveAuction />} />
+
+                  {/* Teams / players */}
+                  <Route path="/teams/:id" element={<TeamDetails />} />
+                  <Route path="/players/:id" element={<PlayerDetails />} />
+                  <Route path="/team-dashboard" element={<TeamDashboard />} />
+
+                  {/* Account */}
+                  <Route path="/notifications" element={<Notifications />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
+
+                  {/* Admin */}
+                  <Route element={<ProtectedRoute adminOnly />}>
+                    <Route
+                      path="/admin/auctions"
+                      element={<AdminAuctionManagement />}
                     />
-                  }
-                />
+                    <Route
+                      path="/admin/auctions/new"
+                      element={<AuctionFormPage />}
+                    />
+                    {/* Backward-compatible create URL used by older admin screens. */}
+                    <Route
+                      path="/admin/auctions/create"
+                      element={<AuctionFormPage />}
+                    />
+                    <Route
+                      path="/admin/auctions/:id/edit"
+                      element={<AuctionFormPage edit />}
+                    />
+                    <Route path="/admin/teams" element={<TeamManagement />} />
+                    {/* Dedicated team pages kept for direct/bookmarked URLs. */}
+                    <Route path="/admin/teams/create" element={<CreateTeam />} />
+                    <Route path="/admin/teams/edit/:id" element={<EditTeam />} />
+                    <Route path="/admin/teams/view/:teamId" element={<AdminTeamDetails />} />
+                    <Route
+                      path="/admin/players"
+                      element={<PlayerManagement />}
+                    />
+                    {/* Dedicated player pages kept for direct/bookmarked URLs. */}
+                    <Route path="/admin/players/create" element={<CreatePlayer />} />
+                    <Route path="/admin/players/edit/:id" element={<EditPlayer />} />
 
-                {/* Live auctions */}
-                <Route path="/live-auctions" element={<LiveAuctions />} />
-                <Route path="/live-auctions/:auctionId" element={<LiveAuction />} />
+                    <Route
+                      path="/admin/registrations"
+                      element={
+                        <AuctionPicker
+                          title="Registration Management"
+                          description="Choose an auction to review its team registrations."
+                          buildPath={(id) => `/admin/registrations/${id}`}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/admin/registrations/:auctionId"
+                      element={<AdminRegistrationsRoute />}
+                    />
 
-                {/* Teams / players */}
-                <Route path="/teams/:id" element={<TeamDetails />} />
-                <Route path="/players/:id" element={<PlayerDetails />} />
-                <Route path="/team-dashboard" element={<TeamDashboard />} />
-
-                {/* Account */}
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-
-                {/* Admin */}
-                <Route element={<ProtectedRoute adminOnly />}>
-                  <Route path="/admin/auctions" element={<AdminAuctionManagement />} />
-                  <Route path="/admin/auctions/new" element={<AuctionFormPage />} />
-                  <Route path="/admin/auctions/:id/edit" element={<AuctionFormPage edit />} />
-                  <Route path="/admin/teams" element={<TeamManagement />} />
-                  <Route path="/admin/players" element={<PlayerManagement />} />
-
-                  <Route
-                    path="/admin/registrations"
-                    element={
-                      <AuctionPicker
-                        title="Registration Management"
-                        description="Choose an auction to review its team registrations."
-                        buildPath={(id) => `/admin/registrations/${id}`}
-                      />
-                    }
-                  />
-                  <Route path="/admin/registrations/:auctionId" element={<AdminRegistrationsRoute />} />
-
-                  <Route
-                    path="/admin/auction-control"
-                    element={
-                      <AuctionPicker
-                        title="Auction Control"
-                        description="Choose an auction to control its live bidding."
-                        buildPath={(id) => `/admin/auction-control/${id}`}
-                      />
-                    }
-                  />
-                  <Route path="/admin/auction-control/:auctionId" element={<AdminAuctionControl />} />
+                    <Route
+                      path="/admin/auction-control"
+                      element={
+                        <AuctionPicker
+                          title="Auction Control"
+                          description="Choose an auction to control its live bidding."
+                          buildPath={(id) => `/admin/auction-control/${id}`}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/admin/auction-control/:auctionId"
+                      element={<AdminAuctionControl />}
+                    />
+                  </Route>
                 </Route>
               </Route>
-            </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </RouteErrorBoundary>
         </AuthProvider>
       </ThemeProvider>

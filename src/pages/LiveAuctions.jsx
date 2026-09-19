@@ -238,7 +238,7 @@ export default function LiveAuctions() {
             <Link
               to={
                 status === "LIVE"
-                  ? `/live-auctions/${auctionId}`
+                  ? `/auction/${auctionId}/live`
                   : `/auctions/${auctionId}`
               }
               className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-cyan-400"

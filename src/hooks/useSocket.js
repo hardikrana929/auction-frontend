@@ -1,45 +1,51 @@
 import { useEffect, useState } from "react";
-
 import {
     connectSocket,
     disconnectSocket,
+    getSocket,
 } from "../socket/socket";
 
-export default function useSocket() {
-    const [socket, setSocket] = useState(null);
-    const [connected, setConnected] = useState(false);
+const useSocket = () => {
+    const [socket] = useState(() => getSocket());
+    const [connected, setConnected] = useState(socket.connected);
+    const [connecting, setConnecting] = useState(!socket.connected);
 
     useEffect(() => {
-        const currentSocket = connectSocket();
-
-        setSocket(currentSocket);
-        setConnected(currentSocket.connected);
-
         const handleConnect = () => {
-            console.log("🟢 Socket connected:", currentSocket.id);
             setConnected(true);
+            setConnecting(false);
         };
 
-        const handleDisconnect = (reason) => {
-            console.log("🔴 Socket disconnected:", reason);
+        const handleDisconnect = () => {
             setConnected(false);
+            setConnecting(true);
         };
 
-        currentSocket.on("connect", handleConnect);
-        currentSocket.on("disconnect", handleDisconnect);
+        const handleConnectError = () => {
+            setConnected(false);
+            setConnecting(true);
+        };
+
+        socket.on("connect", handleConnect);
+        socket.on("disconnect", handleDisconnect);
+        socket.on("connect_error", handleConnectError);
+
+        if (!socket.connected) {
+            connectSocket();
+        }
 
         return () => {
-            currentSocket.off("connect", handleConnect);
-            currentSocket.off("disconnect", handleDisconnect);
-
-            disconnectSocket();
-            setSocket(null);
-            setConnected(false);
+            socket.off("connect", handleConnect);
+            socket.off("disconnect", handleDisconnect);
+            socket.off("connect_error", handleConnectError);
         };
-    }, []);
+    }, [socket]);
 
     return {
         socket,
         connected,
+        connecting,
     };
-}
+};
+
+export default useSocket;

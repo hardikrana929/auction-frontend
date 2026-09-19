@@ -1,555 +1,456 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
+  FiAlertCircle,
   FiArrowLeft,
-  FiCalendar,
+  FiCheckCircle,
+  FiClock,
   FiRefreshCw,
-  FiSearch,
   FiShield,
   FiUsers,
-  FiAlertCircle,
-  FiCheckCircle,
-  FiMail,
-  FiPhone,
 } from "react-icons/fi";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
-import { getAuctionById } from "../api/auctionApi";
 import { getAuctionParticipants } from "../api/auctionAccessApi";
-import PageLoader from "../components/PageLoader";
 
 const AuctionParticipants = () => {
-  const { auctionId, id } = useParams();
+  const { id } = useParams();
 
-  const currentAuctionId = auctionId || id;
-
-  const [auction, setAuction] = useState(null);
   const [participants, setParticipants] = useState([]);
-
+  const [auction, setAuction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
 
-  const [search, setSearch] = useState("");
+  const normalizeParticipants = useCallback((response) => {
+    if (!response) return [];
 
-  const loadData = async (isRefresh = false) => {
-    if (!currentAuctionId) {
-      setError("Auction ID is missing.");
-      setLoading(false);
-      return;
+    let data = response;
+
+    if (response?.data) {
+      data = response.data;
     }
 
-    try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-
-      setError("");
-
-      const [auctionResponse, participantsResponse] = await Promise.all([
-        getAuctionById(currentAuctionId),
-        getAuctionParticipants(currentAuctionId),
-      ]);
-
-      const auctionData =
-        auctionResponse?.auction || auctionResponse?.data || auctionResponse;
-
-      const participantData =
-        participantsResponse?.participants ||
-        participantsResponse?.teams ||
-        participantsResponse?.data ||
-        participantsResponse;
-
-      setAuction(
-        auctionData && typeof auctionData === "object" ? auctionData : null,
-      );
-
-      if (Array.isArray(participantData)) {
-        setParticipants(participantData);
-      } else {
-        setParticipants([]);
-      }
-    } catch (err) {
-      console.error("Failed to load auction participants:", err);
-
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Unable to load auction participants.";
-
-      setError(message);
-
-      if (isRefresh) {
-        toast.error(message);
-      }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+    if (response?.participants) {
+      data = response.participants;
+    } else if (response?.data?.participants) {
+      data = response.data.participants;
+    } else if (response?.teams) {
+      data = response.teams;
+    } else if (response?.data?.teams) {
+      data = response.data.teams;
     }
-  };
+
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    return data;
+  }, []);
+
+  const loadParticipants = useCallback(
+    async (showRefresh = false) => {
+      if (!id) {
+        setError("Auction ID is missing.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        if (showRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
+
+        setError("");
+
+        const response = await getAuctionParticipants(id);
+
+        const list = normalizeParticipants(response);
+
+        setParticipants(list);
+
+        const responseAuction =
+          response?.auction ||
+          response?.data?.auction ||
+          response?.auctionData ||
+          null;
+
+        if (responseAuction) {
+          setAuction(responseAuction);
+        }
+      } catch (err) {
+        console.error("Failed to load auction participants:", err);
+
+        const message =
+          err?.response?.data?.message ||
+          err?.response?.data?.error ||
+          err?.message ||
+          "Unable to load auction participants.";
+
+        setError(message);
+
+        if (showRefresh) {
+          toast.error(message);
+        }
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [id, normalizeParticipants],
+  );
 
   useEffect(() => {
-    let mounted = true;
+    loadParticipants();
+  }, [loadParticipants]);
 
-    const load = async () => {
-      if (!mounted) return;
-      await loadData(false);
-    };
+  const approvedParticipants = useMemo(() => {
+    return participants.filter((participant) => {
+      const status = String(
+        participant?.status ||
+          participant?.registrationStatus ||
+          participant?.registration?.status ||
+          "approved",
+      ).toLowerCase();
 
-    load();
+      return status === "approved";
+    });
+  }, [participants]);
 
-    return () => {
-      mounted = false;
-    };
-  }, [currentAuctionId]);
+  const displayParticipants = useMemo(() => {
+    /*
+     * If the backend already returns only approved participants,
+     * preserve the returned list even when a status field is absent.
+     */
+    const hasStatusInformation = participants.some(
+      (participant) =>
+        participant?.status ||
+        participant?.registrationStatus ||
+        participant?.registration?.status,
+    );
 
-  const getTeamId = (team) => {
+    return hasStatusInformation ? approvedParticipants : participants;
+  }, [participants, approvedParticipants]);
+
+  const getTeamId = (participant) => {
     return (
-      team?._id ||
-      team?.id ||
-      team?.teamId ||
-      team?.team?._id ||
-      team?.team?.id ||
-      null
+      participant?.team?._id ||
+      participant?.team?.id ||
+      participant?.teamId ||
+      participant?._id ||
+      participant?.id ||
+      ""
     );
   };
 
-  const getTeamName = (team) => {
-    return team?.name || team?.teamName || team?.team?.name || "Unnamed Team";
-  };
-
-  const getOwnerName = (team) => {
+  const getTeamName = (participant) => {
     return (
-      team?.ownerName || team?.owner?.name || team?.team?.ownerName || "N/A"
+      participant?.team?.name ||
+      participant?.teamName ||
+      participant?.name ||
+      participant?.team?.teamName ||
+      "Unnamed Team"
     );
   };
 
-  const getOwnerEmail = (team) => {
+  const getTeamLogo = (participant) => {
     return (
-      team?.ownerEmail ||
-      team?.owner?.email ||
-      team?.team?.ownerEmail ||
-      team?.team?.owner?.email ||
-      null
+      participant?.team?.logo ||
+      participant?.team?.image ||
+      participant?.teamLogo ||
+      participant?.logo ||
+      participant?.image ||
+      ""
     );
   };
 
-  const getOwnerPhone = (team) => {
+  const getOwnerName = (participant) => {
+    const owner =
+      participant?.team?.owner ||
+      participant?.owner ||
+      participant?.user ||
+      participant?.registeredBy ||
+      participant?.registration?.user ||
+      null;
+
+    if (typeof owner === "string") {
+      return owner;
+    }
+
     return (
-      team?.ownerPhone ||
-      team?.owner?.phone ||
-      team?.team?.ownerPhone ||
-      team?.team?.owner?.phone ||
-      null
+      owner?.name ||
+      owner?.fullName ||
+      owner?.username ||
+      owner?.email ||
+      "Team Owner"
     );
   };
 
-  const getLogo = (team) => {
-    return (
-      team?.logo ||
-      team?.logoUrl ||
-      team?.image ||
-      team?.team?.logo ||
-      team?.team?.logoUrl ||
-      null
-    );
-  };
-
-  const getRegistrationStatus = (team) => {
+  const getStatus = (participant) => {
     const status =
-      team?.registrationStatus ||
-      team?.status ||
-      team?.registration?.status ||
+      participant?.status ||
+      participant?.registrationStatus ||
+      participant?.registration?.status ||
       "approved";
 
     return String(status).toLowerCase();
   };
 
-  const formatDate = (value) => {
-    if (!value) return "N/A";
+  const getInitial = (name) => {
+    if (!name) return "T";
 
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-      return "N/A";
-    }
-
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    return name.trim().charAt(0).toUpperCase();
   };
 
-  const filteredParticipants = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    if (!query) {
-      return participants;
-    }
-
-    return participants.filter((participant) => {
-      const teamName = getTeamName(participant).toLowerCase();
-
-      const ownerName = getOwnerName(participant).toLowerCase();
-
-      const email = getOwnerEmail(participant)?.toLowerCase() || "";
-
-      return (
-        teamName.includes(query) ||
-        ownerName.includes(query) ||
-        email.includes(query)
-      );
-    });
-  }, [participants, search]);
-
-  const approvedCount = participants.filter(
-    (participant) =>
-      getRegistrationStatus(participant) === "approved" ||
-      getRegistrationStatus(participant) === "active",
-  ).length;
+  const pageTitle =
+    auction?.name ||
+    auction?.title ||
+    auction?.auctionName ||
+    "Auction Participants";
 
   if (loading) {
-    return <PageLoader />;
-  }
-
-  if (!currentAuctionId) {
     return (
-      <div className="px-4 py-8">
-        {" "}
-        <div className="mx-auto max-w-3xl rounded-2xl border border-red-100 dark:border-red-900/40 bg-white dark:bg-slate-900 p-8 text-center shadow-sm">
-          {" "}
-          <FiAlertCircle className="mx-auto h-10 w-10 text-red-500" />
-          <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
-            Auction ID is missing
-          </h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            A valid auction ID is required to view participants.
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600 dark:border-gray-700 dark:border-t-indigo-400" />
+
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            Loading auction participants...
           </p>
-          <Link
-            to="/auctions"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
-          >
-            <FiArrowLeft className="h-4 w-4" />
-            Back to Auctions
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && !auction) {
-    return (
-      <div className="px-4 py-8">
-        {" "}
-        <div className="mx-auto max-w-3xl rounded-2xl border border-red-100 dark:border-red-900/40 bg-white dark:bg-slate-900 p-8 text-center shadow-sm">
-          {" "}
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50">
-            {" "}
-            <FiAlertCircle className="h-7 w-7 text-red-500" />{" "}
-          </div>
-          <h2 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
-            Unable to load participants
-          </h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{error}</p>
-          <button
-            type="button"
-            onClick={() => loadData(true)}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
-          >
-            <FiRefreshCw className="h-4 w-4" />
-            Try Again
-          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="">
-      {" "}
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 transition-colors dark:bg-gray-950 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <Link
-              to={`/auctions/${currentAuctionId}`}
-              className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 transition hover:text-slate-900 dark:text-white"
-            >
-              <FiArrowLeft className="h-4 w-4" />
-              Back to Auction
-            </Link>
-
-            <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950">
-                <FiUsers className="h-6 w-6" />
-              </div>
-
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-                  Auction Participants
-                </h1>
-
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  {auction?.name || "Registered auction teams"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => loadData(true)}
-            disabled={refreshing}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-5 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm transition hover:bg-slate-50 dark:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+        <div className="mb-6">
+          <Link
+            to={`/auctions/${id}`}
+            className="mb-4 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400"
           >
-            <FiRefreshCw
-              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-            />
-            {refreshing ? "Refreshing..." : "Refresh"}
-          </button>
+            <FiArrowLeft />
+            Back to Auction
+          </Link>
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <div className="rounded-xl bg-indigo-100 p-2.5 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                  <FiUsers className="text-xl" />
+                </div>
+
+                <span className="text-sm font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                  Participants
+                </span>
+              </div>
+
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+                {pageTitle}
+              </h1>
+
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Teams approved to participate in this auction.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => loadParticipants(true)}
+              disabled={refreshing}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <FiRefreshCw className={refreshing ? "animate-spin" : ""} />
+              {refreshing ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
         </div>
 
-        {/* Auction Summary */}
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Total Participants
+        {/* Error */}
+        {error && (
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30">
+            <div className="flex items-start gap-3">
+              <FiAlertCircle className="mt-0.5 shrink-0 text-lg text-red-600 dark:text-red-400" />
+
+              <div className="min-w-0">
+                <h2 className="font-semibold text-red-800 dark:text-red-300">
+                  Unable to load participants
+                </h2>
+
+                <p className="mt-1 text-sm text-red-700 dark:text-red-400">
+                  {error}
                 </p>
 
-                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
-                  {participants.length}
+                <button
+                  type="button"
+                  onClick={() => loadParticipants(true)}
+                  className="mt-3 text-sm font-semibold text-red-700 underline underline-offset-2 hover:no-underline dark:text-red-400"
+                >
+                  Try again
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Summary */}
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Approved Teams
+                </p>
+
+                <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+                  {displayParticipants.length}
                 </p>
               </div>
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <FiUsers className="h-5 w-5" />
+              <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                <FiCheckCircle className="text-xl" />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Auction Status
+                </p>
+
+                <p className="mt-1 text-lg font-bold capitalize text-gray-900 dark:text-white">
+                  {auction?.status || "Available"}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-indigo-100 p-3 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                <FiShield className="text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Access
+                </p>
+
+                <p className="mt-1 text-lg font-bold text-green-600 dark:text-green-400">
                   Approved
                 </p>
-
-                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
-                  {approvedCount}
-                </p>
               </div>
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                <FiCheckCircle className="h-5 w-5" />
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Auction Date
-                </p>
-
-                <p className="mt-2 text-lg font-bold text-slate-900 dark:text-white">
-                  {formatDate(auction?.date)}
-                </p>
-              </div>
-
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-                <FiCalendar className="h-5 w-5" />
+              <div className="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                <FiCheckCircle className="text-xl" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Search */}
-        <div className="mb-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
-          <div className="relative">
-            <FiSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+        {/* Empty */}
+        {!error && displayParticipants.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center dark:border-gray-700 dark:bg-gray-900">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+              <FiUsers className="text-2xl" />
+            </div>
 
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search team, owner or email..."
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 py-3 pl-11 pr-4 text-sm text-slate-800 dark:text-slate-200 outline-none transition placeholder:text-slate-400 dark:text-slate-500 focus:border-slate-400 dark:focus:border-slate-600 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-slate-100 dark:focus:ring-slate-700"
-            />
-          </div>
-        </div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+              No approved teams yet
+            </h2>
 
-        {/* Error while data exists */}
-        {error && (
-          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300">
-            <FiAlertCircle className="h-5 w-5 shrink-0" />
-            <span>{error}</span>
+            <p className="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
+              There are currently no approved participants for this auction.
+            </p>
           </div>
         )}
 
         {/* Participants */}
-        {filteredParticipants.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-14 text-center shadow-sm">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800">
-              <FiUsers className="h-7 w-7 text-slate-400 dark:text-slate-500" />
-            </div>
-
-            <h3 className="mt-5 text-lg font-bold text-slate-900 dark:text-white">
-              {search ? "No participants found" : "No participants yet"}
-            </h3>
-
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
-              {search
-                ? "Try changing your search criteria."
-                : "No approved teams are currently available for this auction."}
-            </p>
-
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                className="mt-5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:text-white"
-              >
-                Clear search
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {filteredParticipants.map((participant, index) => {
-              const participantId = getTeamId(participant);
-
+        {displayParticipants.length > 0 && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {displayParticipants.map((participant, index) => {
+              const teamId = getTeamId(participant);
               const teamName = getTeamName(participant);
-
+              const teamLogo = getTeamLogo(participant);
               const ownerName = getOwnerName(participant);
-
-              const ownerEmail = getOwnerEmail(participant);
-
-              const ownerPhone = getOwnerPhone(participant);
-
-              const logo = getLogo(participant);
-
-              const status = getRegistrationStatus(participant);
-
-              const isApproved = status === "approved" || status === "active";
+              const status = getStatus(participant);
 
               return (
                 <div
-                  key={participantId || `participant-${index}`}
-                  className="group overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  key={teamId || `participant-${index}`}
+                  className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
                 >
-                  {/* Card Top */}
-                  <div className="h-20 bg-gradient-to-r from-slate-950 via-slate-800 to-slate-700" />
+                  {/* Card top */}
+                  <div className="h-2 bg-indigo-600" />
 
-                  <div className="px-5 pb-5">
-                    {/* Logo */}
-                    <div className="-mt-10 flex items-end justify-between">
-                      {logo ? (
-                        <img
-                          src={logo}
-                          alt={teamName}
-                          className="h-20 w-20 rounded-2xl border-4 border-white bg-white object-cover shadow-md"
-                          onError={(event) => {
-                            event.currentTarget.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-white bg-slate-900 text-white shadow-md dark:border-slate-800 dark:bg-white dark:text-slate-950">
-                          <FiUsers className="h-8 w-8" />
-                        </div>
-                      )}
+                  <div className="p-5">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 text-xl font-bold text-indigo-600 dark:bg-gray-800 dark:text-indigo-400">
+                        {teamLogo ? (
+                          <img
+                            src={teamLogo}
+                            alt={`${teamName} logo`}
+                            className="h-full w-full object-cover"
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                              event.currentTarget.nextElementSibling.style.display =
+                                "flex";
+                            }}
+                          />
+                        ) : null}
 
-                      <span
-                        className={`mb-1 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ${
-                          isApproved
-                            ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
-                            : "bg-amber-50 text-amber-700 ring-amber-600/20"
-                        }`}
-                      >
-                        <FiCheckCircle className="h-3.5 w-3.5" />
-                        {isApproved ? "Approved" : status}
-                      </span>
-                    </div>
-
-                    {/* Team */}
-                    <div className="mt-4">
-                      <h3 className="truncate text-lg font-bold text-slate-900 dark:text-white">
-                        {teamName}
-                      </h3>
-
-                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                        Team participant
-                      </p>
-                    </div>
-
-                    {/* Owner */}
-                    <div className="mt-5 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-                          <FiShield className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                            Owner
-                          </p>
-
-                          <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-200">
-                            {ownerName}
-                          </p>
-                        </div>
+                        <span
+                          className={
+                            teamLogo
+                              ? "hidden h-full w-full items-center justify-center"
+                              : ""
+                          }
+                        >
+                          {getInitial(teamName)}
+                        </span>
                       </div>
 
-                      {ownerEmail && (
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-                            <FiMail className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                          </div>
+                      <div className="min-w-0 flex-1">
+                        <h2
+                          className="truncate text-base font-bold text-gray-900 dark:text-white"
+                          title={teamName}
+                        >
+                          {teamName}
+                        </h2>
 
-                          <a
-                            href={`mailto:${ownerEmail}`}
-                            className="min-w-0 truncate pt-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white"
-                          >
-                            {ownerEmail}
-                          </a>
+                        <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                          <FiUsers className="shrink-0" />
+                          <span className="truncate">{ownerName}</span>
                         </div>
-                      )}
-
-                      {ownerPhone && (
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-                            <FiPhone className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                          </div>
-
-                          <a
-                            href={`tel:${ownerPhone}`}
-                            className="pt-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:text-white"
-                          >
-                            {ownerPhone}
-                          </a>
-                        </div>
-                      )}
+                      </div>
                     </div>
 
-                    {/* Action */}
-                    <div className="mt-5 border-t border-slate-100 dark:border-slate-800 pt-4">
-                      {participantId ? (
-                        <Link
-                          to={`/admin/teams/view/${participantId}`}
-                          className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800"
-                        >
-                          View Team
-                          <span aria-hidden="true">→</span>
-                        </Link>
+                    {/* Status */}
+                    <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
+                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        Registration
+                      </span>
+
+                      {status === "approved" ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                          <FiCheckCircle />
+                          Approved
+                        </span>
+                      ) : status === "pending" ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-semibold text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400">
+                          <FiClock />
+                          Pending
+                        </span>
                       ) : (
-                        <div className="flex w-full items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 px-4 py-2.5 text-xs font-medium text-slate-400 dark:text-slate-500">
-                          Team details unavailable
-                        </div>
+                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold capitalize text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                          {status}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -558,25 +459,6 @@ const AuctionParticipants = () => {
             })}
           </div>
         )}
-
-        {/* Security Notice */}
-        <div className="mt-8 flex gap-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-            <FiShield className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-              Protected Auction Information
-            </h4>
-
-            <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              Participant information is displayed through the protected
-              AuctionPro interface. Access should be restricted according to the
-              user's auction permissions.
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );

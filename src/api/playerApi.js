@@ -10,6 +10,8 @@ export const getPlayer = async (playerId) => {
   return response.data;
 };
 
+export const getPlayerById = getPlayer;
+
 export const createPlayer = async (formData) => {
   const response = await api.post("/api/players", formData, {
     headers: { "Content-Type": "multipart/form-data" },

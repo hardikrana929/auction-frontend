@@ -10,6 +10,8 @@ export const getTeam = async (teamId) => {
   return response.data;
 };
 
+export const getTeamById = getTeam;
+
 export const createTeam = async (formData) => {
   const response = await api.post("/api/teams", formData, {
     headers: { "Content-Type": "multipart/form-data" },

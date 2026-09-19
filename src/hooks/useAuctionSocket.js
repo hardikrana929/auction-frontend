@@ -70,11 +70,11 @@ export default function useAuctionSocket({
         socket.on("auction:started", handleAuctionStarted);
         socket.on("auction:paused", handleAuctionPaused);
         socket.on("auction:resumed", handleAuctionResumed);
-        socket.on("auction:player_started", handlePlayerStarted);
-        socket.on("auction:bid", handleBid);
-        socket.on("auction:sold", handlePlayerSold);
-        socket.on("auction:unsold", handlePlayerUnsold);
-        socket.on("auction:next_player", handleNextPlayer);
+        socket.on("player:started", handlePlayerStarted);
+        socket.on("bid:new", handleBid);
+        socket.on("player:sold", handlePlayerSold);
+        socket.on("player:unsold", handlePlayerUnsold);
+        socket.on("auction:next-player", handleNextPlayer);
         socket.on("auction:completed", handleAuctionCompleted);
         socket.on("auction:notification", handleNotification);
 
@@ -92,11 +92,11 @@ export default function useAuctionSocket({
             socket.off("auction:started", handleAuctionStarted);
             socket.off("auction:paused", handleAuctionPaused);
             socket.off("auction:resumed", handleAuctionResumed);
-            socket.off("auction:player_started", handlePlayerStarted);
-            socket.off("auction:bid", handleBid);
-            socket.off("auction:sold", handlePlayerSold);
-            socket.off("auction:unsold", handlePlayerUnsold);
-            socket.off("auction:next_player", handleNextPlayer);
+            socket.off("player:started", handlePlayerStarted);
+            socket.off("bid:new", handleBid);
+            socket.off("player:sold", handlePlayerSold);
+            socket.off("player:unsold", handlePlayerUnsold);
+            socket.off("auction:next-player", handleNextPlayer);
             socket.off("auction:completed", handleAuctionCompleted);
             socket.off("auction:notification", handleNotification);
 
