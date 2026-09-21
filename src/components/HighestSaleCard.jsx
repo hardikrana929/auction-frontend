@@ -1,4 +1,6 @@
-import { FiAward, FiDollarSign, FiUser } from "react-icons/fi";
+import { toImageUrl } from "../utils/imageUrl";
+import { FiAward, FiUser } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 import formatCurrency from "../utils/formatCurrency";
 
@@ -49,9 +51,9 @@ export default function HighestSaleCard({ player, highestBid }) {
       </div>
 
       <div className="mt-6 flex items-center gap-4">
-        {player?.photo ? (
+        {toImageUrl(player?.photo) ? (
           <img
-            src={player.photo}
+            src={toImageUrl(player.photo)}
             alt={playerName}
             className="
               h-16
@@ -99,7 +101,7 @@ export default function HighestSaleCard({ player, highestBid }) {
           <p className="text-xs text-slate-500 dark:text-gray-400">Highest Bid</p>
 
           <div className="mt-2 flex items-center gap-1">
-            <FiDollarSign size={15} className="text-cyan-400" />
+            <RupeeIcon size={15} className="text-cyan-400" />
 
             <p className="text-lg font-bold text-slate-900 dark:text-white">
               {formatCurrency(bidAmount)}

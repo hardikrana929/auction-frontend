@@ -5,12 +5,12 @@ import {
   FiImage,
   FiSave,
   FiUser,
-  FiDollarSign,
   FiCalendar,
   FiX,
   FiUploadCloud,
   FiShield,
 } from "react-icons/fi";
+import RupeeIcon from "../../components/RupeeIcon";
 import { toast } from "react-hot-toast";
 
 import { createPlayer } from "../../api/playerApi";
@@ -353,7 +353,7 @@ export default function CreatePlayer() {
                     </label>
 
                     <div className="relative">
-                      <FiDollarSign className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
 
                       <input
                         id="basePrice"

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   FiArrowLeft,
-  FiDollarSign,
   FiImage,
   FiSave,
   FiShield,
@@ -10,6 +9,7 @@ import {
   FiUser,
   FiX,
 } from "react-icons/fi";
+import RupeeIcon from "../../components/RupeeIcon";
 import { toast } from "react-hot-toast";
 
 import { getPlayerById, updatePlayer } from "../../api/playerApi";
@@ -361,7 +361,7 @@ export default function EditPlayer() {
                     </label>
 
                     <div className="relative">
-                      <FiDollarSign className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
 
                       <input
                         id="basePrice"

@@ -16,6 +16,9 @@ export const getSocket = () => {
     }
 
     socket = io(getSocketUrl(), {
+        // The backend rejects sockets without a valid JWT ("Authentication required").
+        // A function is used so the latest token is read on every (re)connect.
+        auth: (cb) => cb({ token: localStorage.getItem("auctionpro_token") }),
         autoConnect: false,
         transports: ["websocket", "polling"],
         reconnection: true,

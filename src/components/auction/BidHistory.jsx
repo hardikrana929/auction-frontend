@@ -1,134 +1,120 @@
-import { FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
+import { FiClock } from "react-icons/fi";
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(Number(value || 0));
-};
+import RupeeIcon from "../RupeeIcon";
+import TeamAvatar from "./TeamAvatar";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { resolveTeam, shortId } from "../../utils/teamInfo";
 
-const getTeamName = (bid) => {
-  const team = bid?.team || bid?.teamId || bid?.bidder || bid?.createdBy;
+const getAmount = (bid) =>
+  bid?.amount ?? bid?.bidAmount ?? bid?.price ?? bid?.value ?? 0;
 
-  if (!team) {
-    return "Unknown Team";
-  }
-
-  if (typeof team === "string") {
-    return team;
-  }
-
-  return team.name || team.teamName || team.ownerName || "Unknown Team";
-};
-
-const getAmount = (bid) => {
-  return bid?.amount ?? bid?.bidAmount ?? bid?.price ?? bid?.value ?? 0;
-};
-
-const getDate = (bid) => {
+const getTime = (bid) => {
   const date = bid?.createdAt || bid?.timestamp || bid?.date;
+  const parsed = date ? new Date(date) : null;
 
-  if (!date) {
-    return "Just now";
-  }
-
-  const parsed = new Date(date);
-
-  if (Number.isNaN(parsed.getTime())) {
+  if (!parsed || Number.isNaN(parsed.getTime())) {
     return "Just now";
   }
 
   return parsed.toLocaleTimeString("en-IN", {
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
   });
 };
 
-const BidHistory = ({ bids = [] }) => {
-  const normalizedBids = Array.isArray(bids) ? bids : [];
+/** Live list of bids for the current player, newest first. */
+const BidHistory = ({ bids = [], directory = {}, myTeamId = "" }) => {
+  const list = Array.isArray(bids) ? bids : [];
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      <div className="border-b border-slate-200 px-5 py-4 dark:border-slate-800 sm:px-6">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              Live Bid History
-            </h2>
+    <section className="rounded-3xl border border-slate-800 bg-slate-900 shadow-xl">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-800 px-5 py-4">
+        <div>
+          <h2 className="text-lg font-black text-white">Live bid history</h2>
 
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Latest bids appear first.
-            </p>
-          </div>
-
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-            {normalizedBids.length} bids
-          </span>
+          <p className="text-xs text-slate-500">Latest bids appear first.</p>
         </div>
+
+        <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-bold text-slate-300">
+          {list.length} bids
+        </span>
       </div>
 
-      <div className="max-h-[430px] overflow-y-auto p-4">
-        {normalizedBids.length === 0 ? (
-          <div className="flex min-h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 text-center dark:border-slate-700">
-            <FiDollarSign className="h-8 w-8 text-slate-400" />
+      <div className="max-h-[420px] overflow-y-auto p-4">
+        {list.length === 0 ? (
+          <div className="flex min-h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-700 text-center">
+            <RupeeIcon className="h-8 w-8 text-slate-600" />
 
-            <p className="mt-3 font-semibold text-slate-700 dark:text-slate-300">
-              No bids yet
-            </p>
+            <p className="mt-3 font-semibold text-slate-300">No bids yet</p>
 
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-500">
               The first accepted bid will appear here.
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {normalizedBids.map((bid, index) => (
-              <div
-                key={
-                  bid?._id ||
-                  bid?.id ||
-                  `${getTeamName(bid)}-${getAmount(bid)}-${index}`
-                }
-                className={`rounded-2xl border p-4 transition ${
-                  index === 0
-                    ? "border-indigo-200 bg-indigo-50/70 dark:border-indigo-900/50 dark:bg-indigo-950/20"
-                    : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-4">
+          <ul className="space-y-2">
+            {list.map((bid, index) => {
+              const team = resolveTeam(
+                bid?.team || bid?.teamId || bid?.bidder || bid?.createdBy,
+                directory,
+              );
+
+              const mine = Boolean(myTeamId) && team.id === myTeamId;
+
+              return (
+                <li
+                  key={bid?._id || bid?.id || `${team.id}-${getAmount(bid)}-${index}`}
+                  className={`flex items-center justify-between gap-3 rounded-2xl border p-3 ${
+                    index === 0
+                      ? "border-emerald-500/40 bg-emerald-500/10"
+                      : "border-slate-800 bg-slate-950/50"
+                  }`}
+                >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="rounded-xl bg-slate-100 p-2.5 dark:bg-slate-800">
-                      <FiUsers className="h-5 w-5 text-slate-500 dark:text-slate-300" />
-                    </div>
+                    <TeamAvatar name={team.name} logo={team.logo} size="sm" />
 
                     <div className="min-w-0">
-                      <p className="truncate font-bold text-slate-900 dark:text-white">
-                        {getTeamName(bid)}
+                      <p className="flex items-center gap-2 truncate font-bold text-white">
+                        {team.name || "Team"}
+
+                        {mine && (
+                          <span className="rounded bg-emerald-500 px-1.5 py-0.5 text-[10px] font-black uppercase text-slate-950">
+                            You
+                          </span>
+                        )}
                       </p>
 
-                      <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                        <FiClock />
-                        {getDate(bid)}
+                      <p className="flex flex-wrap items-center gap-x-2 text-[11px] text-slate-500">
+                        {team.id && (
+                          <span className="font-mono" title={team.id}>
+                            Team ID: …{shortId(team.id, 8)}
+                          </span>
+                        )}
+
+                        <span className="inline-flex items-center gap-1">
+                          <FiClock />
+                          {getTime(bid)}
+                        </span>
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <p className="text-lg font-black text-indigo-700 dark:text-indigo-300">
+                    <p className="text-lg font-black tabular-nums text-white">
                       {formatCurrency(getAmount(bid))}
                     </p>
 
                     {index === 0 && (
-                      <span className="text-[11px] font-bold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                      <span className="text-[10px] font-black uppercase tracking-wide text-emerald-400">
                         Leading
                       </span>
                     )}
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </div>
     </section>

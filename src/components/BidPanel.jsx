@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { FiDollarSign, FiTrendingUp } from "react-icons/fi";
+import { FiTrendingUp } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 import toast from "react-hot-toast";
 
 import { placeBid } from "../api/biddingApi";
@@ -156,7 +157,7 @@ const BidPanel = ({
         </p>
 
         <div className="mt-1 flex items-center gap-2">
-          <FiDollarSign className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <RupeeIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
 
           <span className="text-3xl font-bold text-blue-700 dark:text-blue-400">
             {formatCurrency(minimumBid)}

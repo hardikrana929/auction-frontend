@@ -1,4 +1,5 @@
-import { FiClock, FiDollarSign, FiUsers } from "react-icons/fi";
+import { FiClock, FiUsers } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat("en-IN", {
@@ -59,7 +60,7 @@ const BidHistory = ({ bids = [], currentBid = 0 }) => {
 
       {sortedBids.length === 0 ? (
         <div className="px-5 py-10 text-center">
-          <FiDollarSign className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
+          <RupeeIcon className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
 
           <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
             No bids yet.

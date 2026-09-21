@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import { getPlayer } from "../api/playerApi";
+import { useAuth } from "../context/AuthContext";
 import LoadingScreen from "../components/LoadingScreen";
 import ErrorState from "../components/ErrorState";
 import PlayerStatusBadge from "../components/player/PlayerStatusBadge";
 
 export default function PlayerDetails() {
   const { id } = useParams();
+  const { isAdmin } = useAuth();
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,8 +34,8 @@ export default function PlayerDetails() {
 
   return (
     <section className="page-container">
-      <Link to="/admin/players" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-        <FiArrowLeft /> Back to players
+      <Link to={isAdmin ? "/admin/players" : "/auctions"} className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+        <FiArrowLeft /> {isAdmin ? "Back to players" : "Back to auctions"}
       </Link>
 
       <div className="surface-card overflow-hidden">

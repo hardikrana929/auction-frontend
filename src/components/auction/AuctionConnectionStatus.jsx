@@ -1,9 +1,12 @@
-import { FiWifi, FiWifiOff, FiRefreshCw } from "react-icons/fi";
+import { FiRefreshCw, FiWifi, FiWifiOff } from "react-icons/fi";
+
+const chip =
+  "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium";
 
 const AuctionConnectionStatus = ({ connected = false, connecting = false }) => {
   if (connected) {
     return (
-      <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-400">
+      <div className={`${chip} border-emerald-500/40 bg-emerald-500/10 text-emerald-300`}>
         <span className="relative flex h-2.5 w-2.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
@@ -11,14 +14,14 @@ const AuctionConnectionStatus = ({ connected = false, connecting = false }) => {
 
         <FiWifi />
 
-        <span>Live</span>
+        <span>Connected</span>
       </div>
     );
   }
 
   if (connecting) {
     return (
-      <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-400">
+      <div className={`${chip} border-amber-500/40 bg-amber-500/10 text-amber-300`}>
         <FiRefreshCw className="animate-spin" />
         <span>Reconnecting...</span>
       </div>
@@ -26,7 +29,7 @@ const AuctionConnectionStatus = ({ connected = false, connecting = false }) => {
   }
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-400">
+    <div className={`${chip} border-red-500/40 bg-red-500/10 text-red-300`}>
       <FiWifiOff />
       <span>Offline</span>
     </div>

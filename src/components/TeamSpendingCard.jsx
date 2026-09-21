@@ -1,4 +1,5 @@
-import { FiDollarSign, FiUsers } from "react-icons/fi";
+import { FiUsers } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 import formatCurrency from "../utils/formatCurrency";
 
@@ -80,7 +81,7 @@ export default function TeamSpendingCard({ teams = [] }) {
                   </div>
 
                   <div className="flex items-center gap-1 text-sm font-bold text-cyan-400">
-                    <FiDollarSign size={15} />
+                    <RupeeIcon size={15} />
 
                     {formatCurrency(spent)}
                   </div>

@@ -7,13 +7,14 @@ import {
   FiPhone,
   FiUsers,
   FiCalendar,
-  FiDollarSign,
   FiShield,
   FiAlertCircle,
   FiRefreshCw,
 } from "react-icons/fi";
+import RupeeIcon from "../../components/RupeeIcon";
 
 import { getTeamById } from "../../api/teamApi";
+import { toImageUrl } from "../../utils/imageUrl";
 import PageLoader from "../../components/PageLoader";
 
 const TeamDetails = () => {
@@ -99,7 +100,12 @@ const TeamDetails = () => {
   };
 
   const getTeamLogo = () => {
-    return team?.logo || team?.logoUrl || team?.image || null;
+    return (
+      toImageUrl(team?.logo) ||
+      toImageUrl(team?.logoUrl) ||
+      toImageUrl(team?.image) ||
+      null
+    );
   };
 
   const getAuctionName = () => {
@@ -393,7 +399,7 @@ const TeamDetails = () => {
               </div>
 
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                <FiDollarSign className="h-5 w-5" />
+                <RupeeIcon className="h-5 w-5" />
               </div>
             </div>
           </div>
@@ -591,7 +597,10 @@ const TeamDetails = () => {
                 const playerRole = player?.role || player?.type || "Player";
 
                 const playerImage =
-                  player?.image || player?.imageUrl || player?.photo || null;
+                  toImageUrl(player?.image) ||
+                  toImageUrl(player?.imageUrl) ||
+                  toImageUrl(player?.photo) ||
+                  null;
 
                 return (
                   <div

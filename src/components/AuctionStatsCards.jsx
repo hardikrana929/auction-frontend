@@ -1,11 +1,11 @@
 import {
   FiActivity,
-  FiDollarSign,
   FiShoppingBag,
   FiUsers,
   FiTrendingUp,
   FiUserCheck,
 } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 import formatCurrency from "../utils/formatCurrency";
 
@@ -62,7 +62,7 @@ export default function AuctionStatsCards({ summary = {} }) {
     {
       label: "Total Spending",
       value: formatCurrency(totalSpent),
-      icon: FiDollarSign,
+      icon: RupeeIcon,
     },
     {
       label: "Average Sale",

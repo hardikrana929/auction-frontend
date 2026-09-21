@@ -1,4 +1,5 @@
-import { FiActivity, FiDollarSign, FiHash, FiUser } from "react-icons/fi";
+import { FiActivity, FiHash, FiUser } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 const formatCurrency = (value) => {
   const amount = Number(value || 0);
@@ -103,7 +104,7 @@ const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
               <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <FiDollarSign />
+                <RupeeIcon />
                 Base Price
               </div>
 
@@ -114,7 +115,7 @@ const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
 
             <div className="rounded-xl bg-emerald-50 p-4 dark:bg-emerald-900/20">
               <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
-                <FiDollarSign />
+                <RupeeIcon />
                 Current Bid
               </div>
 

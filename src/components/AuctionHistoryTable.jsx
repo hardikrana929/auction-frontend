@@ -1,3 +1,4 @@
+import { toImageUrl } from "../utils/imageUrl";
 import { FiCheckCircle, FiClock, FiUser, FiXCircle } from "react-icons/fi";
 
 import formatCurrency from "../utils/formatCurrency";
@@ -118,9 +119,9 @@ export default function AuctionHistoryTable({ transactions = [] }) {
                 >
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      {player?.photo ? (
+                      {toImageUrl(player?.photo) ? (
                         <img
-                          src={player.photo}
+                          src={toImageUrl(player.photo)}
                           alt={playerName}
                           className="h-10 w-10 rounded-lg object-cover"
                         />
@@ -193,9 +194,9 @@ export default function AuctionHistoryTable({ transactions = [] }) {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  {player?.photo ? (
+                  {toImageUrl(player?.photo) ? (
                     <img
-                      src={player.photo}
+                      src={toImageUrl(player.photo)}
                       alt={playerName}
                       className="h-11 w-11 shrink-0 rounded-lg object-cover"
                     />

@@ -1,6 +1,8 @@
-import { FiDollarSign, FiUser, FiUsers } from "react-icons/fi";
+import { FiUser, FiUsers } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 import { formatCurrency } from "../utils/formatCurrency";
+import { toImageUrl } from "../utils/imageUrl";
 
 export default function TeamCard({ team }) {
   const teamName = team?.teamName || team?.name || team?.title || "Team";
@@ -10,7 +12,11 @@ export default function TeamCard({ team }) {
       ? team.owner?.name || team.owner?.email
       : team?.owner;
 
-  const logo = team?.logo || team?.logoUrl || team?.image || team?.imageUrl;
+  const logo =
+    toImageUrl(team?.logo) ||
+    toImageUrl(team?.logoUrl) ||
+    toImageUrl(team?.image) ||
+    toImageUrl(team?.imageUrl);
 
   const budget =
     team?.budget ??
@@ -220,7 +226,7 @@ export default function TeamCard({ team }) {
                 text-gray-400
               "
             >
-              <FiDollarSign size={15} />
+              <RupeeIcon size={15} />
 
               <span
                 className="

@@ -1,5 +1,7 @@
+import { toImageUrl } from "../utils/imageUrl";
 import { Link } from "react-router-dom";
-import { FiArrowRight, FiDollarSign, FiUser } from "react-icons/fi";
+import { FiArrowRight, FiUser } from "react-icons/fi";
+import RupeeIcon from "./RupeeIcon";
 
 import { formatCurrency } from "../utils/formatCurrency";
 
@@ -13,11 +15,11 @@ export default function PlayerCard({ player }) {
     player?.role || player?.playerRole || player?.category || "Player";
 
   const image =
-    player?.photo ||
-    player?.photoUrl ||
-    player?.image ||
-    player?.imageUrl ||
-    player?.profileImage;
+    toImageUrl(player?.photo) ||
+    toImageUrl(player?.photoUrl) ||
+    toImageUrl(player?.image) ||
+    toImageUrl(player?.imageUrl) ||
+    toImageUrl(player?.profileImage);
 
   const basePrice = player?.basePrice ?? player?.startingPrice;
 
@@ -207,7 +209,7 @@ export default function PlayerCard({ player }) {
               text-gray-400
             "
           >
-            <FiDollarSign size={15} />
+            <RupeeIcon size={15} />
 
             <span
               className="

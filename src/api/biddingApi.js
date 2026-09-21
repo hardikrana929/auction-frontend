@@ -19,7 +19,7 @@ export const getCurrentBid = async (auctionId) => {
  * Place a bid.
  *
  * Backend:
- * POST /api/bidding/bid
+ * POST /api/bidding/place
  */
 export const placeBid = async (data) => {
     if (!data || typeof data !== "object") {
@@ -27,26 +27,7 @@ export const placeBid = async (data) => {
     }
 
     const response = await api.post(
-        "/api/bidding/bid",
-        data
-    );
-
-    return response.data;
-};
-
-/*
- * Admin starts bidding for a player.
- *
- * Backend:
- * POST /api/bidding/start
- */
-export const startBidding = async (data) => {
-    if (!data || typeof data !== "object") {
-        throw new Error("Bidding start data is required.");
-    }
-
-    const response = await api.post(
-        "/api/bidding/start",
+        "/api/bidding/place",
         data
     );
 
@@ -112,7 +93,6 @@ export const getBidHistory = async (playerId) => {
 export default {
     getCurrentBid,
     placeBid,
-    startBidding,
     sellPlayer,
     markPlayerUnsold,
     getBidHistory,

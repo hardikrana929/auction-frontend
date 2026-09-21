@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   FiArrowLeft,
   FiCalendar,
-  FiDollarSign,
   FiImage,
   FiInfo,
   FiSave,
@@ -10,6 +9,7 @@ import {
   FiUsers,
   FiX,
 } from "react-icons/fi";
+import RupeeIcon from "../../components/RupeeIcon";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -78,7 +78,7 @@ function MoneyInput({ label, value, onChange, required, error }) {
       </label>
 
       <div className="relative">
-        <FiDollarSign
+        <RupeeIcon
           className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
           size={17}
         />
@@ -714,7 +714,7 @@ export default function EditAuction() {
           {/* Budget */}
           <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
             <SectionHeader
-              icon={FiDollarSign}
+              icon={RupeeIcon}
               title="Bidding Configuration"
               description="Configure the budget and bidding rules."
             />

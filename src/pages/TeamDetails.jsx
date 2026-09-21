@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FiArrowLeft, FiUsers } from "react-icons/fi";
 import { getTeam } from "../api/teamApi";
+import { useAuth } from "../context/AuthContext";
 import TeamStatusBadge from "../components/team/TeamStatusBadge";
 import LoadingScreen from "../components/LoadingScreen";
 import ErrorState from "../components/ErrorState";
@@ -15,6 +16,7 @@ const money = (value) =>
 
 export default function TeamDetails() {
   const { id } = useParams();
+  const { isAdmin } = useAuth();
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,8 +41,8 @@ export default function TeamDetails() {
 
   return (
     <section className="page-container">
-      <Link to="/admin/teams" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-        <FiArrowLeft /> Back to teams
+      <Link to={isAdmin ? "/admin/teams" : "/auctions"} className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+        <FiArrowLeft /> {isAdmin ? "Back to teams" : "Back to auctions"}
       </Link>
 
       <div className="surface-card overflow-hidden">

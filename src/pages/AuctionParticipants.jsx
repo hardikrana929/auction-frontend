@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 
 import { getAuctionParticipants } from "../api/auctionAccessApi";
+import { toImageUrl } from "../utils/imageUrl";
 
 const AuctionParticipants = () => {
   const { id } = useParams();
@@ -157,11 +158,11 @@ const AuctionParticipants = () => {
 
   const getTeamLogo = (participant) => {
     return (
-      participant?.team?.logo ||
-      participant?.team?.image ||
-      participant?.teamLogo ||
-      participant?.logo ||
-      participant?.image ||
+      toImageUrl(participant?.team?.logo) ||
+      toImageUrl(participant?.team?.image) ||
+      toImageUrl(participant?.teamLogo) ||
+      toImageUrl(participant?.logo) ||
+      toImageUrl(participant?.image) ||
       ""
     );
   };

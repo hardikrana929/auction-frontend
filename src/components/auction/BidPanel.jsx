@@ -1,14 +1,14 @@
-import { useMemo, useState } from "react";
-import { FiArrowUp, FiDollarSign, FiLock, FiLoader } from "react-icons/fi";
+import { useEffect, useMemo, useState } from "react";
+import { FiLoader, FiLock, FiMinus, FiPlus } from "react-icons/fi";
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(Number(value || 0));
-};
+import RupeeIcon from "../RupeeIcon";
+import { formatCurrency } from "../../utils/formatCurrency";
 
+/**
+ * The bidding controls, all in ONE row:
+ *   [ - ]  [ ₹ amount ]  [ + ]  [ Place Bid ]
+ * The team is chosen automatically by the page from the logged-in owner.
+ */
 const BidPanel = ({
   currentBid = 0,
   bidIncrement = 0,
@@ -18,154 +18,152 @@ const BidPanel = ({
   accessApproved = true,
   canBid = true,
   submitting = false,
+  teamName = "",
+  teamId = "",
+  purse = null,
   onPlaceBid,
 }) => {
   const current = Number(currentBid || 0);
   const increment = Number(bidIncrement || 0);
   const minimum = Number(minimumBid || 0);
+  const step = increment > 0 ? increment : 1;
 
   const automaticNextBid = useMemo(() => {
-    if (increment > 0) {
-      return current + increment;
-    }
-
     if (current > 0) {
-      return current + 1;
+      return current + step;
     }
 
-    return minimum;
-  }, [current, increment, minimum]);
+    return minimum > 0 ? minimum : step;
+  }, [current, step, minimum]);
 
   const [customAmount, setCustomAmount] = useState("");
 
-  const nextBid = customAmount ? Number(customAmount) : automaticNextBid;
+  // If somebody else bids higher while you were typing, follow the new minimum.
+  useEffect(() => {
+    if (customAmount !== "" && Number(customAmount) < automaticNextBid) {
+      setCustomAmount("");
+    }
+  }, [automaticNextBid, customAmount]);
+
+  const bidAmount = customAmount === "" ? automaticNextBid : Number(customAmount);
 
   const reason = useMemo(() => {
-    if (!accessApproved) {
-      return "Your team is not approved for this auction.";
-    }
-
-    if (auctionPaused) {
-      return "Auction is currently paused.";
-    }
-
-    if (!playerActive) {
-      return "No player is currently live for bidding.";
-    }
-
-    if (!canBid) {
-      return "Bidding is currently unavailable.";
+    if (!accessApproved) return "Your team is not approved for this auction.";
+    if (!canBid) return "Bidding is not available for this account.";
+    if (auctionPaused) return "The auction is paused. Bidding resumes shortly.";
+    if (!playerActive) return "No player is live for bidding right now.";
+    if (Number.isFinite(purse) && bidAmount > purse) {
+      return `Not enough purse. Your team has ${formatCurrency(purse)} left.`;
     }
 
     return "";
-  }, [accessApproved, auctionPaused, playerActive, canBid]);
+  }, [accessApproved, canBid, auctionPaused, playerActive, purse, bidAmount]);
 
-  const disabled =
-    submitting ||
-    Boolean(reason) ||
-    !Number.isFinite(nextBid) ||
-    nextBid <= current;
+  const invalidAmount = !Number.isFinite(bidAmount) || bidAmount < automaticNextBid;
+  const inputsDisabled = submitting || !accessApproved || !canBid || auctionPaused || !playerActive;
+  const placeDisabled = inputsDisabled || invalidAmount || Boolean(reason);
+
+  const decrease = () =>
+    setCustomAmount(String(Math.max(automaticNextBid, bidAmount - step)));
+
+  const increase = () => setCustomAmount(String(bidAmount + step));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (disabled) {
+    if (placeDisabled) {
       return;
     }
 
-    await onPlaceBid?.(nextBid);
+    await onPlaceBid?.(bidAmount);
     setCustomAmount("");
   };
 
+  const roundButton =
+    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40";
+
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-            Your Bid
-          </p>
+    <section className="rounded-3xl border border-slate-800 bg-slate-900 p-4 shadow-xl sm:p-5">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+          Place your bid
+        </p>
 
-          <h2 className="mt-1 text-xl font-black text-slate-900 dark:text-white">
-            Place your bid
-          </h2>
-        </div>
-
-        <div className="rounded-xl bg-indigo-50 p-2.5 dark:bg-indigo-950/40">
-          <FiDollarSign className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-        </div>
+        {teamName && (
+          <span className="inline-flex max-w-full flex-wrap items-center gap-x-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300 ring-1 ring-emerald-500/30">
+            Bidding as <b className="text-white">{teamName}</b>
+            {teamId && <span className="font-mono text-emerald-200/80">Team ID: {teamId}</span>}
+          </span>
+        )}
       </div>
 
-      <div className="mt-5 rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/70">
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Current bid
-        </p>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-wrap items-stretch gap-2 md:flex-nowrap"
+      >
+        <button
+          type="button"
+          onClick={decrease}
+          disabled={inputsDisabled || bidAmount <= automaticNextBid}
+          aria-label="Decrease bid"
+          className={roundButton}
+        >
+          <FiMinus />
+        </button>
 
-        <p className="mt-1 text-2xl font-black text-slate-900 dark:text-white">
-          {formatCurrency(current)}
-        </p>
-      </div>
+        <div className="relative min-w-[150px] flex-1">
+          <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
-      <div className="mt-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900/50 dark:bg-indigo-950/30">
-        <p className="text-sm text-indigo-600 dark:text-indigo-400">
-          Next suggested bid
-        </p>
-
-        <p className="mt-1 text-3xl font-black text-indigo-700 dark:text-indigo-300">
-          {formatCurrency(automaticNextBid)}
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-        <div>
-          <label
-            htmlFor="custom-bid"
-            className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300"
-          >
-            Custom bid amount
-          </label>
-
-          <div className="relative">
-            <FiDollarSign className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-
-            <input
-              id="custom-bid"
-              type="number"
-              min={automaticNextBid}
-              step={increment > 0 ? increment : 1}
-              value={customAmount}
-              onChange={(event) => setCustomAmount(event.target.value)}
-              disabled={submitting || Boolean(reason)}
-              className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:disabled:bg-slate-800"
-              placeholder={`Minimum ${formatCurrency(automaticNextBid)}`}
-            />
-          </div>
+          <input
+            id="custom-bid"
+            type="number"
+            min={automaticNextBid}
+            step={step}
+            value={customAmount === "" ? automaticNextBid : customAmount}
+            onChange={(event) => setCustomAmount(event.target.value)}
+            disabled={inputsDisabled}
+            aria-label="Bid amount"
+            className="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 pl-9 pr-3 text-lg font-black tabular-nums text-white outline-none transition [appearance:textfield] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          />
         </div>
 
-        {reason ? (
-          <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
-            <FiLock className="mt-0.5 shrink-0" />
-            <span>{reason}</span>
-          </div>
-        ) : null}
+        <button
+          type="button"
+          onClick={increase}
+          disabled={inputsDisabled}
+          aria-label="Increase bid"
+          className={roundButton}
+        >
+          <FiPlus />
+        </button>
 
         <button
           type="submit"
-          disabled={disabled}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-slate-900"
+          disabled={placeDisabled}
+          className="flex h-12 min-w-[200px] flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 font-black text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
         >
           {submitting ? (
             <>
               <FiLoader className="animate-spin" />
-              Placing Bid...
+              Placing bid...
             </>
           ) : (
-            <>
-              <FiArrowUp />
-              Place Bid — {formatCurrency(nextBid)}
-            </>
+            <>Place Bid — {formatCurrency(bidAmount)}</>
           )}
         </button>
       </form>
+
+      {reason ? (
+        <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+          <FiLock className="mt-0.5 shrink-0" />
+          <span>{reason}</span>
+        </div>
+      ) : (
+        <p className="mt-3 text-xs text-slate-500">
+          Increment {formatCurrency(step)} · Minimum next bid{" "}
+          {formatCurrency(automaticNextBid)}
+        </p>
+      )}
     </section>
   );
 };

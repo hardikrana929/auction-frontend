@@ -3,7 +3,6 @@ import {
   FiBarChart2,
   FiCheckCircle,
   FiClock,
-  FiDollarSign,
   FiPlayCircle,
   FiShield,
   FiUsers,

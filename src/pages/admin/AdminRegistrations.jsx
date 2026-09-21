@@ -17,6 +17,8 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 
+import { toImageUrl } from "../../utils/imageUrl";
+
 import { getAuctions } from "../../api/auctionApi";
 import {
   approveRegistration,
@@ -51,7 +53,13 @@ const getTeamName = (team) => {
 };
 
 const getTeamLogo = (team) => {
-  return team?.logo || team?.logoUrl || team?.image || team?.imageUrl || "";
+  return (
+    toImageUrl(team?.logo) ||
+    toImageUrl(team?.logoUrl) ||
+    toImageUrl(team?.image) ||
+    toImageUrl(team?.imageUrl) ||
+    ""
+  );
 };
 
 const getUserName = (user) => {
@@ -183,6 +191,12 @@ function TeamAvatar({ team, size = "normal" }) {
   const name = getTeamName(team);
   const logo = getTeamLogo(team);
 
+  // Remember a logo that failed to load and show the initials instead.
+  // (The old code replaced the <img> with parent.innerHTML, which made React
+  // crash with "The node to be removed is not a child of this node" on the
+  // next update, e.g. right after clicking Approve.)
+  const [failedLogo, setFailedLogo] = useState("");
+
   const sizeClass = size === "small" ? "h-9 w-9" : "h-11 w-11";
 
   return (
@@ -200,28 +214,12 @@ function TeamAvatar({ team, size = "normal" }) {
         bg-[#0a1d36]
       `}
     >
-      {logo ? (
+      {logo && logo !== failedLogo ? (
         <img
           src={logo}
           alt=""
           className="h-full w-full object-cover"
-          onError={(event) => {
-            event.currentTarget.style.display = "none";
-
-            const parent = event.currentTarget.parentElement;
-
-            if (parent) {
-              parent.innerHTML = `
-                <span style="
-                  color:#22d3ee;
-                  font-size:11px;
-                  font-weight:700;
-                ">
-                  ${getInitials(name)}
-                </span>
-              `;
-            }
-          }}
+          onError={() => setFailedLogo(logo)}
         />
       ) : (
         <span className="text-xs font-bold text-cyan-400">
@@ -409,7 +407,7 @@ function RejectModal({
  * ==========================================
  */
 
-export default function AdminRegistrations() {
+export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
   const [auctions, setAuctions] = useState([]);
   const [selectedAuctionId, setSelectedAuctionId] = useState("");
 
@@ -471,7 +469,13 @@ export default function AdminRegistrations() {
       setAuctions(validAuctions);
 
       if (validAuctions.length > 0 && !selectedAuctionId) {
-        setSelectedAuctionId(getId(validAuctions[0]));
+        // Open the auction named in the URL (/admin/registrations/:auctionId);
+        // fall back to the first one when the URL has none or it is unknown.
+        const fromUrl = validAuctions.find(
+          (auction) => getId(auction) === routeAuctionId,
+        );
+
+        setSelectedAuctionId(getId(fromUrl || validAuctions[0]));
       }
     } catch (err) {
       console.error("Load admin auctions error:", err);
@@ -636,9 +640,15 @@ export default function AdminRegistrations() {
       setRegistrations((previous) =>
         previous.map((item) =>
           getId(item) === registrationId
-            ? updatedRegistration || {
+            ? {
                 ...item,
-                status: "approved",
+                ...(updatedRegistration || {}),
+                status: updatedRegistration?.status || "approved",
+                // The approve reply only contains ids for these, so keep the
+                // populated objects (name, logo, e-mail...) already on screen.
+                team: item.team,
+                registeredBy: item.registeredBy,
+                auction: item.auction,
               }
             : item,
         ),
@@ -724,10 +734,16 @@ export default function AdminRegistrations() {
       setRegistrations((previous) =>
         previous.map((item) =>
           getId(item) === registrationId
-            ? updatedRegistration || {
+            ? {
                 ...item,
-                status: "rejected",
-                rejectionReason: rejectionReason.trim(),
+                ...(updatedRegistration || {}),
+                status: updatedRegistration?.status || "rejected",
+                rejectionReason:
+                  updatedRegistration?.rejectionReason ??
+                  rejectionReason.trim(),
+                team: item.team,
+                registeredBy: item.registeredBy,
+                auction: item.auction,
               }
             : item,
         ),

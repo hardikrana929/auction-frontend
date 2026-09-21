@@ -20,6 +20,7 @@ import {
   checkTeamAuctionAccess,
   verifyTeamAuctionAccess,
 } from "../api/auctionAccessApi";
+import { toImageUrl } from "../utils/imageUrl";
 
 const AuctionAccess = () => {
   const { id } = useParams();
@@ -126,8 +127,30 @@ const AuctionAccess = () => {
     access?.data?.isPending,
   );
 
+  /*
+   * Real backend shape (auctionAccessController.checkAuctionAccess):
+   * { success, data: { auction, user, access: { isAdmin, canManageAuction,
+   *   canParticipate }, registrations: [{ status, team }] } }
+   */
+  const accessFlags = access?.data?.access || {};
+  const registrations = Array.isArray(access?.data?.registrations)
+    ? access.data.registrations
+    : [];
+
+  const approvedRegistration = registrations.find(
+    (item) => String(item?.status).toLowerCase() === "approved",
+  );
+  const pendingRegistration = registrations.find(
+    (item) => String(item?.status).toLowerCase() === "pending",
+  );
+
   const team =
-    access?.team || access?.data?.team || access?.participant?.team || null;
+    access?.team ||
+    access?.data?.team ||
+    access?.participant?.team ||
+    approvedRegistration?.team ||
+    pendingRegistration?.team ||
+    null;
 
   const auction = access?.auction || access?.data?.auction || null;
 
@@ -151,9 +174,17 @@ const AuctionAccess = () => {
    * An approved registration is also treated as an approved state.
    */
   const approvedState =
-    hasAccess || isApproved || normalizedStatus === "approved";
+    hasAccess ||
+    isApproved ||
+    normalizedStatus === "approved" ||
+    accessFlags.canParticipate === true ||
+    accessFlags.canManageAuction === true ||
+    Boolean(approvedRegistration);
 
-  const pendingState = isPending || normalizedStatus === "pending";
+  const pendingState =
+    isPending ||
+    normalizedStatus === "pending" ||
+    (!approvedState && Boolean(pendingRegistration));
 
   const deniedState =
     !approvedState && !pendingState && Boolean(access || error);
@@ -166,6 +197,14 @@ const AuctionAccess = () => {
 
     if (!approvedState) {
       toast.error("You do not have access to this auction.");
+      return;
+    }
+
+    const isManager = accessFlags.canManageAuction === true;
+    const auctionStatus = String(auction?.status || "").toLowerCase();
+
+    if (!isManager && auctionStatus && auctionStatus !== "live") {
+      toast.error("This auction is not live yet. Please come back when it starts.");
       return;
     }
 
@@ -279,9 +318,9 @@ const AuctionAccess = () => {
                 {/* Team Information */}
                 <div className="mx-auto mt-7 max-w-md rounded-2xl border border-green-200 bg-green-50 p-5 text-left dark:border-green-900/40 dark:bg-green-950/20">
                   <div className="flex items-center gap-4">
-                    {team?.logo || team?.image ? (
+                    {toImageUrl(team?.logo) || toImageUrl(team?.image) ? (
                       <img
-                        src={team.logo || team.image}
+                        src={toImageUrl(team.logo) || toImageUrl(team.image)}
                         alt={`${teamName} logo`}
                         className="h-14 w-14 rounded-xl object-cover"
                         onError={(event) => {

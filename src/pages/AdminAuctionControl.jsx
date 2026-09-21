@@ -5,7 +5,6 @@ import {
   FiArrowLeft,
   FiCheckCircle,
   FiClock,
-  FiDollarSign,
   FiFlag,
   FiPause,
   FiPlay,
@@ -15,6 +14,7 @@ import {
   FiUsers,
   FiXCircle,
 } from "react-icons/fi";
+import RupeeIcon from "../components/RupeeIcon";
 
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -41,6 +41,7 @@ import ErrorState from "../components/ErrorState";
 import EmptyState from "../components/EmptyState";
 
 import { formatCurrency } from "../utils/formatCurrency";
+import { toImageUrl } from "../utils/imageUrl";
 import formatDate from "../utils/formatDate";
 
 /* =========================================================
@@ -78,6 +79,11 @@ const getId = (value) => {
 const getPlayer = (data) => {
   return data?.player || data?.currentPlayer || data?.currentPlayerData || null;
 };
+
+const getPlayerName = (player) =>
+  player?.name ||
+  [player?.fullName, player?.lastName].filter(Boolean).join(" ") ||
+  "";
 
 const getBidAmount = (data) => {
   return (
@@ -127,12 +133,15 @@ const AdminAuctionControl = () => {
   const loadAuction = useCallback(async () => {
     const response = await getAuctionById(auctionId);
 
-    const data = extractData(response);
+    // Backend reply is { success, auction: {...} }.
+    const data = response?.auction || extractData(response);
 
     setAuction(data);
 
+    // The session status ("paused", "player_auction"...) is more specific than
+    // the auction status ("live"), so only use this as the first value.
     if (data?.status) {
-      setStatus(data.status);
+      setStatus((previous) => (previous === "waiting" ? data.status : previous));
     }
 
     return data;
@@ -150,17 +159,25 @@ const AdminAuctionControl = () => {
 
       setSession(data);
 
+      // The backend populates session.currentPlayer (name, photo, role,
+      // status...). Clear it when the session has none, so a finished player
+      // never blocks the next one.
       const player = getPlayer(data);
+      const playerObject = player && typeof player === "object" ? player : null;
 
-      if (player) {
-        setCurrentPlayer(player);
-      }
+      setCurrentPlayer(playerObject);
 
-      const bid = getBidAmount(data);
+      // Sold / unsold players stay on the session until "Next player".
+      setCurrentPlayerFinished(
+        Boolean(playerObject) &&
+          ["sold", "unsold"].includes(
+            String(playerObject.status || "").toLowerCase(),
+          ),
+      );
 
-      if (bid) {
-        setCurrentBid(Number(bid));
-      }
+      const bid = getBidAmount(data) || playerObject?.currentBid || 0;
+
+      setCurrentBid(Number(bid) || 0);
 
       if (data?.status) {
         setStatus(data.status);
@@ -310,12 +327,13 @@ const AdminAuctionControl = () => {
       setCurrentBid(Number(amount));
     }
 
-    setStatus("player-sold");
+    setStatus("player_sold");
+
+    setCurrentPlayerFinished(true);
 
     setSession((previous) => ({
       ...previous,
-      currentPlayer: null,
-      status: "live",
+      status: "player_sold",
     }));
 
     toast.success("Player sold");
@@ -325,12 +343,13 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handlePlayerUnsold = useCallback(() => {
-    setStatus("player-unsold");
+    setStatus("player_unsold");
+
+    setCurrentPlayerFinished(true);
 
     setSession((previous) => ({
       ...previous,
-      currentPlayer: null,
-      status: "live",
+      status: "player_unsold",
     }));
 
     toast("Player marked unsold", {
@@ -526,7 +545,7 @@ const AdminAuctionControl = () => {
        COMPLETE AUCTION
     ===================================================== */
   const handleCompleteAuction = () => {
-    if (currentPlayer && !currentPlayerFinished) {
+    if (isPlayerAuctioning) {
       toast.error(
         "Complete the current player's sale or mark the player unsold first.",
       );
@@ -609,18 +628,45 @@ const AdminAuctionControl = () => {
        BUTTON STATES
     ===================================================== */
 
-  const auctionStarted =
-    status === "live" || status === "player_auction" || status === "paused";
+  // Session statuses used by the backend. "player_sold" / "player_unsold" mean
+  // a player was just finished and the admin can start the next one.
+  const liveStatus = String(status || "").replace(/-/g, "_");
+
+  const auctionStarted = [
+    "live",
+    "player_auction",
+    "player_sold",
+    "player_unsold",
+    "paused",
+  ].includes(liveStatus);
+
+  // No player yet, or the current one is already sold / unsold.
+  const playerFinished =
+    !currentPlayer ||
+    currentPlayerFinished ||
+    ["sold", "unsold"].includes(
+      String(currentPlayer?.status || "").toLowerCase(),
+    );
 
   const isPlayerAuctioning =
-    Boolean(currentPlayer) && status === "player_auction";
+    Boolean(currentPlayer) && !playerFinished && liveStatus !== "paused";
 
-  const canPause = status === "live" || status === "player_auction";
+  const canPause = [
+    "live",
+    "player_auction",
+    "player_sold",
+    "player_unsold",
+  ].includes(liveStatus);
 
-  const canResume = status === "paused";
+  const canResume = liveStatus === "paused";
 
+  // The old rule also required currentPlayerFinished === true, but nothing ever
+  // set it, so the "Next Player" button was permanently disabled.
   const canStartPlayer =
-    auctionStarted && !currentPlayer && status !== "completed";
+    auctionStarted && liveStatus !== "paused" && playerFinished;
+
+  const playerPhoto =
+    toImageUrl(currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
 
   const canSell = isPlayerAuctioning && currentBid > 0;
 
@@ -811,15 +857,21 @@ const AdminAuctionControl = () => {
                         </p>
 
                         <h2 className="mt-1 text-2xl font-black text-gray-900 dark:text-white">
-                          {currentPlayer.name ||
-                            currentPlayer.fullName ||
-                            "Player"}
+                          {getPlayerName(currentPlayer) || "Player"}
                         </h2>
                       </div>
 
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                        <FiUser className="h-6 w-6" />
-                      </div>
+                      {playerPhoto ? (
+                        <img
+                          src={playerPhoto}
+                          alt=""
+                          className="h-16 w-16 rounded-2xl object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                          <FiUser className="h-6 w-6" />
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -868,6 +920,30 @@ const AdminAuctionControl = () => {
                         {formatCurrency(auction.bidIncrement || 0)}
                       </p>
                     </div>
+
+                    {[
+                      ["Role", currentPlayer.role],
+                      ["Batting hand", currentPlayer.battingHand],
+                      ["Bowling style", currentPlayer.bowlingStyle],
+                      ["Age", currentPlayer.age],
+                      ["Village / Town", currentPlayer.villageTown],
+                      ["Player status", currentPlayer.status],
+                    ]
+                      .filter(([, value]) => value)
+                      .map(([label, value]) => (
+                        <div
+                          key={label}
+                          className="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800/50"
+                        >
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {label}
+                          </p>
+
+                          <p className="mt-1 text-lg font-bold capitalize text-gray-900 dark:text-white">
+                            {value}
+                          </p>
+                        </div>
+                      ))}
                   </div>
                 </>
               ) : (
@@ -890,7 +966,7 @@ const AdminAuctionControl = () => {
             <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                  <FiDollarSign />
+                  <RupeeIcon />
                 </div>
 
                 <div>
@@ -1054,9 +1130,7 @@ const AdminAuctionControl = () => {
               <button
                 type="button"
                 onClick={handleStartNextPlayer}
-                disabled={
-                  processing || !canStartPlayer || !currentPlayerFinished
-                }
+                disabled={processing || !canStartPlayer}
                 className="
                     flex
                     items-center
@@ -1176,7 +1250,7 @@ const AdminAuctionControl = () => {
                 onClick={handleCompleteAuction}
                 disabled={
                   processing ||
-                  Boolean(currentPlayer && !currentPlayerFinished) ||
+                  isPlayerAuctioning ||
                   status === "completed"
                 }
                 className="
@@ -1278,7 +1352,7 @@ const AdminAuctionControl = () => {
                 </p>
 
                 <p className="mt-1 font-semibold text-gray-900 dark:text-white">
-                  {currentPlayer?.name || currentPlayer?.fullName || "None"}
+                  {getPlayerName(currentPlayer) || "None"}
                 </p>
               </div>
 
