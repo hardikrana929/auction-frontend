@@ -23,14 +23,12 @@ const emptyDigits = () => Array(6).fill("");
  * themes. Light = white surfaces with slate text; dark = slate-800/900
  * surfaces with white text. The theme is switched by the toggle in AuthShell.
  */
-const labelClass =
-  "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200";
+const labelClass = "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200";
 
 const inputClass =
   "w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-4 text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-slate-950 focus:ring-2 focus:ring-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:border-white dark:focus:ring-slate-600";
 
-const iconClass =
-  "absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400";
+const iconClass = "absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400";
 
 const primaryButton =
   "w-full rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 dark:focus-visible:ring-white dark:focus-visible:ring-offset-slate-900";
@@ -78,10 +76,7 @@ export default function ForgotPassword() {
   }, [cooldown]);
 
   const otp = digits.join("");
-  const rules = {
-    length: password.length >= 8,
-    match: Boolean(password) && password === confirm,
-  };
+  const rules = { length: password.length >= 8, match: Boolean(password) && password === confirm };
 
   const requestCode = async ({ resend = false } = {}) => {
     const normalized = email.trim().toLowerCase();
@@ -103,16 +98,9 @@ export default function ForgotPassword() {
       setCooldown(RESEND_SECONDS);
       setStep(2);
 
-      toast.success(
-        resend
-          ? "A new code was requested."
-          : "Check your email for the 6-digit code.",
-      );
+      toast.success(resend ? "A new code was requested." : "Check your email for the 6-digit code.");
     } catch (requestError) {
-      setError(
-        requestError.response?.data?.message ||
-          "Unable to send the code. Please try again.",
-      );
+      setError(requestError.response?.data?.message || "Unable to send the code. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -142,8 +130,7 @@ export default function ForgotPassword() {
       toast.success("Code verified. Choose a new password.");
     } catch (verifyError) {
       setError(
-        verifyError.response?.data?.message ||
-          "Could not verify the code. Please try again.",
+        verifyError.response?.data?.message || "Could not verify the code. Please try again.",
       );
       setDigits(emptyDigits());
     } finally {
@@ -193,10 +180,7 @@ export default function ForgotPassword() {
   return (
     <AuthShell title="Forgot your password?" subtitle={subtitle}>
       {/* progress */}
-      <ol
-        className="mb-6 flex items-center gap-2 text-xs font-bold"
-        aria-label="Progress"
-      >
+      <ol className="mb-6 flex items-center gap-2 text-xs font-bold" aria-label="Progress">
         {STEPS.map((label, index) => {
           const number = index + 1;
           const active = step === number && !done;
@@ -301,16 +285,12 @@ export default function ForgotPassword() {
             />
 
             <p className="mt-3 text-xs leading-5 text-slate-600 dark:text-slate-400">
-              The code is valid for 10 minutes. If you don&apos;t see the email,
-              check your spam folder. Only registered email addresses receive a
-              code.
+              The code is valid for 10 minutes. If you don&apos;t see the email, check your spam
+              folder. Only registered email addresses receive a code.
             </p>
           </div>
 
-          <button
-            disabled={submitting || otp.length !== 6}
-            className={primaryButton}
-          >
+          <button disabled={submitting || otp.length !== 6} className={primaryButton}>
             {submitting ? "Verifying…" : "Verify code"}
           </button>
 
@@ -379,23 +359,11 @@ export default function ForgotPassword() {
           ))}
 
           <div className="space-y-2 text-sm">
-            <p
-              className={
-                rules.length
-                  ? "font-semibold text-slate-950 dark:text-white"
-                  : "text-slate-600 dark:text-slate-400"
-              }
-            >
+            <p className={rules.length ? "font-semibold text-slate-950 dark:text-white" : "text-slate-600 dark:text-slate-400"}>
               {rules.length ? "✓" : "○"} At least 8 characters
             </p>
 
-            <p
-              className={
-                rules.match
-                  ? "font-semibold text-slate-950 dark:text-white"
-                  : "text-slate-600 dark:text-slate-400"
-              }
-            >
+            <p className={rules.match ? "font-semibold text-slate-950 dark:text-white" : "text-slate-600 dark:text-slate-400"}>
               {rules.match ? "✓" : "○"} Passwords match
             </p>
           </div>
@@ -412,13 +380,9 @@ export default function ForgotPassword() {
             <FiCheck />
           </div>
 
-          <h2 className="mt-4 font-bold text-slate-950 dark:text-white">
-            Password updated
-          </h2>
+          <h2 className="mt-4 font-bold text-slate-950 dark:text-white">Password updated</h2>
 
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            Redirecting you to login…
-          </p>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Redirecting you to login…</p>
         </div>
       )}
     </AuthShell>

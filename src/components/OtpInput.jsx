@@ -8,12 +8,7 @@ const LENGTH = 6;
  * `digits` is an array of 6 strings ("" when empty).
  * Works in light and dark mode.
  */
-export default function OtpInput({
-  digits,
-  onChange,
-  disabled = false,
-  invalid = false,
-}) {
+export default function OtpInput({ digits, onChange, disabled = false, invalid = false }) {
   const refs = useRef([]);
 
   const focus = (index) => {
@@ -88,11 +83,7 @@ export default function OtpInput({
   };
 
   return (
-    <div
-      className="flex justify-between gap-2"
-      role="group"
-      aria-label="6-digit verification code"
-    >
+    <div className="flex justify-between gap-2" role="group" aria-label="6-digit verification code">
       {digits.map((digit, index) => (
         <input
           key={index}
