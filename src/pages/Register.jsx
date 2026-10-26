@@ -130,7 +130,7 @@ function Field({ icon, label, ...props }) {
     </div>
   );
 }
-function PasswordField({ label, name, value, onChange, show, setShow }) {
+function PasswordField({ label, name, value, onChange, show, setShow,placeholder }) {
   return (
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -144,6 +144,7 @@ function PasswordField({ label, name, value, onChange, show, setShow }) {
           value={value}
           onChange={onChange}
           className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+          placeholder={placeholder}
           autoComplete={name === "password" ? "new-password" : "new-password"}
         />
         <button
