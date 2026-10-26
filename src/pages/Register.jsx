@@ -80,6 +80,7 @@ export default function Register() {
           value={form.password}
           onChange={update}
           show={show}
+          placeholder="Enter Password"
           setShow={setShow}
         />
         <PasswordField
@@ -88,6 +89,7 @@ export default function Register() {
           value={form.confirmPassword}
           onChange={update}
           show={show}
+          placeholder="Confirm Password"
           setShow={setShow}
         />
         <button
