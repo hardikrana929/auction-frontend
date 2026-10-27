@@ -101,14 +101,36 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
     event.preventDefault();
 
     if (
-      !form.auctionId ||
-      !form.fullName.trim() ||
-      !form.lastName.trim() ||
-      !form.villageTown.trim() ||
-      !form.role ||
-      !form.basePrice
+      !form.auctionId || !form.fullName.trim() || !form.lastName.trim() ||
+      !form.villageTown.trim() || !form.role || !form.basePrice
     ) {
       toast.error("Please complete all required player fields.");
+      return;
+    }
+    const personName = /^[A-Za-z]+(?:[ '\u2019.-][A-Za-z]+)*$/;
+    if (!personName.test(form.fullName.trim()) || !personName.test(form.lastName.trim())) {
+      toast.error("Names may contain letters only, with spaces, apostrophes, periods or hyphens between names.");
+      return;
+    }
+    if (form.contactNo && !/^\d{10}$/.test(form.contactNo)) {
+      toast.error("Contact number must contain exactly 10 digits.");
+      return;
+    }
+    if (form.whatsappNo && !/^\d{10}$/.test(form.whatsappNo)) {
+      toast.error("WhatsApp number must contain exactly 10 digits.");
+      return;
+    }
+    if (form.age !== "" && (!Number.isInteger(Number(form.age)) || Number(form.age) < 10 || Number(form.age) > 60)) {
+      toast.error("Age must be a whole number between 10 and 60.");
+      return;
+    }
+    if (!Number.isFinite(Number(form.basePrice)) || Number(form.basePrice) <= 0) {
+      toast.error("Base price must be a positive amount.");
+      return;
+    }
+    const selectedAuction = auctions.find((item) => String(item._id) === String(form.auctionId));
+    if (selectedAuction && Number(form.basePrice) > Number(selectedAuction.startingBudget)) {
+      toast.error(`Base price cannot exceed the total auction budget of ₹${Number(selectedAuction.startingBudget).toLocaleString("en-IN")}.`);
       return;
     }
 
@@ -170,10 +192,10 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
             </select>
           </Field>
 
-          <Field label="First name" required><input className="input" placeholder="e.g. Rohit" value={form.fullName} onChange={(e) => set("fullName", e.target.value)} /></Field>
-          <Field label="Last name" required><input className="input" placeholder="e.g. Sharma" value={form.lastName} onChange={(e) => set("lastName", e.target.value)} /></Field>
-          <Field label="Contact number"><input className="input" placeholder="e.g. 9876543210" value={form.contactNo} onChange={(e) => set("contactNo", e.target.value)} /></Field>
-          <Field label="WhatsApp number"><input className="input" placeholder="e.g. 9876543210" value={form.whatsappNo} onChange={(e) => set("whatsappNo", e.target.value)} /></Field>
+          <Field label="First name" required><input className="input" autoComplete="given-name" pattern="[A-Za-z][A-Za-z .'-]*" placeholder="e.g. Rohit" value={form.fullName} onChange={(e) => set("fullName", e.target.value.replace(/[^A-Za-z .'-]/g, ""))} /></Field>
+          <Field label="Last name" required><input className="input" autoComplete="family-name" pattern="[A-Za-z][A-Za-z .'-]*" placeholder="e.g. Sharma" value={form.lastName} onChange={(e) => set("lastName", e.target.value.replace(/[^A-Za-z .'-]/g, ""))} /></Field>
+          <Field label="Contact number"><input className="input" inputMode="numeric" maxLength={10} placeholder="e.g. 9876543210" value={form.contactNo} onChange={(e) => set("contactNo", e.target.value.replace(/\D/g, "").slice(0, 10))} /></Field>
+          <Field label="WhatsApp number"><input className="input" inputMode="numeric" maxLength={10} placeholder="e.g. 9876543210" value={form.whatsappNo} onChange={(e) => set("whatsappNo", e.target.value.replace(/\D/g, "").slice(0, 10))} /></Field>
           <Field label="Village / Town" required><input className="input" placeholder="e.g. Nagpur" value={form.villageTown} onChange={(e) => set("villageTown", e.target.value)} /></Field>
           <Field label="Age"><input type="number" min="10" max="60" className="input" placeholder="e.g. 24" value={form.age} onChange={(e) => set("age", e.target.value)} /></Field>
 
@@ -195,7 +217,7 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
             </select>
           </Field>
 
-          <Field label="Base price" required><input type="number" min="1" className="input" placeholder="e.g. 200000" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
+          <Field label="Base price" required><input type="number" min="1" max={auctions.find((item) => String(item._id) === String(form.auctionId))?.startingBudget || undefined} step="1" className="input" placeholder="e.g. 200000" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
           <Field label="Auction order"><input type="number" min="0" className="input" placeholder="e.g. 1" value={form.auctionOrder} onChange={(e) => set("auctionOrder", e.target.value)} /></Field>
           <Field label="Experience (years)"><input type="number" min="0" className="input" placeholder="e.g. 3" value={form.experience} onChange={(e) => set("experience", e.target.value)} /></Field>
           <Field label="Specialization"><input className="input" value={form.specialization} onChange={(e) => set("specialization", e.target.value)} placeholder="Batting, Fielding, Power hitter" /></Field>

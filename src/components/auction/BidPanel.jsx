@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
-import { FiLoader, FiLock, FiMinus, FiPlus } from "react-icons/fi";
+import { useMemo } from "react";
+import { FiLoader, FiLock } from "react-icons/fi";
 
 import RupeeIcon from "../RupeeIcon";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 /**
- * The bidding controls, all in ONE row:
- *   [ - ]  [ ₹ amount ]  [ + ]  [ Place Bid ]
- * The team is chosen automatically by the page from the logged-in owner.
+ * Shows the current next-bid amount as a read-only field. The button places
+ * exactly that increment; bid rules are enforced again by the backend.
  */
 const BidPanel = ({
   currentBid = 0,
   bidIncrement = 0,
+  bidRules = [],
   minimumBid = 0,
   playerActive = false,
   auctionPaused = false,
@@ -21,10 +21,14 @@ const BidPanel = ({
   teamName = "",
   teamId = "",
   purse = null,
+  nextTurnTeam = null,
+  approvedTeamCount = null,
+  isMyTurn = true,
   onPlaceBid,
 }) => {
   const current = Number(currentBid || 0);
-  const increment = Number(bidIncrement || 0);
+  const matchedRule = Array.isArray(bidRules) ? bidRules.find((rule) => rule.upTo == null || current <= Number(rule.upTo)) : null;
+  const increment = Number(matchedRule?.increment || bidIncrement || 0);
   const minimum = Number(minimumBid || 0);
   const step = increment > 0 ? increment : 1;
 
@@ -36,37 +40,24 @@ const BidPanel = ({
     return minimum > 0 ? minimum : step;
   }, [current, step, minimum]);
 
-  const [customAmount, setCustomAmount] = useState("");
-
-  // If somebody else bids higher while you were typing, follow the new minimum.
-  useEffect(() => {
-    if (customAmount !== "" && Number(customAmount) < automaticNextBid) {
-      setCustomAmount("");
-    }
-  }, [automaticNextBid, customAmount]);
-
-  const bidAmount = customAmount === "" ? automaticNextBid : Number(customAmount);
+  const bidAmount = automaticNextBid;
 
   const reason = useMemo(() => {
     if (!accessApproved) return "Your team is not approved for this auction.";
     if (!canBid) return "Bidding is not available for this account.";
     if (auctionPaused) return "The auction is paused. Bidding resumes shortly.";
     if (!playerActive) return "No player is live for bidding right now.";
+    if (approvedTeamCount !== null && approvedTeamCount < 2) return "Turn-by-turn bidding requires at least two active, approved teams.";
+    if (nextTurnTeam && !isMyTurn) return `It is not your team's turn. ${nextTurnTeam.name || "The next approved team"} must bid next.`;
     if (Number.isFinite(purse) && bidAmount > purse) {
       return `Not enough purse. Your team has ${formatCurrency(purse)} left.`;
     }
 
     return "";
-  }, [accessApproved, canBid, auctionPaused, playerActive, purse, bidAmount]);
+  }, [accessApproved, canBid, auctionPaused, playerActive, purse, bidAmount, approvedTeamCount, nextTurnTeam, isMyTurn]);
 
-  const invalidAmount = !Number.isFinite(bidAmount) || bidAmount < automaticNextBid;
-  const inputsDisabled = submitting || !accessApproved || !canBid || auctionPaused || !playerActive;
-  const placeDisabled = inputsDisabled || invalidAmount || Boolean(reason);
-
-  const decrease = () =>
-    setCustomAmount(String(Math.max(automaticNextBid, bidAmount - step)));
-
-  const increase = () => setCustomAmount(String(bidAmount + step));
+  const inputsDisabled = submitting || !accessApproved || !canBid || auctionPaused || !playerActive || (approvedTeamCount !== null && approvedTeamCount < 2) || Boolean(nextTurnTeam && !isMyTurn);
+  const placeDisabled = inputsDisabled || !Number.isFinite(bidAmount) || Boolean(reason);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -76,7 +67,6 @@ const BidPanel = ({
     }
 
     await onPlaceBid?.(bidAmount);
-    setCustomAmount("");
   };
 
   const roundButton =
@@ -101,41 +91,19 @@ const BidPanel = ({
         onSubmit={handleSubmit}
         className="flex flex-wrap items-stretch gap-2 md:flex-nowrap"
       >
-        <button
-          type="button"
-          onClick={decrease}
-          disabled={inputsDisabled || bidAmount <= automaticNextBid}
-          aria-label="Decrease bid"
-          className={roundButton}
-        >
-          <FiMinus />
-        </button>
-
         <div className="relative min-w-[150px] flex-1">
           <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
           <input
             id="custom-bid"
-            type="number"
-            min={automaticNextBid}
-            step={step}
-            value={customAmount === "" ? automaticNextBid : customAmount}
-            onChange={(event) => setCustomAmount(event.target.value)}
+            type="text"
+            value={formatCurrency(bidAmount)}
+            readOnly
             disabled={inputsDisabled}
-            aria-label="Bid amount"
-            className="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 pl-9 pr-3 text-lg font-black tabular-nums text-white outline-none transition [appearance:textfield] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            aria-label="Next bid amount"
+            className="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 pl-9 pr-3 text-lg font-black tabular-nums text-white outline-none disabled:cursor-not-allowed disabled:opacity-70"
           />
         </div>
-
-        <button
-          type="button"
-          onClick={increase}
-          disabled={inputsDisabled}
-          aria-label="Increase bid"
-          className={roundButton}
-        >
-          <FiPlus />
-        </button>
 
         <button
           type="submit"
@@ -148,7 +116,7 @@ const BidPanel = ({
               Placing bid...
             </>
           ) : (
-            <>Place Bid — {formatCurrency(bidAmount)}</>
+            <>Bid {formatCurrency(bidAmount)}</>
           )}
         </button>
       </form>
@@ -160,8 +128,9 @@ const BidPanel = ({
         </div>
       ) : (
         <p className="mt-3 text-xs text-slate-500">
-          Increment {formatCurrency(step)} · Minimum next bid{" "}
+          Next increment {formatCurrency(step)} · Next bid{" "}
           {formatCurrency(automaticNextBid)}
+          {nextTurnTeam?.name ? ` · Next turn: ${nextTurnTeam.name}` : ""}
         </p>
       )}
     </section>

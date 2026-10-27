@@ -19,6 +19,7 @@ const empty = {
   startingBudget: "",
   minimumBid: "",
   bidIncrement: "",
+  bidRules: [ { upTo: "1000000", increment: "100000" }, { upTo: "3000000", increment: "200000" }, { upTo: "", increment: "500000" } ],
   maxTeams: "",
   maxPlayersPerTeam: "",
 };
@@ -105,6 +106,9 @@ export default function AuctionForm({
     setForm({
       ...empty,
       ...initialValues,
+      bidRules: Array.isArray(initialValues?.bidRules) && initialValues.bidRules.length
+        ? initialValues.bidRules.map((rule) => ({ upTo: rule.upTo ?? "", increment: rule.increment ?? "" }))
+        : empty.bidRules,
       date: toLocalInput(initialValues?.date),
     });
     setPreview(initialValues?.image || "");
@@ -159,6 +163,13 @@ export default function AuctionForm({
       if (form[k] === "" || Number(form[k]) <= 0)
         e[k] = "Enter a value greater than 0.";
     });
+    if (!Array.isArray(form.bidRules) || form.bidRules.some((rule) => Number(rule.increment) <= 0 || (rule.upTo !== "" && Number(rule.upTo) <= 0))) {
+      e.bidRules = "Each increment must be positive and thresholds must be positive or blank for no upper limit.";
+    }
+    if (Array.isArray(form.bidRules)) {
+      const finiteLimits = form.bidRules.filter((rule) => rule.upTo !== "").map((rule) => Number(rule.upTo));
+      if (finiteLimits.some((limit, index) => index > 0 && limit <= finiteLimits[index - 1])) e.bidRules = "Bid thresholds must be in ascending order.";
+    }
     if (Number(form.maxTeams) < 2)
       e.maxTeams = "At least 2 teams are required.";
     if (Number(form.maxPlayersPerTeam) < 1)
@@ -178,6 +189,7 @@ export default function AuctionForm({
     data.append("startingBudget", Number(form.startingBudget));
     data.append("minimumBid", Number(form.minimumBid));
     data.append("bidIncrement", Number(form.bidIncrement));
+    data.append("bidRules", JSON.stringify(form.bidRules.map((rule) => ({ upTo: rule.upTo === "" ? null : Number(rule.upTo), increment: Number(rule.increment) }))));
     data.append("maxTeams", Number(form.maxTeams));
     data.append("maxPlayersPerTeam", Number(form.maxPlayersPerTeam));
 
@@ -281,6 +293,24 @@ export default function AuctionForm({
           )}
         </div>
       </div>
+
+      <section className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+        <div className="mb-3">
+          <h3 className="font-bold text-slate-900 dark:text-white">Automatic bidding increments</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">The next increment is selected from the current bid. Leave the last threshold blank for “above”.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {form.bidRules.map((rule, index) => (
+            <div key={index} className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+              <label className="label">{index === form.bidRules.length - 1 ? "Up to amount (blank = no limit)" : "Bid amount up to (₹)"}</label>
+              <input className="input" type="number" min="1" value={rule.upTo} disabled={readOnly} placeholder="No upper limit" onChange={(e) => setForm((v) => ({ ...v, bidRules: v.bidRules.map((r, i) => i === index ? { ...r, upTo: e.target.value } : r) }))} />
+              <label className="label mt-3">Increment (₹)</label>
+              <input className="input" type="number" min="1" value={rule.increment} disabled={readOnly} onChange={(e) => setForm((v) => ({ ...v, bidRules: v.bidRules.map((r, i) => i === index ? { ...r, increment: e.target.value } : r) }))} />
+            </div>
+          ))}
+        </div>
+        {errors.bidRules && <p className="mt-2 text-sm font-semibold text-red-600">{errors.bidRules}</p>}
+      </section>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <Field

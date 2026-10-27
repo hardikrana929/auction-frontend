@@ -34,7 +34,7 @@ import {
   completeAuction,
 } from "../api/auctionControlApi";
 
-import { sellPlayer, markPlayerUnsold } from "../api/biddingApi";
+import { sellPlayer, markPlayerUnsold, getBidHistory } from "../api/biddingApi";
 
 import PageLoader from "../components/PageLoader";
 import ErrorState from "../components/ErrorState";
@@ -117,6 +117,7 @@ const AdminAuctionControl = () => {
   const [currentPlayerFinished, setCurrentPlayerFinished] = useState(false);
 
   const [currentBid, setCurrentBid] = useState(0);
+  const [liveBids, setLiveBids] = useState([]);
 
   const [status, setStatus] = useState("waiting");
 
@@ -665,8 +666,25 @@ const AdminAuctionControl = () => {
   const canStartPlayer =
     auctionStarted && liveStatus !== "paused" && playerFinished;
 
+  useEffect(() => {
+    let active = true;
+    const playerId = getId(currentPlayer);
+    if (!playerId) {
+      setLiveBids([]);
+      return undefined;
+    }
+    getBidHistory(playerId)
+      .then((response) => {
+        if (!active) return;
+        const data = extractData(response);
+        setLiveBids(Array.isArray(data) ? data : data?.bids || data?.history || data?.data?.bids || []);
+      })
+      .catch(() => { if (active) setLiveBids([]); });
+    return () => { active = false; };
+  }, [currentPlayer]);
+
   const playerPhoto =
-    toImageUrl(currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
+    toImageUrl(currentPlayer?.photo?.url || currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
 
   const canSell = isPlayerAuctioning && currentBid > 0;
 
@@ -956,6 +974,31 @@ const AdminAuctionControl = () => {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="lg:col-span-2 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-black text-gray-900 dark:text-white">Live bidding history</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Read-only view for administrators</p>
+              </div>
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">LIVE</span>
+            </div>
+            {liveBids.length ? (
+              <div className="max-h-80 space-y-2 overflow-y-auto">
+                {liveBids.map((bid, index) => (
+                  <div key={bid._id || bid.id || `${bid.createdAt || ""}-${index}`} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60">
+                    <div className="min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-white">{bid.team?.name || bid.teamName || bid.bidder?.name || bid.user?.name || "Team bid"}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{bid.createdAt ? new Date(bid.createdAt).toLocaleTimeString() : "Recent bid"}</p>
+                    </div>
+                    <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">{formatCurrency(getBidAmount(bid))}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">No bids recorded for this player yet.</p>
+            )}
           </div>
 
           {/* =========================================

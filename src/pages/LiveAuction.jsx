@@ -138,6 +138,8 @@ const LiveAuction = () => {
 
   const [currentBid, setCurrentBid] = useState(0);
   const [leadingTeam, setLeadingTeam] = useState(null);
+  const [nextTurnTeam, setNextTurnTeam] = useState(null);
+  const [approvedTeamCount, setApprovedTeamCount] = useState(null);
 
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -306,6 +308,10 @@ const LiveAuction = () => {
         const sessionData = extractSession(sessionResponse);
 
         const currentPlayer = extractPlayer(currentResponse);
+        const currentData = extractData(currentResponse) || currentResponse || {};
+
+        setNextTurnTeam(currentData?.nextTurnTeam || null);
+        setApprovedTeamCount(Number.isFinite(Number(currentData?.approvedTeamCount)) ? Number(currentData.approvedTeamCount) : null);
 
         setAuction(auctionData || null);
         setSession(sessionData || null);
@@ -490,6 +496,8 @@ const LiveAuction = () => {
       }
 
       const incomingBid = payload?.bid || payload?.data?.bid || payload;
+      if (payload?.nextTurnTeam) setNextTurnTeam(payload.nextTurnTeam);
+      if (Array.isArray(payload?.turnOrder)) setApprovedTeamCount(payload.turnOrder.length);
 
       const incomingPlayer = payload?.player || payload?.data?.player || null;
 
@@ -726,6 +734,8 @@ const LiveAuction = () => {
       const data = extractData(response);
 
       const returnedBid = data?.bid || data?.data?.bid || null;
+      if (data?.nextTurnTeam) setNextTurnTeam(data.nextTurnTeam);
+      if (Array.isArray(data?.turnOrder)) setApprovedTeamCount(data.turnOrder.length);
 
       const returnedPlayer = data?.player || data?.data?.player || null;
 
@@ -1152,11 +1162,15 @@ const LiveAuction = () => {
                 currentBid={currentBid}
                 minimumBid={auction?.minimumBid || player?.basePrice || 0}
                 bidIncrement={auction?.bidIncrement || 0}
+                bidRules={auction?.bidRules || []}
                 playerActive={playerActive}
                 auctionPaused={auctionPaused}
                 accessApproved={accessApproved}
                 canBid={!isAdmin}
                 submitting={bidSubmitting}
+                nextTurnTeam={nextTurnTeam}
+                approvedTeamCount={approvedTeamCount}
+                isMyTurn={Boolean(nextTurnTeam && myTeamId && getId(nextTurnTeam) === myTeamId)}
                 teamName={myTeamData?.name || ""}
                 teamId={myTeamId}
                 purse={purse}
