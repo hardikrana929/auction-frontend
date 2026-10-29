@@ -142,7 +142,9 @@ const AdminAuctionControl = () => {
     // The session status ("paused", "player_auction"...) is more specific than
     // the auction status ("live"), so only use this as the first value.
     if (data?.status) {
-      setStatus((previous) => (previous === "waiting" ? data.status : previous));
+      setStatus((previous) =>
+        previous === "waiting" ? data.status : previous,
+      );
     }
 
     return data;
@@ -159,9 +161,10 @@ const AdminAuctionControl = () => {
       // getAuctionSession already returns Axios response.data. Unwrap the
       // backend's { success, data } envelope explicitly; data can be null
       // before the auction is started.
-      const data = response && Object.prototype.hasOwnProperty.call(response, "data")
-        ? response.data
-        : extractData(response);
+      const data =
+        response && Object.prototype.hasOwnProperty.call(response, "data")
+          ? response.data
+          : extractData(response);
 
       setSession(data || null);
 
@@ -323,34 +326,50 @@ const AdminAuctionControl = () => {
        NEW BID
     ===================================================== */
 
-  const handleBidNew = useCallback((data) => {
-    // The socket payload wraps the actual bid in `data.bid`; handle both the
-    // wrapped and legacy flat payloads so the admin display updates instantly.
-    const bid = data?.bid || data;
-    const amount = Number(getBidAmount(data) || getBidAmount(bid) || 0);
-    const eventPlayerId = getId(data?.playerId || bid?.player);
-    const activePlayerId = getId(currentPlayer);
+  const handleBidNew = useCallback(
+    (data) => {
+      // The socket payload wraps the actual bid in `data.bid`; handle both the
+      // wrapped and legacy flat payloads so the admin display updates instantly.
+      const bid = data?.bid || data;
+      const amount = Number(getBidAmount(data) || getBidAmount(bid) || 0);
+      const eventPlayerId = getId(data?.playerId || bid?.player);
+      const activePlayerId = getId(currentPlayer);
 
-    if (amount > 0) setCurrentBid(amount);
+      if (amount > 0) setCurrentBid(amount);
 
-    // Ignore bids for another player if the server emits auction-wide events.
-    if (eventPlayerId && activePlayerId && eventPlayerId !== activePlayerId) return;
+      // Ignore bids for another player if the server emits auction-wide events.
+      if (eventPlayerId && activePlayerId && eventPlayerId !== activePlayerId)
+        return;
 
-    if (amount > 0) {
-      const nextBid = {
-        ...bid,
-        _id: bid?._id || bid?.id || `live-${bid?.createdAt || Date.now()}-${amount}`,
-        amount,
-        teamName: bid?.teamName || bid?.team?.name || data?.teamName || "Team bid",
-        team: bid?.team || (bid?.teamId ? { _id: bid.teamId, name: bid.teamName } : undefined),
-        createdAt: bid?.createdAt || data?.createdAt || new Date().toISOString(),
-      };
-      setLiveBids((previous) => {
-        if (previous.some((item) => String(item._id || item.id) === String(nextBid._id))) return previous;
-        return [nextBid, ...previous].slice(0, 100);
-      });
-    }
-  }, [currentPlayer]);
+      if (amount > 0) {
+        const nextBid = {
+          ...bid,
+          _id:
+            bid?._id ||
+            bid?.id ||
+            `live-${bid?.createdAt || Date.now()}-${amount}`,
+          amount,
+          teamName:
+            bid?.teamName || bid?.team?.name || data?.teamName || "Team bid",
+          team:
+            bid?.team ||
+            (bid?.teamId ? { _id: bid.teamId, name: bid.teamName } : undefined),
+          createdAt:
+            bid?.createdAt || data?.createdAt || new Date().toISOString(),
+        };
+        setLiveBids((previous) => {
+          if (
+            previous.some(
+              (item) => String(item._id || item.id) === String(nextBid._id),
+            )
+          )
+            return previous;
+          return [nextBid, ...previous].slice(0, 100);
+        });
+      }
+    },
+    [currentPlayer],
+  );
 
   /* =====================================================
        PLAYER SOLD
@@ -628,10 +647,18 @@ const AdminAuctionControl = () => {
       .then((response) => {
         if (!active) return;
         const data = extractData(response);
-        setLiveBids(Array.isArray(data) ? data : data?.bids || data?.history || data?.data?.bids || []);
+        setLiveBids(
+          Array.isArray(data)
+            ? data
+            : data?.bids || data?.history || data?.data?.bids || [],
+        );
       })
-      .catch(() => { if (active) setLiveBids([]); });
-    return () => { active = false; };
+      .catch(() => {
+        if (active) setLiveBids([]);
+      });
+    return () => {
+      active = false;
+    };
   }, [currentPlayer]);
 
   /* =====================================================
@@ -640,14 +667,30 @@ const AdminAuctionControl = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 dark:bg-slate-950 dark:text-slate-100 sm:px-6 lg:px-8" role="status" aria-live="polite" aria-label="Loading auction control">
+      <div
+        className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 dark:bg-slate-950 dark:text-slate-100 sm:px-6 lg:px-8"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading auction control"
+      >
         <div className="mx-auto max-w-7xl animate-pulse space-y-6">
           <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex-1 space-y-3"><div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700" /><div className="h-7 w-56 max-w-full rounded-lg bg-slate-200 dark:bg-slate-700" /><div className="h-4 w-36 rounded bg-slate-100 dark:bg-slate-800" /></div>
+            <div className="flex-1 space-y-3">
+              <div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700" />
+              <div className="h-7 w-56 max-w-full rounded-lg bg-slate-200 dark:bg-slate-700" />
+              <div className="h-4 w-36 rounded bg-slate-100 dark:bg-slate-800" />
+            </div>
             <div className="h-10 w-32 rounded-xl bg-slate-200 dark:bg-slate-700" />
           </div>
-          <div className="grid gap-6 lg:grid-cols-3"><div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" /><div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" /><div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" /><div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" /></div>
-          <p className="text-center text-sm font-medium text-slate-500 dark:text-slate-400">Loading auction session and live bidding data…</p>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" />
+            <div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
+            <div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" />
+            <div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
+          </div>
+          <p className="text-center text-sm font-medium text-slate-500 dark:text-slate-400">
+            Loading auction session and live bidding data…
+          </p>
         </div>
       </div>
     );
@@ -730,14 +773,12 @@ const AdminAuctionControl = () => {
     auctionStarted && liveStatus !== "paused" && playerFinished;
 
   const playerPhoto =
-<<<<<<< HEAD
     toImageUrl(currentPlayer?.photo) ||
     toImageUrl(currentPlayer?.image) ||
     toImageUrl(currentPlayer?.profileImage) ||
     toImageUrl(currentPlayer?.photoUrl);
-=======
-    toImageUrl(currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+
+  toImageUrl(currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
 
   const canSell = isPlayerAuctioning && currentBid > 0;
 
@@ -859,11 +900,20 @@ const AdminAuctionControl = () => {
 
       {/* Admin work-area tabs */}
       <div className="border-b border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-900/80">
-        <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8" aria-label="Admin auction sections">
-          <Link to="/admin/auction-control" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm">
+        <nav
+          className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8"
+          aria-label="Admin auction sections"
+        >
+          <Link
+            to="/admin/auction-control"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm"
+          >
             <FiPlay /> Auction Control
           </Link>
-          <Link to="/admin/registrations" className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:text-indigo-300">
+          <Link
+            to="/admin/registrations"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:text-indigo-300"
+          >
             <FiUsers /> Registrations & Approvals
           </Link>
         </nav>
@@ -1041,59 +1091,105 @@ const AdminAuctionControl = () => {
             </div>
           </div>
 
-<<<<<<< HEAD
           <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="flex flex-col gap-3 border-b border-gray-100 p-5 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <h3 className="text-lg font-black text-gray-900 dark:text-white">Live bidding history</h3>
+                  <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                    Live bidding history
+                  </h3>
                 </div>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  {currentPlayer ? `Bids for ${getPlayerName(currentPlayer) || "the current player"}` : "Bid activity appears here when a player goes live"}
+                  {currentPlayer
+                    ? `Bids for ${getPlayerName(currentPlayer) || "the current player"}`
+                    : "Bid activity appears here when a player goes live"}
                 </p>
               </div>
               <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">{liveBids.length} bids</span>
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">LIVE</span>
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                  {liveBids.length} bids
+                </span>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+                  LIVE
+                </span>
               </div>
             </div>
             {liveBids.length ? (
               <div className="max-h-[420px] space-y-2 overflow-y-auto p-4">
                 {liveBids.map((bid, index) => {
-                  const teamName = bid.team?.name || bid.teamName || bid.bidder?.name || bid.user?.name || "Team bid";
+                  const teamName =
+                    bid.team?.name ||
+                    bid.teamName ||
+                    bid.bidder?.name ||
+                    bid.user?.name ||
+                    "Team bid";
                   const teamLogo = toImageUrl(bid.team?.logo);
                   const timestamp = bid.createdAt || bid.timestamp;
                   return (
-                    <div key={bid._id || bid.id || `${timestamp || ""}-${index}`} className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:p-4 ${index === 0 ? "border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/5" : "border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50"}`}>
+                    <div
+                      key={bid._id || bid.id || `${timestamp || ""}-${index}`}
+                      className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:p-4 ${index === 0 ? "border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/5" : "border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50"}`}
+                    >
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-indigo-600 ring-1 ring-gray-200 dark:bg-gray-900 dark:text-indigo-300 dark:ring-gray-700">
-                          {teamLogo ? <img src={teamLogo} alt={`${teamName} logo`} className="h-full w-full object-cover" /> : (index === 0 ? "★" : `#${index + 1}`)}
+                          {teamLogo ? (
+                            <img
+                              src={teamLogo}
+                              alt={`${teamName} logo`}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : index === 0 ? (
+                            "★"
+                          ) : (
+                            `#${index + 1}`
+                          )}
                         </div>
                         <div className="min-w-0">
-                          <p className="truncate font-bold text-gray-900 dark:text-white">{teamName}</p>
+                          <p className="truncate font-bold text-gray-900 dark:text-white">
+                            {teamName}
+                          </p>
                           <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                            {timestamp ? new Date(timestamp).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "Recent bid"}
-                            {index === 0 ? <span className="ml-2 font-bold text-emerald-700 dark:text-emerald-300">Latest bid</span> : null}
+                            {timestamp
+                              ? new Date(timestamp).toLocaleString("en-IN", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  second: "2-digit",
+                                })
+                              : "Recent bid"}
+                            {index === 0 ? (
+                              <span className="ml-2 font-bold text-emerald-700 dark:text-emerald-300">
+                                Latest bid
+                              </span>
+                            ) : null}
                           </p>
                         </div>
                       </div>
-                      <p className="ml-auto text-lg font-black tabular-nums text-emerald-700 dark:text-emerald-300">{formatCurrency(getBidAmount(bid))}</p>
+                      <p className="ml-auto text-lg font-black tabular-nums text-emerald-700 dark:text-emerald-300">
+                        {formatCurrency(getBidAmount(bid))}
+                      </p>
                     </div>
                   );
                 })}
               </div>
             ) : (
               <div className="p-8 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"><RupeeIcon /></div>
-                <p className="mt-3 font-bold text-gray-800 dark:text-gray-200">No bids yet</p>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">When teams place bids, the latest amount and timestamp will appear here automatically.</p>
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
+                  <RupeeIcon />
+                </div>
+                <p className="mt-3 font-bold text-gray-800 dark:text-gray-200">
+                  No bids yet
+                </p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  When teams place bids, the latest amount and timestamp will
+                  appear here automatically.
+                </p>
               </div>
             )}
           </div>
 
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
           {/* =========================================
                         QUICK SUMMARY
                     ========================================= */}
@@ -1111,7 +1207,9 @@ const AdminAuctionControl = () => {
                   </p>
 
                   <p className="font-bold text-gray-900 dark:text-white">
-                    {formatCurrency(auction.teamBudget ?? auction.startingBudget ?? 0)}
+                    {formatCurrency(
+                      auction.teamBudget ?? auction.startingBudget ?? 0,
+                    )}
                   </p>
                 </div>
               </div>
@@ -1404,7 +1502,9 @@ const AdminAuctionControl = () => {
                                 "
               >
                 <FiCheckCircle className="shrink-0" aria-hidden="true" />
-                <span className="min-w-0 text-center leading-tight">Complete Player</span>
+                <span className="min-w-0 text-center leading-tight">
+                  Complete Player
+                </span>
               </button>
             )}
 
@@ -1417,9 +1517,7 @@ const AdminAuctionControl = () => {
                 title="Finish and close the auction"
                 aria-label="Finish auction"
                 disabled={
-                  processing ||
-                  isPlayerAuctioning ||
-                  status === "completed"
+                  processing || isPlayerAuctioning || status === "completed"
                 }
                 className="
                                         flex
@@ -1447,7 +1545,9 @@ const AdminAuctionControl = () => {
                                     "
               >
                 <FiFlag className="shrink-0" aria-hidden="true" />
-                <span className="min-w-0 text-center leading-tight">Finish Auction</span>
+                <span className="min-w-0 text-center leading-tight">
+                  Finish Auction
+                </span>
               </button>
             )}
           </div>

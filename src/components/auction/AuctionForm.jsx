@@ -18,11 +18,11 @@ const empty = {
   date: "",
   teamBudget: "",
   minimumBid: "",
-<<<<<<< HEAD
-  bidRules: [ { upTo: "1000000", increment: "100000" }, { upTo: "3000000", increment: "200000" }, { upTo: "", increment: "500000" } ],
-=======
-  bidIncrement: "",
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+  bidRules: [
+    { upTo: "1000000", increment: "100000" },
+    { upTo: "3000000", increment: "200000" },
+    { upTo: "", increment: "500000" },
+  ],
   maxTeams: "",
   maxPlayersPerTeam: "",
 };
@@ -69,7 +69,11 @@ function Field({
   return (
     <div>
       <label className="label">{label}</label>
-      {help && <p className="mb-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{help}</p>}
+      {help && (
+        <p className="mb-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+          {help}
+        </p>
+      )}
       <div className="relative">
         <Icon className="pointer-events-none absolute left-3 top-3.5 text-slate-400 dark:text-slate-500" />
         <input
@@ -110,13 +114,19 @@ export default function AuctionForm({
     setForm({
       ...empty,
       ...initialValues,
-<<<<<<< HEAD
-      teamBudget: initialValues?.teamBudget != null ? String(initialValues.teamBudget) : (initialValues?.startingBudget != null ? String(initialValues.startingBudget) : ""),
-      bidRules: Array.isArray(initialValues?.bidRules) && initialValues.bidRules.length
-        ? initialValues.bidRules.map((rule) => ({ upTo: rule.upTo ?? "", increment: rule.increment ?? "" }))
-        : empty.bidRules,
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+      teamBudget:
+        initialValues?.teamBudget != null
+          ? String(initialValues.teamBudget)
+          : initialValues?.startingBudget != null
+            ? String(initialValues.startingBudget)
+            : "",
+      bidRules:
+        Array.isArray(initialValues?.bidRules) && initialValues.bidRules.length
+          ? initialValues.bidRules.map((rule) => ({
+              upTo: rule.upTo ?? "",
+              increment: rule.increment ?? "",
+            }))
+          : empty.bidRules,
       date: toLocalInput(initialValues?.date),
     });
     setPreview(initialValues?.image || "");
@@ -161,26 +171,36 @@ export default function AuctionForm({
     if (!form.date) e.date = "Auction date is required.";
     else if (new Date(form.date) <= new Date())
       e.date = "Auction date must be in the future.";
-    [
-      "teamBudget",
-      "minimumBid",
-      "maxTeams",
-      "maxPlayersPerTeam",
-    ].forEach((k) => {
-      if (form[k] === "" || Number(form[k]) <= 0)
-        e[k] = "Enter a value greater than 0.";
-    });
-<<<<<<< HEAD
-    if (!Array.isArray(form.bidRules) || form.bidRules.some((rule) => Number(rule.increment) <= 0 || (rule.upTo !== "" && Number(rule.upTo) <= 0))) {
-      e.bidRules = "Each increment must be positive and thresholds must be positive or blank for no upper limit.";
+    ["teamBudget", "minimumBid", "maxTeams", "maxPlayersPerTeam"].forEach(
+      (k) => {
+        if (form[k] === "" || Number(form[k]) <= 0)
+          e[k] = "Enter a value greater than 0.";
+      },
+    );
+    if (
+      !Array.isArray(form.bidRules) ||
+      form.bidRules.some(
+        (rule) =>
+          Number(rule.increment) <= 0 ||
+          (rule.upTo !== "" && Number(rule.upTo) <= 0),
+      )
+    ) {
+      e.bidRules =
+        "Each increment must be positive and thresholds must be positive or blank for no upper limit.";
     }
     if (Array.isArray(form.bidRules)) {
-      const finiteLimits = form.bidRules.filter((rule) => rule.upTo !== "").map((rule) => Number(rule.upTo));
-      if (finiteLimits.some((limit, index) => index > 0 && limit <= finiteLimits[index - 1])) e.bidRules = "Bid thresholds must be in ascending order.";
+      const finiteLimits = form.bidRules
+        .filter((rule) => rule.upTo !== "")
+        .map((rule) => Number(rule.upTo));
+      if (
+        finiteLimits.some(
+          (limit, index) => index > 0 && limit <= finiteLimits[index - 1],
+        )
+      )
+        e.bidRules = "Bid thresholds must be in ascending order.";
     }
-    if (Number(form.minimumBid) > Number(form.teamBudget)) e.minimumBid = "Minimum bid cannot exceed the budget per team.";
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+    if (Number(form.minimumBid) > Number(form.teamBudget))
+      e.minimumBid = "Minimum bid cannot exceed the budget per team.";
     if (Number(form.maxTeams) < 2)
       e.maxTeams = "At least 2 teams are required.";
     if (Number(form.maxPlayersPerTeam) < 1)
@@ -201,12 +221,16 @@ export default function AuctionForm({
     data.append("teamBudget", Number(form.teamBudget));
     data.append("startingBudget", Number(form.teamBudget));
     data.append("minimumBid", Number(form.minimumBid));
-<<<<<<< HEAD
     data.append("bidIncrement", Number(form.bidRules[0]?.increment || 1));
-    data.append("bidRules", JSON.stringify(form.bidRules.map((rule) => ({ upTo: rule.upTo === "" ? null : Number(rule.upTo), increment: Number(rule.increment) }))));
-=======
-    data.append("bidIncrement", Number(form.bidIncrement));
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+    data.append(
+      "bidRules",
+      JSON.stringify(
+        form.bidRules.map((rule) => ({
+          upTo: rule.upTo === "" ? null : Number(rule.upTo),
+          increment: Number(rule.increment),
+        })),
+      ),
+    );
     data.append("maxTeams", Number(form.maxTeams));
     data.append("maxPlayersPerTeam", Number(form.maxPlayersPerTeam));
 
@@ -243,8 +267,14 @@ export default function AuctionForm({
       </div>
 
       <div>
-        <label className="label">Description <span className="font-normal text-slate-400">(optional)</span></label>
-        <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">Explain the event, eligible players, and any special auction notes. Maximum 500 characters.</p>
+        <label className="label">
+          Description{" "}
+          <span className="font-normal text-slate-400">(optional)</span>
+        </label>
+        <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">
+          Explain the event, eligible players, and any special auction notes.
+          Maximum 500 characters.
+        </p>
         <div className="relative">
           <FiInfo className="absolute left-3 top-3.5 text-slate-400 dark:text-slate-500" />
           <textarea
@@ -270,7 +300,10 @@ export default function AuctionForm({
             (optional)
           </span>
         </label>
-        <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">Upload a JPG or PNG banner up to 2 MB. This image appears on auction cards and details.</p>
+        <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">
+          Upload a JPG or PNG banner up to 2 MB. This image appears on auction
+          cards and details.
+        </p>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           <label
             className={`group block shrink-0 ${readOnly ? "" : "cursor-pointer"}`}
@@ -315,84 +348,138 @@ export default function AuctionForm({
         </div>
       </div>
 
-<<<<<<< HEAD
       <section className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
         <div className="mb-3">
-          <h3 className="font-bold text-slate-900 dark:text-white">Bidding rules</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Set the opening minimum bid above, then configure how much each new bid must increase. A separate bid-increment field is unnecessary because these rules define the increments.</p>
+          <h3 className="font-bold text-slate-900 dark:text-white">
+            Bidding rules
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Set the opening minimum bid above, then configure how much each new
+            bid must increase. A separate bid-increment field is unnecessary
+            because these rules define the increments.
+          </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {form.bidRules.map((rule, index) => (
-            <div key={index} className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
-              <label className="label">{index === form.bidRules.length - 1 ? "Bid amount up to (₹, blank = no limit)" : "Current bid threshold (₹)"}</label>
-              <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">Apply this tier until the current bid reaches this threshold.</p>
-              <input className="input" type="number" min="1" value={rule.upTo} disabled={readOnly} placeholder="No upper limit" onChange={(e) => setForm((v) => ({ ...v, bidRules: v.bidRules.map((r, i) => i === index ? { ...r, upTo: e.target.value } : r) }))} />
-              <label className="label mt-3">Required increase per bid (₹)</label>
-              <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">The next valid bid must increase by at least this amount.</p>
-              <input className="input" type="number" min="1" value={rule.increment} disabled={readOnly} onChange={(e) => setForm((v) => ({ ...v, bidRules: v.bidRules.map((r, i) => i === index ? { ...r, increment: e.target.value } : r) }))} />
+            <div
+              key={index}
+              className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"
+            >
+              <label className="label">
+                {index === form.bidRules.length - 1
+                  ? "Bid amount up to (₹, blank = no limit)"
+                  : "Current bid threshold (₹)"}
+              </label>
+              <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                Apply this tier until the current bid reaches this threshold.
+              </p>
+              <input
+                className="input"
+                type="number"
+                min="1"
+                value={rule.upTo}
+                disabled={readOnly}
+                placeholder="No upper limit"
+                onChange={(e) =>
+                  setForm((v) => ({
+                    ...v,
+                    bidRules: v.bidRules.map((r, i) =>
+                      i === index ? { ...r, upTo: e.target.value } : r,
+                    ),
+                  }))
+                }
+              />
+              <label className="label mt-3">
+                Required increase per bid (₹)
+              </label>
+              <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                The next valid bid must increase by at least this amount.
+              </p>
+              <input
+                className="input"
+                type="number"
+                min="1"
+                value={rule.increment}
+                disabled={readOnly}
+                onChange={(e) =>
+                  setForm((v) => ({
+                    ...v,
+                    bidRules: v.bidRules.map((r, i) =>
+                      i === index ? { ...r, increment: e.target.value } : r,
+                    ),
+                  }))
+                }
+              />
             </div>
           ))}
         </div>
-        {errors.bidRules && <p className="mt-2 text-sm font-semibold text-red-600">{errors.bidRules}</p>}
+        {errors.bidRules && (
+          <p className="mt-2 text-sm font-semibold text-red-600">
+            {errors.bidRules}
+          </p>
+        )}
       </section>
 
       <section className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
-      <div className="mb-3">
-        <h3 className="font-bold text-slate-900 dark:text-white">Team and budget limits</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Every team created for this auction receives the budget specified here.</p>
-      </div>
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <Field
-          name="teamBudget"
-          label="Total budget per team (₹)"
-          help="Each team starts with this purse. Example: ₹10,000,000 gives every team a ₹1 crore budget."
-          icon={BsCurrencyRupee}
-          type="number"
-          step="1"
-          form={form}
-          errors={errors}
-          change={change}
-          readOnly={readOnly}
-        />
-        <Field
-          name="minimumBid"
-          label="Minimum opening bid (₹)"
-          help="The lowest opening bid allowed for a player. It must not exceed the per-team budget."
-          icon={BsCurrencyRupee}
-          type="number"
-          step="1"
-          form={form}
-          errors={errors}
-          change={change}
-          readOnly={readOnly}
-        />
-        <Field
-          name="maxTeams"
-          label="Maximum teams"
-          help="Maximum number of teams that can be approved for this auction."
-          icon={FiUsers}
-          type="number"
-          step="1"
-          form={form}
-          errors={errors}
-          change={change}
-          readOnly={readOnly}
-        />
-        <Field
-          name="maxPlayersPerTeam"
-          label="Maximum players per team"
-          help="Squad-size limit for each team."
-          icon={FiUsers}
-          type="number"
-          step="1"
-          form={form}
-          errors={errors}
-          change={change}
-          readOnly={readOnly}
-        />
-      </div>
+        <div className="mb-3">
+          <h3 className="font-bold text-slate-900 dark:text-white">
+            Team and budget limits
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Every team created for this auction receives the budget specified
+            here.
+          </p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Field
+            name="teamBudget"
+            label="Total budget per team (₹)"
+            help="Each team starts with this purse. Example: ₹10,000,000 gives every team a ₹1 crore budget."
+            icon={BsCurrencyRupee}
+            type="number"
+            step="1"
+            form={form}
+            errors={errors}
+            change={change}
+            readOnly={readOnly}
+          />
+          <Field
+            name="minimumBid"
+            label="Minimum opening bid (₹)"
+            help="The lowest opening bid allowed for a player. It must not exceed the per-team budget."
+            icon={BsCurrencyRupee}
+            type="number"
+            step="1"
+            form={form}
+            errors={errors}
+            change={change}
+            readOnly={readOnly}
+          />
+          <Field
+            name="maxTeams"
+            label="Maximum teams"
+            help="Maximum number of teams that can be approved for this auction."
+            icon={FiUsers}
+            type="number"
+            step="1"
+            form={form}
+            errors={errors}
+            change={change}
+            readOnly={readOnly}
+          />
+          <Field
+            name="maxPlayersPerTeam"
+            label="Maximum players per team"
+            help="Squad-size limit for each team."
+            icon={FiUsers}
+            type="number"
+            step="1"
+            form={form}
+            errors={errors}
+            change={change}
+            readOnly={readOnly}
+          />
+        </div>
       </section>
 
       {!readOnly && (

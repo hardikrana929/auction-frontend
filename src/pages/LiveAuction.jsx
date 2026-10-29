@@ -138,13 +138,11 @@ const LiveAuction = () => {
 
   const [currentBid, setCurrentBid] = useState(0);
   const [leadingTeam, setLeadingTeam] = useState(null);
-<<<<<<< HEAD
+
   const [lastBidTeam, setLastBidTeam] = useState(null);
   const [approvedTeamCount, setApprovedTeamCount] = useState(null);
   // Lowest bid the server will accept right now (null = unknown, compute locally).
   const [serverNextBid, setServerNextBid] = useState(null);
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -313,14 +311,24 @@ const LiveAuction = () => {
         const sessionData = extractSession(sessionResponse);
 
         const currentPlayer = extractPlayer(currentResponse);
-<<<<<<< HEAD
-        const currentData = extractData(currentResponse) || currentResponse || {};
 
-        setLastBidTeam(currentData?.lastBidTeam || currentData?.currentBidder || currentPlayer?.currentBidder || null);
-        setApprovedTeamCount(Number.isFinite(Number(currentData?.approvedTeamCount)) ? Number(currentData.approvedTeamCount) : null);
-        setServerNextBid(Number(currentData?.nextBid) > 0 ? Number(currentData.nextBid) : null);
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+        const currentData =
+          extractData(currentResponse) || currentResponse || {};
+
+        setLastBidTeam(
+          currentData?.lastBidTeam ||
+            currentData?.currentBidder ||
+            currentPlayer?.currentBidder ||
+            null,
+        );
+        setApprovedTeamCount(
+          Number.isFinite(Number(currentData?.approvedTeamCount))
+            ? Number(currentData.approvedTeamCount)
+            : null,
+        );
+        setServerNextBid(
+          Number(currentData?.nextBid) > 0 ? Number(currentData.nextBid) : null,
+        );
 
         setAuction(auctionData || null);
         setSession(sessionData || null);
@@ -511,17 +519,21 @@ const LiveAuction = () => {
       }
 
       const incomingBid = payload?.bid || payload?.data?.bid || payload;
-<<<<<<< HEAD
+
       if (payload?.lastBidTeam) setLastBidTeam(payload.lastBidTeam);
       else if (payload?.currentBidder) {
         const currentBidder = payload.currentBidder;
-        setLastBidTeam({ _id: currentBidder._id || currentBidder.teamId || currentBidder.id, name: currentBidder.name || currentBidder.teamName || "Leading team" });
+        setLastBidTeam({
+          _id: currentBidder._id || currentBidder.teamId || currentBidder.id,
+          name: currentBidder.name || currentBidder.teamName || "Leading team",
+        });
       }
-      if (Array.isArray(payload?.turnOrder)) setApprovedTeamCount(payload.turnOrder.length);
-      if (Number.isFinite(Number(payload?.approvedTeamCount))) setApprovedTeamCount(Number(payload.approvedTeamCount));
-      if (Number(payload?.nextBid) > 0) setServerNextBid(Number(payload.nextBid));
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
+      if (Array.isArray(payload?.turnOrder))
+        setApprovedTeamCount(payload.turnOrder.length);
+      if (Number.isFinite(Number(payload?.approvedTeamCount)))
+        setApprovedTeamCount(Number(payload.approvedTeamCount));
+      if (Number(payload?.nextBid) > 0)
+        setServerNextBid(Number(payload.nextBid));
 
       const incomingPlayer = payload?.player || payload?.data?.player || null;
 
@@ -763,14 +775,15 @@ const LiveAuction = () => {
       if (Number(data?.nextBid) > 0) setServerNextBid(Number(data.nextBid));
 
       const returnedBid = data?.bid || data?.data?.bid || null;
-<<<<<<< HEAD
+
       if (data?.lastBidTeam) setLastBidTeam(data.lastBidTeam);
       else if (returnedBid?.team || returnedBid?.teamId) {
         const team = returnedBid.team || returnedBid.teamId;
-        setLastBidTeam({ _id: getId(team), name: team?.name || returnedBid.teamName || "Your team" });
+        setLastBidTeam({
+          _id: getId(team),
+          name: team?.name || returnedBid.teamName || "Your team",
+        });
       }
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
       const returnedPlayer = data?.player || data?.data?.player || null;
 
@@ -787,7 +800,8 @@ const LiveAuction = () => {
       }
 
       if (returnedPlayer) {
-        if (returnedPlayer.currentBidder) setLastBidTeam(returnedPlayer.currentBidder);
+        if (returnedPlayer.currentBidder)
+          setLastBidTeam(returnedPlayer.currentBidder);
         setPlayer((previous) => ({
           ...(previous || {}),
           ...returnedPlayer,
@@ -801,11 +815,7 @@ const LiveAuction = () => {
       const status = error?.response?.status;
       const body = error?.response?.data || {};
 
-      toast.error(
-        body.message ||
-          error?.message ||
-          "Unable to place bid.",
-      );
+      toast.error(body.message || error?.message || "Unable to place bid.");
 
       // The bid was rejected because our view of the auction was out of date
       // (someone else bid first, tier changed, ...). Adopt the server's number
@@ -1015,10 +1025,7 @@ const LiveAuction = () => {
   }
 
   const basePrice = Number(player?.basePrice ?? 0);
-  const openingBid = Math.max(
-    Number(auction?.minimumBid || 0),
-    basePrice,
-  );
+  const openingBid = Math.max(Number(auction?.minimumBid || 0), basePrice);
   const bidRules = Array.isArray(auction?.bidRules) ? auction.bidRules : [];
   const currentBidAmount = Number(currentBid || 0);
   const matchedBidRule = bidRules.find(
@@ -1032,9 +1039,10 @@ const LiveAuction = () => {
   // player has already received a bid from stale player fields or unrelated
   // auction history.
   const hasActualBid = Boolean(lastBidTeam);
-  const nextBid = hasActualBid && currentBidAmount > 0
-    ? currentBidAmount + increment
-    : openingBid;
+  const nextBid =
+    hasActualBid && currentBidAmount > 0
+      ? currentBidAmount + increment
+      : openingBid;
 
   const leader = resolveTeam(leadingTeam, teamDirectory);
   const isLeading = Boolean(myTeamId) && leader.id === myTeamId;
@@ -1234,12 +1242,9 @@ const LiveAuction = () => {
                 accessApproved={accessApproved}
                 canBid={!isAdmin}
                 submitting={bidSubmitting}
-<<<<<<< HEAD
                 lastBidTeam={lastBidTeam}
                 approvedTeamCount={approvedTeamCount}
                 nextBid={serverNextBid}
-=======
->>>>>>> parent of 6f3d571 (add new featur and fix bug)
                 teamName={myTeamData?.name || ""}
                 teamId={myTeamId}
                 purse={purse}
