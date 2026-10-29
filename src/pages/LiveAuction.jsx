@@ -138,10 +138,13 @@ const LiveAuction = () => {
 
   const [currentBid, setCurrentBid] = useState(0);
   const [leadingTeam, setLeadingTeam] = useState(null);
+<<<<<<< HEAD
   const [lastBidTeam, setLastBidTeam] = useState(null);
   const [approvedTeamCount, setApprovedTeamCount] = useState(null);
   // Lowest bid the server will accept right now (null = unknown, compute locally).
   const [serverNextBid, setServerNextBid] = useState(null);
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -310,11 +313,14 @@ const LiveAuction = () => {
         const sessionData = extractSession(sessionResponse);
 
         const currentPlayer = extractPlayer(currentResponse);
+<<<<<<< HEAD
         const currentData = extractData(currentResponse) || currentResponse || {};
 
         setLastBidTeam(currentData?.lastBidTeam || currentData?.currentBidder || currentPlayer?.currentBidder || null);
         setApprovedTeamCount(Number.isFinite(Number(currentData?.approvedTeamCount)) ? Number(currentData.approvedTeamCount) : null);
         setServerNextBid(Number(currentData?.nextBid) > 0 ? Number(currentData.nextBid) : null);
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
         setAuction(auctionData || null);
         setSession(sessionData || null);
@@ -505,6 +511,7 @@ const LiveAuction = () => {
       }
 
       const incomingBid = payload?.bid || payload?.data?.bid || payload;
+<<<<<<< HEAD
       if (payload?.lastBidTeam) setLastBidTeam(payload.lastBidTeam);
       else if (payload?.currentBidder) {
         const currentBidder = payload.currentBidder;
@@ -513,6 +520,8 @@ const LiveAuction = () => {
       if (Array.isArray(payload?.turnOrder)) setApprovedTeamCount(payload.turnOrder.length);
       if (Number.isFinite(Number(payload?.approvedTeamCount))) setApprovedTeamCount(Number(payload.approvedTeamCount));
       if (Number(payload?.nextBid) > 0) setServerNextBid(Number(payload.nextBid));
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
       const incomingPlayer = payload?.player || payload?.data?.player || null;
 
@@ -754,11 +763,14 @@ const LiveAuction = () => {
       if (Number(data?.nextBid) > 0) setServerNextBid(Number(data.nextBid));
 
       const returnedBid = data?.bid || data?.data?.bid || null;
+<<<<<<< HEAD
       if (data?.lastBidTeam) setLastBidTeam(data.lastBidTeam);
       else if (returnedBid?.team || returnedBid?.teamId) {
         const team = returnedBid.team || returnedBid.teamId;
         setLastBidTeam({ _id: getId(team), name: team?.name || returnedBid.teamName || "Your team" });
       }
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
       const returnedPlayer = data?.player || data?.data?.player || null;
 
@@ -1217,15 +1229,17 @@ const LiveAuction = () => {
                   Number(player?.basePrice || 0),
                 )}
                 bidIncrement={auction?.bidIncrement || 0}
-                bidRules={auction?.bidRules || []}
                 playerActive={playerActive}
                 auctionPaused={auctionPaused}
                 accessApproved={accessApproved}
                 canBid={!isAdmin}
                 submitting={bidSubmitting}
+<<<<<<< HEAD
                 lastBidTeam={lastBidTeam}
                 approvedTeamCount={approvedTeamCount}
                 nextBid={serverNextBid}
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
                 teamName={myTeamData?.name || ""}
                 teamId={myTeamId}
                 purse={purse}

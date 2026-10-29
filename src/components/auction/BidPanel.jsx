@@ -1,17 +1,17 @@
-import { useMemo } from "react";
-import { FiLoader, FiLock } from "react-icons/fi";
+import { useEffect, useMemo, useState } from "react";
+import { FiLoader, FiLock, FiMinus, FiPlus } from "react-icons/fi";
 
 import RupeeIcon from "../RupeeIcon";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 /**
- * Shows the current next-bid amount as a read-only field. The button places
- * exactly that increment; bid rules are enforced again by the backend.
+ * The bidding controls, all in ONE row:
+ *   [ - ]  [ ₹ amount ]  [ + ]  [ Place Bid ]
+ * The team is chosen automatically by the page from the logged-in owner.
  */
 const BidPanel = ({
   currentBid = 0,
   bidIncrement = 0,
-  bidRules = [],
   minimumBid = 0,
   playerActive = false,
   auctionPaused = false,
@@ -21,6 +21,7 @@ const BidPanel = ({
   teamName = "",
   teamId = "",
   purse = null,
+<<<<<<< HEAD
   lastBidTeam = null,
   approvedTeamCount = null,
   nextBid = null,
@@ -32,6 +33,12 @@ const BidPanel = ({
   // a bid that was one tier too low exactly at a boundary -> HTTP 400.
   const matchedRule = Array.isArray(bidRules) ? bidRules.find((rule) => rule.upTo == null || current < Number(rule.upTo)) : null;
   const increment = Number(matchedRule?.increment || bidIncrement || 0);
+=======
+  onPlaceBid,
+}) => {
+  const current = Number(currentBid || 0);
+  const increment = Number(bidIncrement || 0);
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
   const minimum = Number(minimumBid || 0);
   const step = increment > 0 ? increment : 1;
 
@@ -46,25 +53,54 @@ const BidPanel = ({
     return minimum > 0 ? minimum : (current > 0 ? current : step);
   }, [nextBid, current, step, minimum, lastBidTeamId]);
 
+<<<<<<< HEAD
   const bidAmount = automaticNextBid;
   const isLastBidder = Boolean(teamId && lastBidTeamId && String(teamId) === String(lastBidTeamId));
+=======
+  const [customAmount, setCustomAmount] = useState("");
+
+  // If somebody else bids higher while you were typing, follow the new minimum.
+  useEffect(() => {
+    if (customAmount !== "" && Number(customAmount) < automaticNextBid) {
+      setCustomAmount("");
+    }
+  }, [automaticNextBid, customAmount]);
+
+  const bidAmount = customAmount === "" ? automaticNextBid : Number(customAmount);
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
   const reason = useMemo(() => {
     if (!accessApproved) return "Your team is not approved for this auction.";
     if (!canBid) return "Bidding is not available for this account.";
     if (auctionPaused) return "The auction is paused. Bidding resumes shortly.";
     if (!playerActive) return "No player is live for bidding right now.";
+<<<<<<< HEAD
     if (approvedTeamCount !== null && approvedTeamCount < 2) return "At least two active, approved teams are required for bidding.";
     if (isLastBidder) return "Your team placed the latest bid. Wait for another team to bid before bidding again.";
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
     if (Number.isFinite(purse) && bidAmount > purse) {
       return `Not enough purse. Your team has ${formatCurrency(purse)} left.`;
     }
 
     return "";
+<<<<<<< HEAD
   }, [accessApproved, canBid, auctionPaused, playerActive, purse, bidAmount, approvedTeamCount, isLastBidder]);
 
   const inputsDisabled = submitting || !accessApproved || !canBid || auctionPaused || !playerActive || (approvedTeamCount !== null && approvedTeamCount < 2) || isLastBidder;
   const placeDisabled = inputsDisabled || !Number.isFinite(bidAmount) || Boolean(reason);
+=======
+  }, [accessApproved, canBid, auctionPaused, playerActive, purse, bidAmount]);
+
+  const invalidAmount = !Number.isFinite(bidAmount) || bidAmount < automaticNextBid;
+  const inputsDisabled = submitting || !accessApproved || !canBid || auctionPaused || !playerActive;
+  const placeDisabled = inputsDisabled || invalidAmount || Boolean(reason);
+
+  const decrease = () =>
+    setCustomAmount(String(Math.max(automaticNextBid, bidAmount - step)));
+
+  const increase = () => setCustomAmount(String(bidAmount + step));
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -74,6 +110,7 @@ const BidPanel = ({
     }
 
     await onPlaceBid?.(bidAmount);
+    setCustomAmount("");
   };
 
   const roundButton =
@@ -98,19 +135,46 @@ const BidPanel = ({
         onSubmit={handleSubmit}
         className="flex flex-wrap items-stretch gap-2 md:flex-nowrap"
       >
+        <button
+          type="button"
+          onClick={decrease}
+          disabled={inputsDisabled || bidAmount <= automaticNextBid}
+          aria-label="Decrease bid"
+          className={roundButton}
+        >
+          <FiMinus />
+        </button>
+
         <div className="relative min-w-[150px] flex-1">
           <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
           <input
             id="custom-bid"
-            type="text"
-            value={formatCurrency(bidAmount)}
-            readOnly
+            type="number"
+            min={automaticNextBid}
+            step={step}
+            value={customAmount === "" ? automaticNextBid : customAmount}
+            onChange={(event) => setCustomAmount(event.target.value)}
             disabled={inputsDisabled}
+<<<<<<< HEAD
             aria-label="Next bid amount"
             className="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 pl-9 pr-3 text-lg font-black tabular-nums text-slate-900 outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+=======
+            aria-label="Bid amount"
+            className="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 pl-9 pr-3 text-lg font-black tabular-nums text-white outline-none transition [appearance:textfield] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
           />
         </div>
+
+        <button
+          type="button"
+          onClick={increase}
+          disabled={inputsDisabled}
+          aria-label="Increase bid"
+          className={roundButton}
+        >
+          <FiPlus />
+        </button>
 
         <button
           type="submit"
@@ -123,7 +187,7 @@ const BidPanel = ({
               Placing bid...
             </>
           ) : (
-            <>Bid {formatCurrency(bidAmount)}</>
+            <>Place Bid — {formatCurrency(bidAmount)}</>
           )}
         </button>
       </form>
@@ -134,10 +198,16 @@ const BidPanel = ({
           <span>{reason}</span>
         </div>
       ) : (
+<<<<<<< HEAD
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
           Next increment {formatCurrency(step)} · Next bid{" "}
           {formatCurrency(automaticNextBid)}
           {lastBidTeam?.name ? ` · Latest bid: ${lastBidTeam.name}` : " · Any approved team may bid first"}
+=======
+        <p className="mt-3 text-xs text-slate-500">
+          Increment {formatCurrency(step)} · Minimum next bid{" "}
+          {formatCurrency(automaticNextBid)}
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
         </p>
       )}
     </section>

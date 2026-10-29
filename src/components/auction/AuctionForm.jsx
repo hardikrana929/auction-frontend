@@ -18,7 +18,11 @@ const empty = {
   date: "",
   teamBudget: "",
   minimumBid: "",
+<<<<<<< HEAD
   bidRules: [ { upTo: "1000000", increment: "100000" }, { upTo: "3000000", increment: "200000" }, { upTo: "", increment: "500000" } ],
+=======
+  bidIncrement: "",
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
   maxTeams: "",
   maxPlayersPerTeam: "",
 };
@@ -106,10 +110,13 @@ export default function AuctionForm({
     setForm({
       ...empty,
       ...initialValues,
+<<<<<<< HEAD
       teamBudget: initialValues?.teamBudget != null ? String(initialValues.teamBudget) : (initialValues?.startingBudget != null ? String(initialValues.startingBudget) : ""),
       bidRules: Array.isArray(initialValues?.bidRules) && initialValues.bidRules.length
         ? initialValues.bidRules.map((rule) => ({ upTo: rule.upTo ?? "", increment: rule.increment ?? "" }))
         : empty.bidRules,
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
       date: toLocalInput(initialValues?.date),
     });
     setPreview(initialValues?.image || "");
@@ -163,6 +170,7 @@ export default function AuctionForm({
       if (form[k] === "" || Number(form[k]) <= 0)
         e[k] = "Enter a value greater than 0.";
     });
+<<<<<<< HEAD
     if (!Array.isArray(form.bidRules) || form.bidRules.some((rule) => Number(rule.increment) <= 0 || (rule.upTo !== "" && Number(rule.upTo) <= 0))) {
       e.bidRules = "Each increment must be positive and thresholds must be positive or blank for no upper limit.";
     }
@@ -171,6 +179,8 @@ export default function AuctionForm({
       if (finiteLimits.some((limit, index) => index > 0 && limit <= finiteLimits[index - 1])) e.bidRules = "Bid thresholds must be in ascending order.";
     }
     if (Number(form.minimumBid) > Number(form.teamBudget)) e.minimumBid = "Minimum bid cannot exceed the budget per team.";
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
     if (Number(form.maxTeams) < 2)
       e.maxTeams = "At least 2 teams are required.";
     if (Number(form.maxPlayersPerTeam) < 1)
@@ -191,8 +201,12 @@ export default function AuctionForm({
     data.append("teamBudget", Number(form.teamBudget));
     data.append("startingBudget", Number(form.teamBudget));
     data.append("minimumBid", Number(form.minimumBid));
+<<<<<<< HEAD
     data.append("bidIncrement", Number(form.bidRules[0]?.increment || 1));
     data.append("bidRules", JSON.stringify(form.bidRules.map((rule) => ({ upTo: rule.upTo === "" ? null : Number(rule.upTo), increment: Number(rule.increment) }))));
+=======
+    data.append("bidIncrement", Number(form.bidIncrement));
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
     data.append("maxTeams", Number(form.maxTeams));
     data.append("maxPlayersPerTeam", Number(form.maxPlayersPerTeam));
 
@@ -301,6 +315,7 @@ export default function AuctionForm({
         </div>
       </div>
 
+<<<<<<< HEAD
       <section className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
         <div className="mb-3">
           <h3 className="font-bold text-slate-900 dark:text-white">Bidding rules</h3>
@@ -326,6 +341,8 @@ export default function AuctionForm({
         <h3 className="font-bold text-slate-900 dark:text-white">Team and budget limits</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">Every team created for this auction receives the budget specified here.</p>
       </div>
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <Field
           name="teamBudget"

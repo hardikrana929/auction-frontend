@@ -18,11 +18,9 @@ import {
 
 import AuctionRegistrationModal from "../components/AuctionRegistrationModal";
 import RegistrationStatusBadge from "../components/RegistrationStatusBadge";
-import { useAuth } from "../hooks/useAuth";
 
 export default function AuctionRegistration() {
   const { id } = useParams();
-  const { user } = useAuth();
 
   const [auction, setAuction] = useState(null);
   const [teams, setTeams] = useState([]);
@@ -34,22 +32,6 @@ export default function AuctionRegistration() {
 
   const [selectedTeamId, setSelectedTeamId] = useState("");
   const [error, setError] = useState("");
-  const approvedTeamsCount = Number(auction?.approvedTeamsCount || 0);
-  const maxTeams = Number(auction?.maxTeams || 0);
-  const auctionFull = maxTeams > 0 && approvedTeamsCount >= maxTeams;
-
-  const getOwnedTeams = useCallback((teamList) => {
-    const validTeams = (teamList || []).filter((team) => team && (team?._id || team?.id));
-    if (user?.role === "admin") return validTeams;
-    const userId = String(user?._id || user?.id || "");
-    const email = String(user?.email || "").trim().toLowerCase();
-    return validTeams.filter((team) => {
-      const owner = team?.owner;
-      const ownerId = String(typeof owner === "object" ? owner?._id || owner?.id || "" : owner || "");
-      const ownerEmail = String(owner?.email || team?.ownerEmail || "").trim().toLowerCase();
-      return (userId && ownerId === userId) || (email && ownerEmail === email);
-    });
-  }, [user]);
 
   /*
    * ----------------------------------------------------
@@ -271,7 +253,7 @@ export default function AuctionRegistration() {
         /*
          * Keep only valid team records.
          */
-        teamList = getOwnedTeams(teamList);
+        teamList = teamList.filter((team) => team && (team?._id || team?.id));
 
         setTeams(teamList);
 
@@ -307,7 +289,7 @@ export default function AuctionRegistration() {
         console.warn("Unable to load existing registration:", err);
       }
     },
-    [checkRegistrationStatus, getOwnedTeams],
+    [checkRegistrationStatus],
   );
 
   /*
@@ -329,10 +311,6 @@ export default function AuctionRegistration() {
    * ----------------------------------------------------
    */
   const openRegistration = async () => {
-    if (auctionFull) {
-      toast.error(`This auction is full. All ${maxTeams} team slots are approved.`);
-      return;
-    }
     if (!id) {
       toast.error("Auction ID is missing.");
       return;
@@ -359,7 +337,7 @@ export default function AuctionRegistration() {
         list = response.data.data;
       }
 
-      list = getOwnedTeams(list);
+      list = list.filter((team) => team && (team?._id || team?.id));
 
       setTeams(list);
 
@@ -937,16 +915,10 @@ export default function AuctionRegistration() {
 
           {/* Register button */}
           {!registration && (
-            <>
-              {auctionFull && (
-                <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200" role="status">
-                  This auction has reached its team limit ({approvedTeamsCount}/{maxTeams}). New team applications are closed.
-                </div>
-              )}
-              <button
+            <button
               type="button"
               onClick={openRegistration}
-              disabled={registering || auctionFull}
+              disabled={registering}
               className="
                 mt-6
                 w-full
@@ -963,9 +935,8 @@ export default function AuctionRegistration() {
                 disabled:opacity-60
               "
             >
-              {registering ? "Loading..." : auctionFull ? "Auction Team Limit Reached" : "Register a Team"}
-              </button>
-            </>
+              {registering ? "Loading..." : "Register a Team"}
+            </button>
           )}
 
           {/* Approved action */}

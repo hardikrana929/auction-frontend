@@ -787,7 +787,6 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
       const userName = getUserName(registration?.registeredBy).toLowerCase();
 
       const email = getUserEmail(registration?.registeredBy).toLowerCase();
-      const ownerEmail = String(registration?.team?.owner?.email || "").toLowerCase();
 
       const status = normalizeStatus(registration?.status);
 
@@ -795,7 +794,6 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
         teamName.includes(query) ||
         userName.includes(query) ||
         email.includes(query) ||
-        ownerEmail.includes(query) ||
         status.includes(query)
       );
     });
@@ -1021,7 +1019,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
 
               {selectedAuction?.maxTeams && (
                 <span className="text-xs text-slate-500 dark:text-slate-400">
-                  Teams approved: {Number(selectedAuction.approvedTeamsCount || 0)}/{selectedAuction.maxTeams}
+                  Max teams: {selectedAuction.maxTeams}
                 </span>
               )}
             </div>
@@ -1264,11 +1262,6 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
                                       Owner: {team.ownerName}
                                     </p>
                                   )}
-                                  {team?.owner?.email && (
-                                    <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
-                                      {team.owner.email}
-                                    </p>
-                                  )}
                                 </div>
                               </div>
                             </td>
@@ -1463,11 +1456,6 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
                                   {team?.ownerName && (
                                     <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                                       Owner: {team.ownerName}
-                                    </p>
-                                  )}
-                                  {team?.owner?.email && (
-                                    <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
-                                      {team.owner.email}
                                     </p>
                                   )}
                                 </div>

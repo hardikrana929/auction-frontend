@@ -34,7 +34,7 @@ import {
   completeAuction,
 } from "../api/auctionControlApi";
 
-import { sellPlayer, markPlayerUnsold, getBidHistory } from "../api/biddingApi";
+import { sellPlayer, markPlayerUnsold } from "../api/biddingApi";
 
 import PageLoader from "../components/PageLoader";
 import ErrorState from "../components/ErrorState";
@@ -118,7 +118,6 @@ const AdminAuctionControl = () => {
   const [currentPlayerFinished, setCurrentPlayerFinished] = useState(false);
 
   const [currentBid, setCurrentBid] = useState(0);
-  const [liveBids, setLiveBids] = useState([]);
 
   const [status, setStatus] = useState("waiting");
 
@@ -731,10 +730,14 @@ const AdminAuctionControl = () => {
     auctionStarted && liveStatus !== "paused" && playerFinished;
 
   const playerPhoto =
+<<<<<<< HEAD
     toImageUrl(currentPlayer?.photo) ||
     toImageUrl(currentPlayer?.image) ||
     toImageUrl(currentPlayer?.profileImage) ||
     toImageUrl(currentPlayer?.photoUrl);
+=======
+    toImageUrl(currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
 
   const canSell = isPlayerAuctioning && currentBid > 0;
 
@@ -1038,6 +1041,7 @@ const AdminAuctionControl = () => {
             </div>
           </div>
 
+<<<<<<< HEAD
           <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
             <div className="flex flex-col gap-3 border-b border-gray-100 p-5 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -1088,6 +1092,8 @@ const AdminAuctionControl = () => {
             )}
           </div>
 
+=======
+>>>>>>> parent of 6f3d571 (add new featur and fix bug)
           {/* =========================================
                         QUICK SUMMARY
                     ========================================= */}
