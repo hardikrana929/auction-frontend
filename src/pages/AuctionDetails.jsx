@@ -109,8 +109,8 @@ export default function AuctionDetails() {
       type: "normal",
     },
     {
-      label: "Starting Budget",
-      value: money(auction.startingBudget),
+      label: "Budget Per Team",
+      value: money(auction.teamBudget ?? auction.startingBudget),
       icon: RupeeIcon,
       type: "money",
     },
@@ -121,7 +121,7 @@ export default function AuctionDetails() {
       type: "money",
     },
     {
-      label: "Bid Increment",
+      label: "Default Bid Increment",
       value: money(auction.bidIncrement),
       icon: RupeeIcon,
       type: "money",

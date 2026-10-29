@@ -87,6 +87,7 @@ const getPlayerName = (player) =>
 
 const getBidAmount = (data) => {
   return (
+    data?.bid?.amount ||
     data?.amount ||
     data?.bidAmount ||
     data?.currentBid ||
@@ -156,9 +157,14 @@ const AdminAuctionControl = () => {
     try {
       const response = await getAuctionSession(auctionId);
 
-      const data = extractData(response);
+      // getAuctionSession already returns Axios response.data. Unwrap the
+      // backend's { success, data } envelope explicitly; data can be null
+      // before the auction is started.
+      const data = response && Object.prototype.hasOwnProperty.call(response, "data")
+        ? response.data
+        : extractData(response);
 
-      setSession(data);
+      setSession(data || null);
 
       // The backend populates session.currentPlayer (name, photo, role,
       // status...). Clear it when the session has none, so a finished player
@@ -191,8 +197,17 @@ const AdminAuctionControl = () => {
        * the auction has been started.
        */
 
-      console.warn("Auction session not available:", err);
+      // A 404 is expected before the auction has been started and no
+      // AuctionSession document exists yet. Keep the control page usable.
+      if (err?.response?.status !== 404) {
+        console.error("Failed to load auction session:", err);
+      }
 
+      setSession(null);
+      setCurrentPlayer(null);
+      setCurrentPlayerFinished(false);
+      setCurrentBid(0);
+      setLiveBids([]);
       return null;
     }
   }, [auctionId]);
@@ -310,12 +325,33 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   const handleBidNew = useCallback((data) => {
-    const amount = getBidAmount(data);
+    // The socket payload wraps the actual bid in `data.bid`; handle both the
+    // wrapped and legacy flat payloads so the admin display updates instantly.
+    const bid = data?.bid || data;
+    const amount = Number(getBidAmount(data) || getBidAmount(bid) || 0);
+    const eventPlayerId = getId(data?.playerId || bid?.player);
+    const activePlayerId = getId(currentPlayer);
 
-    if (amount) {
-      setCurrentBid(Number(amount));
+    if (amount > 0) setCurrentBid(amount);
+
+    // Ignore bids for another player if the server emits auction-wide events.
+    if (eventPlayerId && activePlayerId && eventPlayerId !== activePlayerId) return;
+
+    if (amount > 0) {
+      const nextBid = {
+        ...bid,
+        _id: bid?._id || bid?.id || `live-${bid?.createdAt || Date.now()}-${amount}`,
+        amount,
+        teamName: bid?.teamName || bid?.team?.name || data?.teamName || "Team bid",
+        team: bid?.team || (bid?.teamId ? { _id: bid.teamId, name: bid.teamName } : undefined),
+        createdAt: bid?.createdAt || data?.createdAt || new Date().toISOString(),
+      };
+      setLiveBids((previous) => {
+        if (previous.some((item) => String(item._id || item.id) === String(nextBid._id))) return previous;
+        return [nextBid, ...previous].slice(0, 100);
+      });
     }
-  }, []);
+  }, [currentPlayer]);
 
   /* =====================================================
        PLAYER SOLD
@@ -582,12 +618,40 @@ const AdminAuctionControl = () => {
     }
   };
 
+  useEffect(() => {
+    let active = true;
+    const playerId = getId(currentPlayer);
+    if (!playerId) {
+      setLiveBids([]);
+      return undefined;
+    }
+    getBidHistory(playerId)
+      .then((response) => {
+        if (!active) return;
+        const data = extractData(response);
+        setLiveBids(Array.isArray(data) ? data : data?.bids || data?.history || data?.data?.bids || []);
+      })
+      .catch(() => { if (active) setLiveBids([]); });
+    return () => { active = false; };
+  }, [currentPlayer]);
+
   /* =====================================================
        LOADING
     ===================================================== */
 
   if (loading) {
-    return <PageLoader />;
+    return (
+      <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 dark:bg-slate-950 dark:text-slate-100 sm:px-6 lg:px-8" role="status" aria-live="polite" aria-label="Loading auction control">
+        <div className="mx-auto max-w-7xl animate-pulse space-y-6">
+          <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex-1 space-y-3"><div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700" /><div className="h-7 w-56 max-w-full rounded-lg bg-slate-200 dark:bg-slate-700" /><div className="h-4 w-36 rounded bg-slate-100 dark:bg-slate-800" /></div>
+            <div className="h-10 w-32 rounded-xl bg-slate-200 dark:bg-slate-700" />
+          </div>
+          <div className="grid gap-6 lg:grid-cols-3"><div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" /><div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" /><div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" /><div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" /></div>
+          <p className="text-center text-sm font-medium text-slate-500 dark:text-slate-400">Loading auction session and live bidding data…</p>
+        </div>
+      </div>
+    );
   }
 
   /* =====================================================
@@ -596,7 +660,7 @@ const AdminAuctionControl = () => {
 
   if (error && !auction) {
     return (
-      <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950">
+      <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <div className="mx-auto max-w-7xl">
           <ErrorState
             title="Unable to load auction"
@@ -614,7 +678,7 @@ const AdminAuctionControl = () => {
 
   if (!auction) {
     return (
-      <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950">
+      <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <div className="mx-auto max-w-7xl">
           <EmptyState
             title="Auction not found"
@@ -666,25 +730,11 @@ const AdminAuctionControl = () => {
   const canStartPlayer =
     auctionStarted && liveStatus !== "paused" && playerFinished;
 
-  useEffect(() => {
-    let active = true;
-    const playerId = getId(currentPlayer);
-    if (!playerId) {
-      setLiveBids([]);
-      return undefined;
-    }
-    getBidHistory(playerId)
-      .then((response) => {
-        if (!active) return;
-        const data = extractData(response);
-        setLiveBids(Array.isArray(data) ? data : data?.bids || data?.history || data?.data?.bids || []);
-      })
-      .catch(() => { if (active) setLiveBids([]); });
-    return () => { active = false; };
-  }, [currentPlayer]);
-
   const playerPhoto =
-    toImageUrl(currentPlayer?.photo?.url || currentPlayer?.photo) || toImageUrl(currentPlayer?.image);
+    toImageUrl(currentPlayer?.photo) ||
+    toImageUrl(currentPlayer?.image) ||
+    toImageUrl(currentPlayer?.profileImage) ||
+    toImageUrl(currentPlayer?.photoUrl);
 
   const canSell = isPlayerAuctioning && currentBid > 0;
 
@@ -695,7 +745,7 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* =================================================
                 HEADER
             ================================================= */}
@@ -804,6 +854,18 @@ const AdminAuctionControl = () => {
         </div>
       </div>
 
+      {/* Admin work-area tabs */}
+      <div className="border-b border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-900/80">
+        <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8" aria-label="Admin auction sections">
+          <Link to="/admin/auction-control" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm">
+            <FiPlay /> Auction Control
+          </Link>
+          <Link to="/admin/registrations" className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:text-indigo-300">
+            <FiUsers /> Registrations & Approvals
+          </Link>
+        </nav>
+      </div>
+
       {/* =================================================
                 CONTENT
             ================================================= */}
@@ -883,11 +945,11 @@ const AdminAuctionControl = () => {
                         <img
                           src={playerPhoto}
                           alt=""
-                          className="h-16 w-16 rounded-2xl object-cover"
+                          className="h-28 w-28 shrink-0 rounded-2xl object-cover shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 sm:h-32 sm:w-32"
                         />
                       ) : (
                         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-                          <FiUser className="h-6 w-6" />
+                          <FiUser className="h-8 w-8" />
                         </div>
                       )}
                     </div>
@@ -976,28 +1038,53 @@ const AdminAuctionControl = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-2 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="flex flex-col gap-3 border-b border-gray-100 p-5 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h3 className="text-lg font-black text-gray-900 dark:text-white">Live bidding history</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Read-only view for administrators</p>
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <h3 className="text-lg font-black text-gray-900 dark:text-white">Live bidding history</h3>
+                </div>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  {currentPlayer ? `Bids for ${getPlayerName(currentPlayer) || "the current player"}` : "Bid activity appears here when a player goes live"}
+                </p>
               </div>
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">LIVE</span>
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600 dark:bg-gray-800 dark:text-gray-300">{liveBids.length} bids</span>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">LIVE</span>
+              </div>
             </div>
             {liveBids.length ? (
-              <div className="max-h-80 space-y-2 overflow-y-auto">
-                {liveBids.map((bid, index) => (
-                  <div key={bid._id || bid.id || `${bid.createdAt || ""}-${index}`} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60">
-                    <div className="min-w-0">
-                      <p className="font-bold text-gray-900 dark:text-white">{bid.team?.name || bid.teamName || bid.bidder?.name || bid.user?.name || "Team bid"}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{bid.createdAt ? new Date(bid.createdAt).toLocaleTimeString() : "Recent bid"}</p>
+              <div className="max-h-[420px] space-y-2 overflow-y-auto p-4">
+                {liveBids.map((bid, index) => {
+                  const teamName = bid.team?.name || bid.teamName || bid.bidder?.name || bid.user?.name || "Team bid";
+                  const teamLogo = toImageUrl(bid.team?.logo);
+                  const timestamp = bid.createdAt || bid.timestamp;
+                  return (
+                    <div key={bid._id || bid.id || `${timestamp || ""}-${index}`} className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:p-4 ${index === 0 ? "border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/5" : "border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/50"}`}>
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-indigo-600 ring-1 ring-gray-200 dark:bg-gray-900 dark:text-indigo-300 dark:ring-gray-700">
+                          {teamLogo ? <img src={teamLogo} alt={`${teamName} logo`} className="h-full w-full object-cover" /> : (index === 0 ? "★" : `#${index + 1}`)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-bold text-gray-900 dark:text-white">{teamName}</p>
+                          <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                            {timestamp ? new Date(timestamp).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "Recent bid"}
+                            {index === 0 ? <span className="ml-2 font-bold text-emerald-700 dark:text-emerald-300">Latest bid</span> : null}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="ml-auto text-lg font-black tabular-nums text-emerald-700 dark:text-emerald-300">{formatCurrency(getBidAmount(bid))}</p>
                     </div>
-                    <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">{formatCurrency(getBidAmount(bid))}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <p className="rounded-xl bg-gray-50 p-4 text-sm text-gray-500 dark:bg-gray-800/60 dark:text-gray-400">No bids recorded for this player yet.</p>
+              <div className="p-8 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"><RupeeIcon /></div>
+                <p className="mt-3 font-bold text-gray-800 dark:text-gray-200">No bids yet</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">When teams place bids, the latest amount and timestamp will appear here automatically.</p>
+              </div>
             )}
           </div>
 
@@ -1018,7 +1105,7 @@ const AdminAuctionControl = () => {
                   </p>
 
                   <p className="font-bold text-gray-900 dark:text-white">
-                    {formatCurrency(auction.startingBudget || 0)}
+                    {formatCurrency(auction.teamBudget ?? auction.startingBudget ?? 0)}
                   </p>
                 </div>
               </div>
@@ -1081,7 +1168,7 @@ const AdminAuctionControl = () => {
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {/* START AUCTION */}
 
             {!auctionStarted && status !== "completed" && (
@@ -1096,8 +1183,12 @@ const AdminAuctionControl = () => {
                                         gap-2
                                         rounded-2xl
                                         bg-emerald-600
-                                        px-5
+                                        min-w-0
+                                        whitespace-normal
+                                        break-words
+                                        px-4
                                         py-3
+                                        text-sm
                                         font-bold
                                         text-white
                                         transition
@@ -1125,8 +1216,12 @@ const AdminAuctionControl = () => {
                                     gap-2
                                     rounded-2xl
                                     bg-amber-500
-                                    px-5
+                                    min-w-0
+                                    whitespace-normal
+                                    break-words
+                                    px-4
                                     py-3
+                                    text-sm
                                     font-bold
                                     text-white
                                     hover:bg-amber-600
@@ -1153,8 +1248,12 @@ const AdminAuctionControl = () => {
                                     gap-2
                                     rounded-2xl
                                     bg-emerald-600
-                                    px-5
+                                    min-w-0
+                                    whitespace-normal
+                                    break-words
+                                    px-4
                                     py-3
+                                    text-sm
                                     font-bold
                                     text-white
                                     hover:bg-emerald-700
@@ -1181,8 +1280,12 @@ const AdminAuctionControl = () => {
                     gap-2
                     rounded-2xl
                     bg-indigo-600
-                    px-5
+                    min-w-0
+                    whitespace-normal
+                    break-words
+                    px-4
                     py-3
+                    text-sm
                     font-bold
                     text-white
                     hover:bg-indigo-700
@@ -1209,8 +1312,12 @@ const AdminAuctionControl = () => {
                                     gap-2
                                     rounded-2xl
                                     bg-emerald-600
-                                    px-5
+                                    min-w-0
+                                    whitespace-normal
+                                    break-words
+                                    px-4
                                     py-3
+                                    text-sm
                                     font-bold
                                     text-white
                                     hover:bg-emerald-700
@@ -1237,8 +1344,12 @@ const AdminAuctionControl = () => {
                                     gap-2
                                     rounded-2xl
                                     bg-red-600
-                                    px-5
+                                    min-w-0
+                                    whitespace-normal
+                                    break-words
+                                    px-4
                                     py-3
+                                    text-sm
                                     font-bold
                                     text-white
                                     hover:bg-red-700
@@ -1257,6 +1368,8 @@ const AdminAuctionControl = () => {
               <button
                 type="button"
                 onClick={handleCompletePlayer}
+                title="Complete processing for the current player"
+                aria-label="Complete player"
                 disabled={processing}
                 className="
                                     flex
@@ -1267,8 +1380,12 @@ const AdminAuctionControl = () => {
                                     border
                                     border-gray-300
                                     bg-white
-                                    px-5
+                                    min-w-0
+                                    whitespace-normal
+                                    break-words
+                                    px-4
                                     py-3
+                                    text-sm
                                     font-bold
                                     text-gray-700
                                     hover:bg-gray-50
@@ -1280,8 +1397,8 @@ const AdminAuctionControl = () => {
                                     dark:hover:bg-gray-800
                                 "
               >
-                <FiCheckCircle />
-                Complete Player
+                <FiCheckCircle className="shrink-0" aria-hidden="true" />
+                <span className="min-w-0 text-center leading-tight">Complete Player</span>
               </button>
             )}
 
@@ -1291,6 +1408,8 @@ const AdminAuctionControl = () => {
               <button
                 type="button"
                 onClick={handleCompleteAuction}
+                title="Finish and close the auction"
+                aria-label="Finish auction"
                 disabled={
                   processing ||
                   isPlayerAuctioning ||
@@ -1305,8 +1424,12 @@ const AdminAuctionControl = () => {
                                         border
                                         border-red-300
                                         bg-red-50
-                                        px-5
+                                        min-w-0
+                                        whitespace-normal
+                                        break-words
+                                        px-4
                                         py-3
+                                        text-sm
                                         font-bold
                                         text-red-700
                                         hover:bg-red-100
@@ -1317,8 +1440,8 @@ const AdminAuctionControl = () => {
                                         dark:text-red-400
                                     "
               >
-                <FiCheckCircle />
-                Complete Auction
+                <FiFlag className="shrink-0" aria-hidden="true" />
+                <span className="min-w-0 text-center leading-tight">Finish Auction</span>
               </button>
             )}
           </div>

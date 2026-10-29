@@ -138,8 +138,10 @@ const LiveAuction = () => {
 
   const [currentBid, setCurrentBid] = useState(0);
   const [leadingTeam, setLeadingTeam] = useState(null);
-  const [nextTurnTeam, setNextTurnTeam] = useState(null);
+  const [lastBidTeam, setLastBidTeam] = useState(null);
   const [approvedTeamCount, setApprovedTeamCount] = useState(null);
+  // Lowest bid the server will accept right now (null = unknown, compute locally).
+  const [serverNextBid, setServerNextBid] = useState(null);
 
   const [access, setAccess] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -310,8 +312,9 @@ const LiveAuction = () => {
         const currentPlayer = extractPlayer(currentResponse);
         const currentData = extractData(currentResponse) || currentResponse || {};
 
-        setNextTurnTeam(currentData?.nextTurnTeam || null);
+        setLastBidTeam(currentData?.lastBidTeam || currentData?.currentBidder || currentPlayer?.currentBidder || null);
         setApprovedTeamCount(Number.isFinite(Number(currentData?.approvedTeamCount)) ? Number(currentData.approvedTeamCount) : null);
+        setServerNextBid(Number(currentData?.nextBid) > 0 ? Number(currentData.nextBid) : null);
 
         setAuction(auctionData || null);
         setSession(sessionData || null);
@@ -480,6 +483,12 @@ const LiveAuction = () => {
 
       setLeadingTeam(nextPlayer.currentBidder || null);
 
+      // A new player starts with no bids. Without this reset the previous player's
+      // last bidder stayed "last bidder" (locking that team out) and the next
+      // bid was computed as base price + increment instead of the opening price.
+      setLastBidTeam(null);
+      setServerNextBid(null);
+
       setBids([]);
 
       setResultMessage(null);
@@ -496,8 +505,14 @@ const LiveAuction = () => {
       }
 
       const incomingBid = payload?.bid || payload?.data?.bid || payload;
-      if (payload?.nextTurnTeam) setNextTurnTeam(payload.nextTurnTeam);
+      if (payload?.lastBidTeam) setLastBidTeam(payload.lastBidTeam);
+      else if (payload?.currentBidder) {
+        const currentBidder = payload.currentBidder;
+        setLastBidTeam({ _id: currentBidder._id || currentBidder.teamId || currentBidder.id, name: currentBidder.name || currentBidder.teamName || "Leading team" });
+      }
       if (Array.isArray(payload?.turnOrder)) setApprovedTeamCount(payload.turnOrder.length);
+      if (Number.isFinite(Number(payload?.approvedTeamCount))) setApprovedTeamCount(Number(payload.approvedTeamCount));
+      if (Number(payload?.nextBid) > 0) setServerNextBid(Number(payload.nextBid));
 
       const incomingPlayer = payload?.player || payload?.data?.player || null;
 
@@ -646,6 +661,9 @@ const LiveAuction = () => {
 
       setLeadingTeam(nextPlayer.currentBidder || null);
 
+      setLastBidTeam(null);
+      setServerNextBid(null);
+
       setBids([]);
 
       toast.success(`Next player: ${getPlayerName(nextPlayer)}`);
@@ -733,9 +751,14 @@ const LiveAuction = () => {
 
       const data = extractData(response);
 
+      if (Number(data?.nextBid) > 0) setServerNextBid(Number(data.nextBid));
+
       const returnedBid = data?.bid || data?.data?.bid || null;
-      if (data?.nextTurnTeam) setNextTurnTeam(data.nextTurnTeam);
-      if (Array.isArray(data?.turnOrder)) setApprovedTeamCount(data.turnOrder.length);
+      if (data?.lastBidTeam) setLastBidTeam(data.lastBidTeam);
+      else if (returnedBid?.team || returnedBid?.teamId) {
+        const team = returnedBid.team || returnedBid.teamId;
+        setLastBidTeam({ _id: getId(team), name: team?.name || returnedBid.teamName || "Your team" });
+      }
 
       const returnedPlayer = data?.player || data?.data?.player || null;
 
@@ -752,6 +775,7 @@ const LiveAuction = () => {
       }
 
       if (returnedPlayer) {
+        if (returnedPlayer.currentBidder) setLastBidTeam(returnedPlayer.currentBidder);
         setPlayer((previous) => ({
           ...(previous || {}),
           ...returnedPlayer,
@@ -762,11 +786,25 @@ const LiveAuction = () => {
     } catch (error) {
       console.error("Place bid error:", error);
 
+      const status = error?.response?.status;
+      const body = error?.response?.data || {};
+
       toast.error(
-        error?.response?.data?.message ||
+        body.message ||
           error?.message ||
           "Unable to place bid.",
       );
+
+      // The bid was rejected because our view of the auction was out of date
+      // (someone else bid first, tier changed, ...). Adopt the server's number
+      // and reload the live state so the next click is correct.
+      if (Number(body.minimumRequiredBid) > 0) {
+        setServerNextBid(Number(body.minimumRequiredBid));
+      }
+
+      if (status === 400 || status === 409) {
+        loadAuctionData(false);
+      }
     } finally {
       setBidSubmitting(false);
     }
@@ -964,13 +1002,27 @@ const LiveAuction = () => {
     );
   }
 
-  const increment = Number(auction?.bidIncrement || 0);
-  const basePrice = Number(player?.basePrice ?? auction?.minimumBid ?? 0);
+  const basePrice = Number(player?.basePrice ?? 0);
+  const openingBid = Math.max(
+    Number(auction?.minimumBid || 0),
+    basePrice,
+  );
+  const bidRules = Array.isArray(auction?.bidRules) ? auction.bidRules : [];
+  const currentBidAmount = Number(currentBid || 0);
+  const matchedBidRule = bidRules.find(
+    (rule) => rule?.upTo == null || currentBidAmount < Number(rule.upTo),
+  );
+  const increment = Number(
+    matchedBidRule?.increment || auction?.bidIncrement || 1,
+  );
 
-  const nextBid =
-    Number(currentBid || 0) > 0
-      ? Number(currentBid) + (increment || 1)
-      : Number(auction?.minimumBid || basePrice || increment || 0);
+  // Only the latest persisted bid for this player counts. Do not infer that a
+  // player has already received a bid from stale player fields or unrelated
+  // auction history.
+  const hasActualBid = Boolean(lastBidTeam);
+  const nextBid = hasActualBid && currentBidAmount > 0
+    ? currentBidAmount + increment
+    : openingBid;
 
   const leader = resolveTeam(leadingTeam, teamDirectory);
   const isLeading = Boolean(myTeamId) && leader.id === myTeamId;
@@ -1160,7 +1212,10 @@ const LiveAuction = () => {
             ) : (
               <BidPanel
                 currentBid={currentBid}
-                minimumBid={auction?.minimumBid || player?.basePrice || 0}
+                minimumBid={Math.max(
+                  Number(auction?.minimumBid || 0),
+                  Number(player?.basePrice || 0),
+                )}
                 bidIncrement={auction?.bidIncrement || 0}
                 bidRules={auction?.bidRules || []}
                 playerActive={playerActive}
@@ -1168,9 +1223,9 @@ const LiveAuction = () => {
                 accessApproved={accessApproved}
                 canBid={!isAdmin}
                 submitting={bidSubmitting}
-                nextTurnTeam={nextTurnTeam}
+                lastBidTeam={lastBidTeam}
                 approvedTeamCount={approvedTeamCount}
-                isMyTurn={Boolean(nextTurnTeam && myTeamId && getId(nextTurnTeam) === myTeamId)}
+                nextBid={serverNextBid}
                 teamName={myTeamData?.name || ""}
                 teamId={myTeamId}
                 purse={purse}

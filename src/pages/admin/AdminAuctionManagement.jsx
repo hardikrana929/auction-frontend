@@ -104,7 +104,7 @@ export default function AdminAuctionManagement() {
                       {new Date(a.date).toLocaleString("en-IN")}
                     </td>
                     <td className="px-5 py-4 font-bold text-slate-900 dark:text-white">
-                      ₹{Number(a.startingBudget || 0).toLocaleString("en-IN")}
+                      ₹{Number(a.teamBudget ?? a.startingBudget ?? 0).toLocaleString("en-IN")}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">

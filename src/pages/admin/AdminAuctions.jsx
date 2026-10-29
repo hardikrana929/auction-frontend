@@ -789,8 +789,8 @@ export default function AdminAuctions() {
                     <InfoItem
                       label="Starting Budget"
                       value={
-                        auction?.startingBudget != null
-                          ? formatCurrency(auction.startingBudget)
+                        (auction?.teamBudget ?? auction?.startingBudget) != null
+                          ? formatCurrency(auction.teamBudget ?? auction.startingBudget)
                           : "—"
                       }
                     />

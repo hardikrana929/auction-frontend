@@ -54,7 +54,7 @@ export default function AuctionFormPage({ edit = false }) {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       <Link
         to={edit ? `/auctions/${id}` : "/admin/auctions"}
         className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
@@ -65,7 +65,7 @@ export default function AuctionFormPage({ edit = false }) {
         <div className="mb-7">
           <p className="eyebrow">Admin auction</p>
           <h1 className="page-title">{edit ? "Edit auction" : "Create auction"}</h1>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Use the exact fields accepted by the AuctionPro backend.</p>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Set the auction schedule, each team’s budget, squad limits, and the bid increments. Each field includes a short explanation.</p>
         </div>
         <AuctionForm
           initialValues={initial || undefined}

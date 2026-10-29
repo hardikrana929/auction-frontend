@@ -129,8 +129,8 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
       return;
     }
     const selectedAuction = auctions.find((item) => String(item._id) === String(form.auctionId));
-    if (selectedAuction && Number(form.basePrice) > Number(selectedAuction.startingBudget)) {
-      toast.error(`Base price cannot exceed the total auction budget of ₹${Number(selectedAuction.startingBudget).toLocaleString("en-IN")}.`);
+    if (selectedAuction && Number(form.basePrice) > Number(selectedAuction.teamBudget ?? selectedAuction.startingBudget)) {
+      toast.error(`Base price cannot exceed the team budget of ₹${Number(selectedAuction.teamBudget ?? selectedAuction.startingBudget).toLocaleString("en-IN")}.`);
       return;
     }
 
@@ -217,7 +217,7 @@ export default function PlayerForm({ auctions, player, loading, onSubmit, onCanc
             </select>
           </Field>
 
-          <Field label="Base price" required><input type="number" min="1" max={auctions.find((item) => String(item._id) === String(form.auctionId))?.startingBudget || undefined} step="1" className="input" placeholder="e.g. 200000" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
+          <Field label="Base price" required><input type="number" min="1" max={auctions.find((item) => String(item._id) === String(form.auctionId))?.teamBudget || auctions.find((item) => String(item._id) === String(form.auctionId))?.startingBudget || undefined} step="1" className="input" placeholder="e.g. 200000" value={form.basePrice} onChange={(e) => set("basePrice", e.target.value)} /></Field>
           <Field label="Auction order"><input type="number" min="0" className="input" placeholder="e.g. 1" value={form.auctionOrder} onChange={(e) => set("auctionOrder", e.target.value)} /></Field>
           <Field label="Experience (years)"><input type="number" min="0" className="input" placeholder="e.g. 3" value={form.experience} onChange={(e) => set("experience", e.target.value)} /></Field>
           <Field label="Specialization"><input className="input" value={form.specialization} onChange={(e) => set("specialization", e.target.value)} placeholder="Batting, Fielding, Power hitter" /></Field>
