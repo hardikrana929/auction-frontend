@@ -1,2 +1,15 @@
 import { FiInbox } from "react-icons/fi";
-export default function EmptyState({ title="Nothing here yet", message="There is no data to display." }) { return <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900"><FiInbox className="mx-auto text-3xl text-slate-400"/><h3 className="mt-3 font-bold text-slate-900 dark:text-white">{title}</h3><p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{message}</p></div>; }
+export default function EmptyState({
+  title = "Nothing here yet",
+  message = "There is no data to display.",
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
+      <FiInbox className="mx-auto text-3xl text-slate-400" />
+      <h3 className="mt-3 font-bold text-slate-900 dark:text-white">{title}</h3>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        {message}
+      </p>
+    </div>
+  );
+}

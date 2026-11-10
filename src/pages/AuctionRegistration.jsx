@@ -17,10 +17,27 @@ import {
 } from "../api/auctionRegistrationApi";
 
 import AuctionRegistrationModal from "../components/AuctionRegistrationModal";
+import { useAuth } from "../context/AuthContext";
 import RegistrationStatusBadge from "../components/RegistrationStatusBadge";
 
 export default function AuctionRegistration() {
   const { id } = useParams();
+  const { user } = useAuth();
+
+  const filterTeamsForCurrentUser = useCallback(
+    (items) => {
+      if (["admin", "auction_manager"].includes(user?.role)) return items;
+
+      const currentUserId = String(user?._id || user?.id || "");
+      if (!currentUserId) return [];
+
+      return items.filter((team) => {
+        const ownerId = team?.owner?._id || team?.owner?.id || team?.owner;
+        return String(ownerId || "") === currentUserId;
+      });
+    },
+    [user?._id, user?.id, user?.role],
+  );
 
   const [auction, setAuction] = useState(null);
   const [teams, setTeams] = useState([]);
@@ -101,9 +118,6 @@ export default function AuctionRegistration() {
 
       try {
         const response = await getAuctionById(id);
-
-        console.log("AUCTION RESPONSE:", response);
-
         const auctionData =
           response?.data?.auction ||
           response?.auction ||
@@ -161,9 +175,6 @@ export default function AuctionRegistration() {
 
       try {
         const response = await getRegistrationStatus(auctionId, teamId);
-
-        console.log("REGISTRATION STATUS RESPONSE:", response);
-
         /*
          * Backend may explicitly say there is no
          * registration.
@@ -233,9 +244,6 @@ export default function AuctionRegistration() {
 
       try {
         const response = await getTeamsByAuction(auctionId);
-
-        console.log("TEAMS RESPONSE:", response);
-
         let teamList = [];
 
         if (Array.isArray(response)) {
@@ -254,6 +262,7 @@ export default function AuctionRegistration() {
          * Keep only valid team records.
          */
         teamList = teamList.filter((team) => team && (team?._id || team?.id));
+        teamList = filterTeamsForCurrentUser(teamList);
 
         setTeams(teamList);
 
@@ -289,7 +298,7 @@ export default function AuctionRegistration() {
         console.warn("Unable to load existing registration:", err);
       }
     },
-    [checkRegistrationStatus],
+    [checkRegistrationStatus, filterTeamsForCurrentUser],
   );
 
   /*
@@ -320,9 +329,6 @@ export default function AuctionRegistration() {
       setRegistering(true);
 
       const response = await getTeamsByAuction(id);
-
-      console.log("OPEN REGISTRATION TEAMS:", response);
-
       let list = [];
 
       if (Array.isArray(response)) {
@@ -338,6 +344,7 @@ export default function AuctionRegistration() {
       }
 
       list = list.filter((team) => team && (team?._id || team?.id));
+      list = filterTeamsForCurrentUser(list);
 
       setTeams(list);
 
@@ -381,18 +388,10 @@ export default function AuctionRegistration() {
     setRegistering(true);
 
     try {
-      console.log("SUBMIT REGISTRATION:", {
-        auctionId: id,
-        teamId: selectedTeamId,
-      });
-
       const response = await registerForAuction({
         auctionId: id,
         teamId: selectedTeamId,
       });
-
-      console.log("REGISTER RESPONSE:", response);
-
       const newRegistration = extractRegistration(response);
 
       /*
@@ -566,7 +565,7 @@ export default function AuctionRegistration() {
               h-5
               w-32
               rounded
-              bg-gray-200
+              bg-slate-200
               dark:bg-navy-800
             "
           />
@@ -576,7 +575,7 @@ export default function AuctionRegistration() {
               mt-8
               h-64
               rounded-2xl
-              bg-gray-200
+              bg-slate-200
               dark:bg-navy-800
             "
           />
@@ -644,8 +643,8 @@ export default function AuctionRegistration() {
             className="
               mt-2
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             {error || "Auction information could not be loaded."}
@@ -689,10 +688,10 @@ export default function AuctionRegistration() {
             gap-2
             text-sm
             font-semibold
-            text-gray-600
+            text-slate-600
             transition
             hover:text-cyan-500
-            dark:text-gray-400
+            dark:text-slate-400
           "
         >
           <FiArrowLeft size={17} />
@@ -740,8 +739,8 @@ export default function AuctionRegistration() {
               max-w-2xl
               text-sm
               leading-7
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             Your team must be approved before it can participate in the live
@@ -755,7 +754,7 @@ export default function AuctionRegistration() {
             mt-8
             rounded-2xl
             border
-            border-gray-200
+            border-slate-200
             bg-white
             p-6
             shadow-sm
@@ -814,8 +813,8 @@ export default function AuctionRegistration() {
                 className="
                   mt-1
                   text-sm
-                  text-gray-500
-                  dark:text-gray-400
+                  text-slate-500
+                  dark:text-slate-400
                 "
               >
                 Check your team's approval status before entering the auction.
@@ -1041,7 +1040,7 @@ function ProcessStep({ number, title, description }) {
       className="
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         p-5
         dark:border-navy-700
@@ -1075,8 +1074,8 @@ function ProcessStep({ number, title, description }) {
           mt-2
           text-sm
           leading-6
-          text-gray-500
-          dark:text-gray-400
+          text-slate-500
+          dark:text-slate-400
         "
       >
         {description}

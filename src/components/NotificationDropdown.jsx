@@ -174,17 +174,17 @@ const NotificationItem = ({
         relative
         cursor-pointer
         border-b
-        border-gray-100
+        border-slate-100
         px-4
         py-3
         transition
         duration-200
         last:border-b-0
-        dark:border-gray-800
+        dark:border-slate-800
 
         ${
           read
-            ? "bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800/70"
+            ? "bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800/70"
             : "bg-indigo-50/70 hover:bg-indigo-50 dark:bg-indigo-950/30 dark:hover:bg-indigo-950/50"
         }
       `}
@@ -204,7 +204,7 @@ const NotificationItem = ({
 
             ${
               read
-                ? "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                 : "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/60 dark:text-indigo-300"
             }
           `}
@@ -221,8 +221,8 @@ const NotificationItem = ({
                 text-sm
                 ${
                   read
-                    ? "font-medium text-gray-700 dark:text-gray-300"
-                    : "font-semibold text-gray-900 dark:text-white"
+                    ? "font-medium text-slate-700 dark:text-slate-300"
+                    : "font-semibold text-slate-900 dark:text-white"
                 }
               `}
               title={title}
@@ -250,8 +250,8 @@ const NotificationItem = ({
               line-clamp-2
               text-xs
               leading-5
-              text-gray-600
-              dark:text-gray-400
+              text-slate-600
+              dark:text-slate-400
             "
           >
             {message}
@@ -261,8 +261,8 @@ const NotificationItem = ({
             <span
               className="
                 text-[11px]
-                text-gray-400
-                dark:text-gray-500
+                text-slate-400
+                dark:text-slate-500
               "
             >
               {formatRelativeTime(date)}
@@ -290,14 +290,14 @@ const NotificationItem = ({
                   className="
                     rounded-lg
                     p-1.5
-                    text-gray-500
+                    text-slate-500
                     transition
-                    hover:bg-gray-200
+                    hover:bg-slate-200
                     hover:text-indigo-600
                     disabled:cursor-not-allowed
                     disabled:opacity-50
-                    dark:text-gray-400
-                    dark:hover:bg-gray-700
+                    dark:text-slate-400
+                    dark:hover:bg-slate-700
                     dark:hover:text-indigo-300
                   "
                 >
@@ -314,13 +314,13 @@ const NotificationItem = ({
                 className="
                   rounded-lg
                   p-1.5
-                  text-gray-500
+                  text-slate-500
                   transition
                   hover:bg-red-100
                   hover:text-red-600
                   disabled:cursor-not-allowed
                   disabled:opacity-50
-                  dark:text-gray-400
+                  dark:text-slate-400
                   dark:hover:bg-red-950/40
                   dark:hover:text-red-400
                 "
@@ -362,11 +362,11 @@ const NotificationDropdown = ({
         overflow-hidden
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         shadow-2xl
-        dark:border-gray-700
-        dark:bg-gray-900
+        dark:border-slate-700
+        dark:bg-slate-900
       "
     >
       {/* Header */}
@@ -376,10 +376,10 @@ const NotificationDropdown = ({
           items-center
           justify-between
           border-b
-          border-gray-200
+          border-slate-200
           px-4
           py-3
-          dark:border-gray-700
+          dark:border-slate-700
         "
       >
         <div>
@@ -397,7 +397,7 @@ const NotificationDropdown = ({
               className="
                 text-sm
                 font-bold
-                text-gray-900
+                text-slate-900
                 dark:text-white
               "
             >
@@ -427,8 +427,8 @@ const NotificationDropdown = ({
             className="
               mt-0.5
               text-[11px]
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             Auction updates and alerts
@@ -446,14 +446,14 @@ const NotificationDropdown = ({
             className="
               rounded-lg
               p-2
-              text-gray-500
+              text-slate-500
               transition
-              hover:bg-gray-100
+              hover:bg-slate-100
               hover:text-indigo-600
               disabled:cursor-not-allowed
               disabled:opacity-50
-              dark:text-gray-400
-              dark:hover:bg-gray-800
+              dark:text-slate-400
+              dark:hover:bg-slate-800
               dark:hover:text-indigo-400
             "
           >
@@ -475,12 +475,12 @@ const NotificationDropdown = ({
             className="
               rounded-lg
               p-2
-              text-gray-500
+              text-slate-500
               transition
-              hover:bg-gray-100
-              hover:text-gray-900
-              dark:text-gray-400
-              dark:hover:bg-gray-800
+              hover:bg-slate-100
+              hover:text-slate-900
+              dark:text-slate-400
+              dark:hover:bg-slate-800
               dark:hover:text-white
             "
           >
@@ -494,10 +494,10 @@ const NotificationDropdown = ({
         <div
           className="
             border-b
-            border-gray-100
+            border-slate-100
             px-4
             py-2
-            dark:border-gray-800
+            dark:border-slate-800
           "
         >
           <button
@@ -545,8 +545,8 @@ const NotificationDropdown = ({
                     w-9
                     flex-shrink-0
                     rounded-full
-                    bg-gray-200
-                    dark:bg-gray-800
+                    bg-slate-200
+                    dark:bg-slate-800
                   "
                 />
 
@@ -556,8 +556,8 @@ const NotificationDropdown = ({
                       h-3
                       w-2/3
                       rounded
-                      bg-gray-200
-                      dark:bg-gray-800
+                      bg-slate-200
+                      dark:bg-slate-800
                     "
                   />
 
@@ -566,8 +566,8 @@ const NotificationDropdown = ({
                       h-3
                       w-full
                       rounded
-                      bg-gray-200
-                      dark:bg-gray-800
+                      bg-slate-200
+                      dark:bg-slate-800
                     "
                   />
 
@@ -576,8 +576,8 @@ const NotificationDropdown = ({
                       h-2
                       w-1/4
                       rounded
-                      bg-gray-200
-                      dark:bg-gray-800
+                      bg-slate-200
+                      dark:bg-slate-800
                     "
                   />
                 </div>
@@ -612,7 +612,7 @@ const NotificationDropdown = ({
                   mt-3
                   text-sm
                   font-semibold
-                  text-gray-900
+                  text-slate-900
                   dark:text-white
                 "
             >
@@ -623,8 +623,8 @@ const NotificationDropdown = ({
               className="
                   mt-1
                   text-xs
-                  text-gray-500
-                  dark:text-gray-400
+                  text-slate-500
+                  dark:text-slate-400
                 "
             >
               Please check your connection and try again.
@@ -663,10 +663,10 @@ const NotificationDropdown = ({
                   items-center
                   justify-center
                   rounded-full
-                  bg-gray-100
-                  text-gray-400
-                  dark:bg-gray-800
-                  dark:text-gray-500
+                  bg-slate-100
+                  text-slate-400
+                  dark:bg-slate-800
+                  dark:text-slate-500
                 "
             >
               <FiBell className="h-6 w-6" />
@@ -677,7 +677,7 @@ const NotificationDropdown = ({
                   mt-4
                   text-sm
                   font-semibold
-                  text-gray-900
+                  text-slate-900
                   dark:text-white
                 "
             >
@@ -688,8 +688,8 @@ const NotificationDropdown = ({
               className="
                   mt-1
                   text-xs
-                  text-gray-500
-                  dark:text-gray-400
+                  text-slate-500
+                  dark:text-slate-400
                 "
             >
               You're all caught up.
@@ -728,12 +728,12 @@ const NotificationDropdown = ({
       <div
         className="
           border-t
-          border-gray-200
-          bg-gray-50
+          border-slate-200
+          bg-slate-50
           px-4
           py-3
-          dark:border-gray-700
-          dark:bg-gray-800/50
+          dark:border-slate-700
+          dark:bg-slate-800/50
         "
       >
         <button

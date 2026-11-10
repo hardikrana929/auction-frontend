@@ -21,7 +21,7 @@ export default function Settings() {
           Settings
         </h1>
 
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           Manage your AuctionPro preferences.
         </p>
       </div>
@@ -30,7 +30,7 @@ export default function Settings() {
       <section
         className="
           rounded-2xl
-          border border-gray-200
+          border border-slate-200
           bg-white
           p-6
           shadow-sm
@@ -50,7 +50,7 @@ export default function Settings() {
               Appearance
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Choose how AuctionPro looks on your device.
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function Settings() {
               gap-2
               rounded-xl
               border
-              border-gray-300
+              border-slate-300
               bg-white
               px-5 py-3
               text-sm font-semibold
@@ -105,7 +105,7 @@ export default function Settings() {
             dark:bg-navy-900
           "
         >
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Current theme
           </p>
 

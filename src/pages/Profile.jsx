@@ -57,7 +57,7 @@ export default function Profile() {
         <h1 className="mt-1 text-3xl font-bold text-navy-950 dark:text-white">
           My Profile
         </h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
           View your AuctionPro account information.
         </p>
       </div>
@@ -70,7 +70,7 @@ export default function Profile() {
             banner itself clips now.
         ============================================ */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-navy-700 dark:bg-navy-900">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-navy-700 dark:bg-navy-900">
             {/* Gradient cover — overflow-hidden lives HERE only */}
             <div className="relative h-24 overflow-hidden rounded-t-2xl bg-gradient-to-br from-cyan-500 via-cyan-600 to-navy-900">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_60%)]" />
@@ -90,7 +90,7 @@ export default function Profile() {
                   {name}
                 </h2>
 
-                <div className="mt-1 flex items-center justify-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+                <div className="mt-1 flex items-center justify-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                   <FiMail className="h-3.5 w-3.5 shrink-0" />
                   <span className="truncate">{email}</span>
                 </div>
@@ -119,7 +119,7 @@ export default function Profile() {
               </div>
 
               {/* Quick meta */}
-              <div className="mt-6 space-y-3 border-t border-gray-200 pt-5 dark:border-navy-700">
+              <div className="mt-6 space-y-3 border-t border-slate-200 pt-5 dark:border-navy-700">
                 <QuickMeta
                   icon={FiHash}
                   label="User ID"
@@ -140,7 +140,7 @@ export default function Profile() {
             RIGHT — Account details
         ============================================ */}
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-900">
             <div className="mb-6 flex items-center gap-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-500">
                 <FiUser className="h-4.5 w-4.5" />
@@ -149,7 +149,7 @@ export default function Profile() {
                 <h3 className="text-base font-bold text-navy-950 dark:text-white">
                   Account Details
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Your personal and account information
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default function Profile() {
 function QuickMeta({ icon: Icon, label, value, truncateValue = false }) {
   return (
     <div className="flex items-center justify-between gap-3 text-sm">
-      <span className="flex shrink-0 items-center gap-2 text-gray-500 dark:text-gray-400">
+      <span className="flex shrink-0 items-center gap-2 text-slate-500 dark:text-slate-400">
         <Icon className="h-4 w-4" />
         {label}
       </span>
@@ -221,9 +221,9 @@ function ProfileField({
   truncate = false,
 }) {
   return (
-    <div className="group rounded-xl border border-gray-200 bg-gray-50 p-4 transition hover:border-cyan-500/40 hover:bg-cyan-500/5 dark:border-navy-700 dark:bg-navy-850">
-      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-        <Icon className="h-3.5 w-3.5 text-gray-400 group-hover:text-cyan-500 dark:text-gray-500" />
+    <div className="group rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-cyan-500/40 hover:bg-cyan-500/5 dark:border-navy-700 dark:bg-navy-850">
+      <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        <Icon className="h-3.5 w-3.5 text-slate-400 group-hover:text-cyan-500 dark:text-slate-500" />
         {label}
       </div>
 

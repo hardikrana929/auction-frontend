@@ -62,7 +62,8 @@ const LivePlayerCard = ({ player, fallbackBasePrice = 0 }) => {
   const playerId = getEntityId(player);
   const basePrice = Number(player.basePrice ?? fallbackBasePrice ?? 0);
 
-  const status = STATUS[String(player.status || "").toLowerCase()] || STATUS.auctioning;
+  const status =
+    STATUS[String(player.status || "").toLowerCase()] || STATUS.auctioning;
 
   const details = [
     ["Age", player.age ? `${player.age} yrs` : ""],

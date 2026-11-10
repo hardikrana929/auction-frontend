@@ -37,7 +37,7 @@ const baseLinks = [
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, isAuctionManager, logout } = useAuth();
   const navigate = useNavigate();
 
   const links = isAdmin
@@ -53,7 +53,23 @@ export default function DashboardLayout() {
           icon: FiTrendingUp,
         },
       ]
-    : baseLinks;
+    : isAuctionManager
+      ? [
+          ...baseLinks,
+          { to: "/admin/teams", label: "Team Management", icon: FiUsers },
+          {
+            to: "/admin/players",
+            label: "Player Management",
+            icon: FiUserCheck,
+          },
+          {
+            to: "/admin/registrations",
+            label: "Registrations",
+            icon: FiShield,
+          },
+          { to: "/auctions", label: "Assigned Auction", icon: FiTrendingUp },
+        ]
+      : baseLinks;
 
   const doLogout = () => {
     logout();

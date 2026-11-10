@@ -122,12 +122,12 @@ export default function LiveAuctions() {
       auction?.startTime || auction?.startDate || auction?.date;
 
     return (
-      <div className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-navy-700 dark:bg-navy-900">
+      <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-navy-700 dark:bg-navy-900">
         {/* ------------------------------------------
             Header
         ------------------------------------------ */}
 
-        <div className="relative border-b border-gray-200 p-5 dark:border-navy-700">
+        <div className="relative border-b border-slate-200 p-5 dark:border-navy-700">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               {/* Status */}
@@ -149,7 +149,7 @@ export default function LiveAuctions() {
                     PAUSED
                   </span>
                 ) : status === "COMPLETED" ? (
-                  <span className="rounded-full bg-gray-500/10 px-2.5 py-1 text-xs font-bold tracking-wide text-gray-500">
+                  <span className="rounded-full bg-slate-500/10 px-2.5 py-1 text-xs font-bold tracking-wide text-slate-500">
                     COMPLETED
                   </span>
                 ) : (
@@ -165,7 +165,7 @@ export default function LiveAuctions() {
               </h2>
 
               {/* Description */}
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+              <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
                 {description}
               </p>
             </div>
@@ -183,8 +183,8 @@ export default function LiveAuctions() {
 
         <div className="grid grid-cols-2 gap-3 p-5">
           {/* Date */}
-          <div className="rounded-xl bg-gray-50 p-3 dark:bg-navy-850">
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <div className="rounded-xl bg-slate-50 p-3 dark:bg-navy-850">
+            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
               <FiCalendar size={15} />
 
               <span className="text-xs">Date</span>
@@ -196,8 +196,8 @@ export default function LiveAuctions() {
           </div>
 
           {/* Status */}
-          <div className="rounded-xl bg-gray-50 p-3 dark:bg-navy-850">
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <div className="rounded-xl bg-slate-50 p-3 dark:bg-navy-850">
+            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
               <FiClock size={15} />
 
               <span className="text-xs">Status</span>
@@ -221,9 +221,9 @@ export default function LiveAuctions() {
             Footer
         ------------------------------------------ */}
 
-        <div className="flex items-center justify-between border-t border-gray-200 px-5 py-4 dark:border-navy-700">
+        <div className="flex items-center justify-between border-t border-slate-200 px-5 py-4 dark:border-navy-700">
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Base Price
             </p>
 
@@ -248,7 +248,7 @@ export default function LiveAuctions() {
               <FiArrowRight size={16} />
             </Link>
           ) : (
-            <span className="text-sm text-gray-400">Unavailable</span>
+            <span className="text-sm text-slate-400">Unavailable</span>
           )}
         </div>
       </div>
@@ -280,7 +280,7 @@ export default function LiveAuctions() {
               Live Auctions
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
               Watch active cricket auctions and join real-time player bidding
               sessions.
             </p>
@@ -291,7 +291,7 @@ export default function LiveAuctions() {
             type="button"
             onClick={() => loadAuctions(true)}
             disabled={refreshing}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:bg-navy-850"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:bg-navy-850"
           >
             <FiRefreshCw
               size={16}
@@ -312,7 +312,7 @@ export default function LiveAuctions() {
                 Live Now
               </h2>
 
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Auctions currently accepting bids
               </p>
             </div>
@@ -328,13 +328,13 @@ export default function LiveAuctions() {
               {[1, 2].map((item) => (
                 <div
                   key={item}
-                  className="h-64 animate-pulse rounded-2xl bg-gray-200 dark:bg-navy-800"
+                  className="h-64 animate-pulse rounded-2xl bg-slate-200 dark:bg-navy-800"
                 />
               ))}
             </div>
           ) : liveAuctions.length === 0 ? (
             /* Empty */
-            <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center dark:border-navy-700 dark:bg-navy-900">
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-navy-700 dark:bg-navy-900">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-500">
                 <FiRadio size={24} />
               </div>
@@ -343,7 +343,7 @@ export default function LiveAuctions() {
                 No Live Auctions
               </h3>
 
-              <p className="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
                 There are currently no active auctions. Check back when an
                 administrator starts an auction.
               </p>
@@ -379,14 +379,14 @@ export default function LiveAuctions() {
               Upcoming Auctions
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Get ready for the next bidding sessions
             </p>
           </div>
 
           {upcomingAuctions.length === 0 ? (
-            <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-navy-700 dark:bg-navy-900">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center dark:border-navy-700 dark:bg-navy-900">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 No upcoming auctions available.
               </p>
             </div>

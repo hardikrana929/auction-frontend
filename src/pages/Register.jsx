@@ -130,7 +130,15 @@ function Field({ icon, label, ...props }) {
     </div>
   );
 }
-function PasswordField({ label, name, value, onChange, show, setShow,placeholder }) {
+function PasswordField({
+  label,
+  name,
+  value,
+  onChange,
+  show,
+  setShow,
+  placeholder,
+}) {
   return (
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">

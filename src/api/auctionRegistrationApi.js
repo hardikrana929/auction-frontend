@@ -11,13 +11,10 @@ export const registerForAuction = async (data) => {
     throw new Error("auctionId and teamId are required");
   }
 
-  const response = await api.post(
-    "/api/auction-registration/register",
-    {
-      auctionId: data.auctionId,
-      teamId: data.teamId,
-    },
-  );
+  const response = await api.post("/api/auction-registration/register", {
+    auctionId: data.auctionId,
+    teamId: data.teamId,
+  });
 
   return response.data;
 };
@@ -34,30 +31,18 @@ export const registerForAuction = async (data) => {
  * limit
  * ==========================================
  */
-export const getAuctionRegistrations = async (
-  auctionId,
-  params = {},
-) => {
+export const getAuctionRegistrations = async (auctionId, params = {}) => {
   if (!auctionId) {
     throw new Error("Auction ID is required");
   }
 
-  const response = await api.get(
-    `/api/auction-registration/${auctionId}`,
-    {
-      params: {
-        ...(params.status
-          ? { status: params.status }
-          : {}),
-        ...(params.page
-          ? { page: params.page }
-          : {}),
-        ...(params.limit
-          ? { limit: params.limit }
-          : {}),
-      },
+  const response = await api.get(`/api/auction-registration/${auctionId}`, {
+    params: {
+      ...(params.status ? { status: params.status } : {}),
+      ...(params.page ? { page: params.page } : {}),
+      ...(params.limit ? { limit: params.limit } : {}),
     },
-  );
+  });
 
   return response.data;
 };
@@ -69,9 +54,7 @@ export const getAuctionRegistrations = async (
  * GET /api/auction-registration/detail/:registrationId
  * ==========================================
  */
-export const getRegistrationById = async (
-  registrationId,
-) => {
+export const getRegistrationById = async (registrationId) => {
   if (!registrationId) {
     throw new Error("Registration ID is required");
   }
@@ -90,10 +73,7 @@ export const getRegistrationById = async (
  * GET /api/auction-registration/status/:auctionId/:teamId
  * ==========================================
  */
-export const getRegistrationStatus = async (
-  auctionId,
-  teamId,
-) => {
+export const getRegistrationStatus = async (auctionId, teamId) => {
   if (!auctionId || !teamId) {
     throw new Error("Auction ID and Team ID are required");
   }
@@ -114,9 +94,7 @@ export const getRegistrationStatus = async (
  * No request body required by backend.
  * ==========================================
  */
-export const approveRegistration = async (
-  registrationId,
-) => {
+export const approveRegistration = async (registrationId) => {
   if (!registrationId) {
     throw new Error("Registration ID is required");
   }
@@ -165,9 +143,7 @@ export const rejectRegistration = async (
  * PUT /api/auction-registration/:registrationId/cancel
  * ==========================================
  */
-export const cancelRegistration = async (
-  registrationId,
-) => {
+export const cancelRegistration = async (registrationId) => {
   if (!registrationId) {
     throw new Error("Registration ID is required");
   }

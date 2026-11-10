@@ -13,10 +13,12 @@ const MyTeamCard = ({ team, maxPlayers = 0, otherTeamsCount = 0 }) => {
 
   const id = String(team._id || team.id || "");
   const total = Number(team.totalBudget ?? 0);
-  const hasPurse = team.remainingBudget !== undefined && team.remainingBudget !== null;
+  const hasPurse =
+    team.remainingBudget !== undefined && team.remainingBudget !== null;
   const remaining = hasPurse ? Number(team.remainingBudget) : null;
   const spent = hasPurse && total > 0 ? Math.max(0, total - remaining) : 0;
-  const spentPercent = total > 0 ? Math.min(100, Math.round((spent / total) * 100)) : 0;
+  const spentPercent =
+    total > 0 ? Math.min(100, Math.round((spent / total) * 100)) : 0;
   const squad = Array.isArray(team.players) ? team.players.length : null;
 
   return (

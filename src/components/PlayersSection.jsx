@@ -118,8 +118,8 @@ export default function PlayersSection({ auctionId }) {
             className="
               mt-1
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             Players available for this auction.
@@ -159,7 +159,7 @@ export default function PlayersSection({ auctionId }) {
                   left-4
                   top-1/2
                   -translate-y-1/2
-                  text-gray-400
+                  text-slate-400
                 "
             />
 
@@ -173,7 +173,7 @@ export default function PlayersSection({ auctionId }) {
                   w-full
                   rounded-xl
                   border
-                  border-gray-200
+                  border-slate-200
                   bg-white
                   py-3
                   pl-11
@@ -214,7 +214,7 @@ export default function PlayersSection({ auctionId }) {
                 h-96
                 animate-pulse
                 rounded-2xl
-                bg-gray-200
+                bg-slate-200
                 dark:bg-navy-850
               "
             />
@@ -255,8 +255,8 @@ export default function PlayersSection({ auctionId }) {
             className="
               mt-2
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             {error}
@@ -297,7 +297,7 @@ export default function PlayersSection({ auctionId }) {
               mt-6
               rounded-2xl
               border
-              border-gray-200
+              border-slate-200
               bg-white
               p-10
               text-center
@@ -340,8 +340,8 @@ export default function PlayersSection({ auctionId }) {
                 max-w-md
                 text-sm
                 leading-6
-                text-gray-500
-                dark:text-gray-400
+                text-slate-500
+                dark:text-slate-400
               "
           >
             No players are currently associated with this auction.
@@ -362,7 +362,7 @@ export default function PlayersSection({ auctionId }) {
               mt-6
               rounded-2xl
               border
-              border-gray-200
+              border-slate-200
               bg-white
               p-8
               text-center
@@ -374,7 +374,7 @@ export default function PlayersSection({ auctionId }) {
               size={24}
               className="
                 mx-auto
-                text-gray-400
+                text-slate-400
               "
             />
 
@@ -393,8 +393,8 @@ export default function PlayersSection({ auctionId }) {
               className="
                 mt-1
                 text-sm
-                text-gray-500
-                dark:text-gray-400
+                text-slate-500
+                dark:text-slate-400
               "
             >
               Try a different player name or role.

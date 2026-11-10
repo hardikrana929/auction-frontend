@@ -47,13 +47,17 @@ export default function TeamCard({
 
       <div className="grid grid-cols-2 gap-3 p-5">
         <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Total Budget</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Total Budget
+          </p>
           <p className="mt-1 font-bold text-slate-900 dark:text-white">
             {money(team.totalBudget)}
           </p>
         </div>
         <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/70">
-          <p className="text-xs text-slate-500 dark:text-slate-400">Remaining</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Remaining
+          </p>
           <p className="mt-1 font-bold text-emerald-600 dark:text-emerald-400">
             {money(team.remainingBudget)}
           </p>
@@ -71,7 +75,11 @@ export default function TeamCard({
         <button className="icon-btn" title="Edit" onClick={() => onEdit(team)}>
           <FiEdit2 />
         </button>
-        <button className="icon-btn" title="Change status" onClick={() => onToggleStatus(team)}>
+        <button
+          className="icon-btn"
+          title="Change status"
+          onClick={() => onToggleStatus(team)}
+        >
           <FiPower />
         </button>
         <button

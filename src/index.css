@@ -102,3 +102,254 @@ button {
     @apply grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white;
   }
 }
+
+/* ======================================================================
+   Design polish: dark-first, flat & minimal
+   ====================================================================== */
+body {
+  font-variant-numeric: tabular-nums; /* stable digits while bids update */
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Professional confirm / prompt dialog ---------- */
+.ap-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(4px);
+  animation: ap-fade 0.15s ease-out;
+}
+.ap-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.75rem 1.5rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  background: #fff;
+  color: #0f172a;
+  text-align: center;
+  box-shadow: 0 24px 60px -12px rgba(2, 6, 23, 0.35);
+  animation: ap-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.dark .ap-dialog {
+  border-color: #1e293b;
+  background: #0f172a;
+  color: #f8fafc;
+}
+.ap-dialog-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #64748b;
+}
+.ap-dialog-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+html.dark .ap-dialog-close:hover {
+  background: #1e293b;
+  color: #fff;
+}
+.ap-dialog-icon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin: 0 auto 1rem;
+  border-radius: 9999px;
+  font-size: 1.5rem;
+}
+.ap-dialog-icon-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.ap-dialog-icon-primary {
+  background: #cffafe;
+  color: #0891b2;
+}
+.ap-dialog-icon-info {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+html.dark .ap-dialog-icon-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+html.dark .ap-dialog-icon-primary {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+}
+html.dark .ap-dialog-icon-info {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+}
+.ap-dialog-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.ap-dialog-message {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #64748b;
+}
+html.dark .ap-dialog-message {
+  color: #94a3b8;
+}
+.ap-dialog-input {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+.ap-dialog-input:focus {
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+}
+html.dark .ap-dialog-input {
+  border-color: #334155;
+  background: #1e293b;
+}
+.ap-dialog-options {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+.ap-dialog-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ap-dialog-option:hover {
+  background: #f8fafc;
+}
+.ap-dialog-option.is-active {
+  border-color: #06b6d4;
+  background: rgba(6, 182, 212, 0.08);
+  color: #0891b2;
+}
+html.dark .ap-dialog-option {
+  border-color: #334155;
+}
+html.dark .ap-dialog-option:hover {
+  background: #1e293b;
+}
+html.dark .ap-dialog-option.is-active {
+  color: #22d3ee;
+}
+.ap-dialog-actions {
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 1.5rem;
+}
+.ap-dialog-cancel,
+.ap-dialog-confirm {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.05s;
+}
+.ap-dialog-cancel:active,
+.ap-dialog-confirm:active {
+  transform: scale(0.98);
+}
+.ap-dialog-cancel {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #334155;
+}
+.ap-dialog-cancel:hover {
+  background: #f8fafc;
+}
+html.dark .ap-dialog-cancel {
+  border-color: #334155;
+  background: transparent;
+  color: #cbd5e1;
+}
+html.dark .ap-dialog-cancel:hover {
+  background: #1e293b;
+}
+.ap-dialog-confirm {
+  border: 0;
+  color: #fff;
+}
+.ap-dialog-confirm-danger {
+  background: #dc2626;
+}
+.ap-dialog-confirm-danger:hover {
+  background: #b91c1c;
+}
+.ap-dialog-confirm-primary,
+.ap-dialog-confirm-info {
+  background: #0891b2;
+}
+.ap-dialog-confirm-primary:hover,
+.ap-dialog-confirm-info:hover {
+  background: #0e7490;
+}
+@keyframes ap-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ap-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Toasts (react-hot-toast) ---------- */
+.ap-toast {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.875rem !important;
+  background: #fff !important;
+  color: #0f172a !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px -10px rgba(2, 6, 23, 0.25) !important;
+}
+html.dark .ap-toast {
+  border-color: #1e293b !important;
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}

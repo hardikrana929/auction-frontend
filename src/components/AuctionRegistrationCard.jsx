@@ -23,7 +23,7 @@ export default function AuctionRegistrationCard({
       className="
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         p-6
         shadow-sm
@@ -80,8 +80,8 @@ export default function AuctionRegistrationCard({
               mt-2
               text-sm
               leading-6
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             Register your team to participate in this auction.
@@ -131,8 +131,8 @@ export default function AuctionRegistrationCard({
                   mt-1
                   text-sm
                   leading-6
-                  text-gray-600
-                  dark:text-gray-400
+                  text-slate-600
+                  dark:text-slate-400
                 "
               >
                 Your team has been approved to participate in this auction.
@@ -176,8 +176,8 @@ export default function AuctionRegistrationCard({
                   mt-1
                   text-sm
                   leading-6
-                  text-gray-600
-                  dark:text-gray-400
+                  text-slate-600
+                  dark:text-slate-400
                 "
               >
                 Your registration has been submitted and is waiting for
@@ -222,8 +222,8 @@ export default function AuctionRegistrationCard({
                   mt-1
                   text-sm
                   leading-6
-                  text-gray-600
-                  dark:text-gray-400
+                  text-slate-600
+                  dark:text-slate-400
                 "
               >
                 Your team registration was rejected. You can review the
@@ -244,15 +244,15 @@ export default function AuctionRegistrationCard({
           className="
             mt-6
             rounded-xl
-            bg-gray-500/5
+            bg-slate-500/5
             p-4
           "
         >
           <p
             className="
               text-sm
-              text-gray-600
-              dark:text-gray-400
+              text-slate-600
+              dark:text-slate-400
             "
           >
             This registration has been cancelled.

@@ -141,9 +141,6 @@ const NotificationBell = ({ auctionId = null }) => {
     if (!notification) {
       return;
     }
-
-    console.log("🔔 New notification received:", notification);
-
     const notificationId = getNotificationId(notification);
 
     /* Prevent duplicate notifications */
@@ -622,16 +619,16 @@ const NotificationBell = ({ auctionId = null }) => {
                     items-center
                     justify-center
                     rounded-xl
-                    text-gray-600
+                    text-slate-600
                     transition
                     duration-200
-                    hover:bg-gray-100
-                    hover:text-gray-900
+                    hover:bg-slate-100
+                    hover:text-slate-900
                     focus:outline-none
                     focus:ring-2
                     focus:ring-indigo-500
-                    dark:text-gray-300
-                    dark:hover:bg-gray-800
+                    dark:text-slate-300
+                    dark:hover:bg-slate-800
                     dark:hover:text-white
                 "
       >
@@ -661,7 +658,7 @@ const NotificationBell = ({ auctionId = null }) => {
                             text-white
                             ring-2
                             ring-white
-                            dark:ring-gray-900
+                            dark:ring-slate-900
                         "
           >
             {unreadCount > 99 ? "99+" : unreadCount}

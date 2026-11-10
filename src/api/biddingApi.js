@@ -4,15 +4,13 @@ import api from "./axios";
  * Get the player currently being auctioned.
  */
 export const getCurrentBid = async (auctionId) => {
-    if (!auctionId) {
-        throw new Error("Auction ID is required.");
-    }
+  if (!auctionId) {
+    throw new Error("Auction ID is required.");
+  }
 
-    const response = await api.get(
-        `/api/bidding/current/${auctionId}`
-    );
+  const response = await api.get(`/api/bidding/current/${auctionId}`);
 
-    return response.data;
+  return response.data;
 };
 
 /*
@@ -22,16 +20,13 @@ export const getCurrentBid = async (auctionId) => {
  * POST /api/bidding/place
  */
 export const placeBid = async (data) => {
-    if (!data || typeof data !== "object") {
-        throw new Error("Bid data is required.");
-    }
+  if (!data || typeof data !== "object") {
+    throw new Error("Bid data is required.");
+  }
 
-    const response = await api.post(
-        "/api/bidding/place",
-        data
-    );
+  const response = await api.post("/api/bidding/place", data);
 
-    return response.data;
+  return response.data;
 };
 
 /*
@@ -41,16 +36,13 @@ export const placeBid = async (data) => {
  * POST /api/bidding/sell
  */
 export const sellPlayer = async (data) => {
-    if (!data || typeof data !== "object") {
-        throw new Error("Sell data is required.");
-    }
+  if (!data || typeof data !== "object") {
+    throw new Error("Sell data is required.");
+  }
 
-    const response = await api.post(
-        "/api/bidding/sell",
-        data
-    );
+  const response = await api.post("/api/bidding/sell", data);
 
-    return response.data;
+  return response.data;
 };
 
 /*
@@ -60,16 +52,13 @@ export const sellPlayer = async (data) => {
  * POST /api/bidding/unsold
  */
 export const markPlayerUnsold = async (data) => {
-    if (!data || typeof data !== "object") {
-        throw new Error("Unsold data is required.");
-    }
+  if (!data || typeof data !== "object") {
+    throw new Error("Unsold data is required.");
+  }
 
-    const response = await api.post(
-        "/api/bidding/unsold",
-        data
-    );
+  const response = await api.post("/api/bidding/unsold", data);
 
-    return response.data;
+  return response.data;
 };
 
 /*
@@ -79,21 +68,19 @@ export const markPlayerUnsold = async (data) => {
  * GET /api/bidding/history/:playerId
  */
 export const getBidHistory = async (playerId) => {
-    if (!playerId) {
-        throw new Error("Player ID is required.");
-    }
+  if (!playerId) {
+    throw new Error("Player ID is required.");
+  }
 
-    const response = await api.get(
-        `/api/bidding/history/${playerId}`
-    );
+  const response = await api.get(`/api/bidding/history/${playerId}`);
 
-    return response.data;
+  return response.data;
 };
 
 export default {
-    getCurrentBid,
-    placeBid,
-    sellPlayer,
-    markPlayerUnsold,
-    getBidHistory,
+  getCurrentBid,
+  placeBid,
+  sellPlayer,
+  markPlayerUnsold,
+  getBidHistory,
 };

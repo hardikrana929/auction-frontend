@@ -204,7 +204,9 @@ const AuctionAccess = () => {
     const auctionStatus = String(auction?.status || "").toLowerCase();
 
     if (!isManager && auctionStatus && auctionStatus !== "live") {
-      toast.error("This auction is not live yet. Please come back when it starts.");
+      toast.error(
+        "This auction is not live yet. Please come back when it starts.",
+      );
       return;
     }
 
@@ -217,12 +219,12 @@ const AuctionAccess = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] bg-gray-50 px-4 py-10 dark:bg-gray-950">
+      <div className="min-h-[60vh] bg-slate-50 px-4 py-10 dark:bg-slate-950">
         <div className="flex min-h-[50vh] items-center justify-center">
           <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600 dark:border-gray-700 dark:border-t-indigo-400" />
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400" />
 
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
               Checking auction access...
             </p>
           </div>
@@ -232,21 +234,21 @@ const AuctionAccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 transition-colors dark:bg-gray-950 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 py-6 transition-colors dark:bg-slate-950 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         {/* Back */}
         <Link
           to={`/auctions/${id}`}
-          className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400"
+          className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
         >
           <FiArrowLeft />
           Back to Auction
         </Link>
 
         {/* Main Card */}
-        <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
           {/* Header */}
-          <div className="border-b border-gray-200 bg-gray-50 px-6 py-7 dark:border-gray-800 dark:bg-gray-900 sm:px-8">
+          <div className="border-b border-slate-200 bg-slate-50 px-6 py-7 dark:border-slate-800 dark:bg-slate-900 sm:px-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
                 <FiShield className="text-3xl" />
@@ -257,11 +259,11 @@ const AuctionAccess = () => {
                   Auction Access
                 </p>
 
-                <h1 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+                <h1 className="mt-1 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
                   {auctionName}
                 </h1>
 
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   Verify your registration before entering the live auction.
                 </p>
               </div>
@@ -306,11 +308,11 @@ const AuctionAccess = () => {
                   <FiCheckCircle className="text-4xl" />
                 </div>
 
-                <h2 className="mt-5 text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
                   Access Approved
                 </h2>
 
-                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500 dark:text-gray-400">
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                   Your team has been approved to participate in this auction.
                   You can now enter the live auction.
                 </p>
@@ -338,7 +340,7 @@ const AuctionAccess = () => {
                         Approved Team
                       </p>
 
-                      <p className="truncate text-lg font-bold text-gray-900 dark:text-white">
+                      <p className="truncate text-lg font-bold text-slate-900 dark:text-white">
                         {teamName}
                       </p>
                     </div>
@@ -355,7 +357,7 @@ const AuctionAccess = () => {
                   <FiArrowRight className="text-lg" />
                 </button>
 
-                <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+                <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
                   Your auction access will be checked again by the live auction
                   page.
                 </p>
@@ -369,11 +371,11 @@ const AuctionAccess = () => {
                   <FiClock className="text-4xl" />
                 </div>
 
-                <h2 className="mt-5 text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
                   Approval Pending
                 </h2>
 
-                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500 dark:text-gray-400">
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                   Your team registration has been submitted, but an
                   administrator has not approved it yet.
                 </p>
@@ -392,7 +394,7 @@ const AuctionAccess = () => {
                   type="button"
                   onClick={() => loadAccess(true)}
                   disabled={checking}
-                  className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                  className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   <FiRefreshCw className={checking ? "animate-spin" : ""} />
                   {checking ? "Checking..." : "Check Approval Again"}
@@ -407,17 +409,17 @@ const AuctionAccess = () => {
                   <FiXCircle className="text-4xl" />
                 </div>
 
-                <h2 className="mt-5 text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="mt-5 text-2xl font-bold text-slate-900 dark:text-white">
                   Auction Access Not Available
                 </h2>
 
-                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500 dark:text-gray-400">
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                   Your account or team does not currently have permission to
                   enter this auction.
                 </p>
 
                 {error && (
-                  <div className="mx-auto mt-5 max-w-lg rounded-xl bg-gray-100 p-4 text-sm text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                  <div className="mx-auto mt-5 max-w-lg rounded-xl bg-slate-100 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                     {error}
                   </div>
                 )}
@@ -435,7 +437,7 @@ const AuctionAccess = () => {
 
                   <Link
                     to={`/auctions/${id}`}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   >
                     <FiArrowLeft />
                     Back to Auction
@@ -447,15 +449,15 @@ const AuctionAccess = () => {
             {/* No response */}
             {!approvedState && !pendingState && !deniedState && !error && (
               <div className="text-center">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                   <FiLock className="text-3xl" />
                 </div>
 
-                <h2 className="mt-5 text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
                   Access information unavailable
                 </h2>
 
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Please refresh and try again.
                 </p>
 
@@ -472,8 +474,8 @@ const AuctionAccess = () => {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-200 bg-gray-50 px-6 py-5 dark:border-gray-800 dark:bg-gray-900">
-            <div className="flex flex-col items-center justify-center gap-2 text-center text-xs text-gray-500 dark:text-gray-400 sm:flex-row">
+          <div className="border-t border-slate-200 bg-slate-50 px-6 py-5 dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex flex-col items-center justify-center gap-2 text-center text-xs text-slate-500 dark:text-slate-400 sm:flex-row">
               <FiShield />
               <span>Auction access is verified by the AuctionPro backend.</span>
             </div>

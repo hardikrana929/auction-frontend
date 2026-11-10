@@ -8,10 +8,10 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ConfirmDialogProvider } from "./context/ConfirmDialogContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -146,7 +146,7 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <Toaster position="top-right" toastOptions={{ duration: 3500 }} />
+          <ConfirmDialogProvider>
           <RouteErrorBoundary>
             <Routes>
               {/* Public marketing landing page */}
@@ -237,16 +237,31 @@ export default function App() {
                     />
                     <Route path="/admin/teams" element={<TeamManagement />} />
                     {/* Dedicated team pages kept for direct/bookmarked URLs. */}
-                    <Route path="/admin/teams/create" element={<CreateTeam />} />
-                    <Route path="/admin/teams/edit/:id" element={<EditTeam />} />
-                    <Route path="/admin/teams/view/:teamId" element={<AdminTeamDetails />} />
+                    <Route
+                      path="/admin/teams/create"
+                      element={<CreateTeam />}
+                    />
+                    <Route
+                      path="/admin/teams/edit/:id"
+                      element={<EditTeam />}
+                    />
+                    <Route
+                      path="/admin/teams/view/:teamId"
+                      element={<AdminTeamDetails />}
+                    />
                     <Route
                       path="/admin/players"
                       element={<PlayerManagement />}
                     />
                     {/* Dedicated player pages kept for direct/bookmarked URLs. */}
-                    <Route path="/admin/players/create" element={<CreatePlayer />} />
-                    <Route path="/admin/players/edit/:id" element={<EditPlayer />} />
+                    <Route
+                      path="/admin/players/create"
+                      element={<CreatePlayer />}
+                    />
+                    <Route
+                      path="/admin/players/edit/:id"
+                      element={<EditPlayer />}
+                    />
 
                     <Route
                       path="/admin/registrations"
@@ -284,6 +299,7 @@ export default function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </RouteErrorBoundary>
+        </ConfirmDialogProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

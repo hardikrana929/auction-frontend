@@ -5,13 +5,13 @@ const statusStyles = {
 
   paused: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
 
-  completed: "bg-gray-500/10 text-gray-600 dark:text-gray-400",
+  completed: "bg-slate-500/10 text-slate-600 dark:text-slate-400",
 
   cancelled: "bg-red-500/10 text-red-600 dark:text-red-400",
 
   active: "bg-green-500/10 text-green-600 dark:text-green-400",
 
-  inactive: "bg-gray-500/10 text-gray-600 dark:text-gray-400",
+  inactive: "bg-slate-500/10 text-slate-600 dark:text-slate-400",
 };
 
 export default function StatusBadge({ status }) {
@@ -21,7 +21,7 @@ export default function StatusBadge({ status }) {
 
   const classes =
     statusStyles[normalizedStatus] ||
-    "bg-gray-500/10 text-gray-600 dark:text-gray-400";
+    "bg-slate-500/10 text-slate-600 dark:text-slate-400";
 
   const label =
     normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);

@@ -44,7 +44,7 @@ export default function AuctionRegistrationModal({
             items-center
             justify-between
             border-b
-            border-gray-200
+            border-slate-200
             px-6
             py-5
             dark:border-navy-700
@@ -68,8 +68,8 @@ export default function AuctionRegistrationModal({
               className="
                 mt-1
                 text-sm
-                text-gray-500
-                dark:text-gray-400
+                text-slate-500
+                dark:text-slate-400
               "
             >
               Select the team you want to register.
@@ -84,9 +84,9 @@ export default function AuctionRegistrationModal({
             className="
               rounded-lg
               p-2
-              text-gray-500
+              text-slate-500
               transition
-              hover:bg-gray-100
+              hover:bg-slate-100
               hover:text-navy-950
               dark:hover:bg-navy-800
               dark:hover:text-white
@@ -104,7 +104,7 @@ export default function AuctionRegistrationModal({
               className="
                 rounded-xl
                 border
-                border-gray-200
+                border-slate-200
                 bg-pitch-50
                 p-6
                 text-center
@@ -116,7 +116,7 @@ export default function AuctionRegistrationModal({
                 size={25}
                 className="
                   mx-auto
-                  text-gray-400
+                  text-slate-400
                 "
               />
 
@@ -135,8 +135,8 @@ export default function AuctionRegistrationModal({
                 className="
                   mt-1
                   text-sm
-                  text-gray-500
-                  dark:text-gray-400
+                  text-slate-500
+                  dark:text-slate-400
                 "
               >
                 You need an available team before registering for an auction.
@@ -179,7 +179,7 @@ export default function AuctionRegistrationModal({
                         ${
                           selected
                             ? "border-cyan-500 bg-cyan-500/5"
-                            : "border-gray-200 dark:border-navy-700"
+                            : "border-slate-200 dark:border-navy-700"
                         }
                       `}
                     >
@@ -245,7 +245,7 @@ export default function AuctionRegistrationModal({
             flex-col-reverse
             gap-3
             border-t
-            border-gray-200
+            border-slate-200
             p-6
             sm:flex-row
             sm:justify-end
@@ -259,17 +259,17 @@ export default function AuctionRegistrationModal({
             className="
               rounded-xl
               border
-              border-gray-200
+              border-slate-200
               px-5
               py-3
               text-sm
               font-semibold
-              text-gray-700
+              text-slate-700
               transition
-              hover:bg-gray-50
+              hover:bg-slate-50
               disabled:opacity-50
               dark:border-navy-700
-              dark:text-gray-300
+              dark:text-slate-300
               dark:hover:bg-navy-800
             "
           >

@@ -48,9 +48,27 @@ export default function PlayerCard({
         </div>
 
         <div className="mt-4 flex items-center gap-2">
-          <button className="icon-btn" title="View" onClick={() => onView(player)}><FiEye /></button>
-          <button className="icon-btn" title="Edit" onClick={() => onEdit(player)}><FiEdit2 /></button>
-          <button className="icon-btn" title="Status" onClick={() => onStatus(player)}><FiPower /></button>
+          <button
+            className="icon-btn"
+            title="View"
+            onClick={() => onView(player)}
+          >
+            <FiEye />
+          </button>
+          <button
+            className="icon-btn"
+            title="Edit"
+            onClick={() => onEdit(player)}
+          >
+            <FiEdit2 />
+          </button>
+          <button
+            className="icon-btn"
+            title="Status"
+            onClick={() => onStatus(player)}
+          >
+            <FiPower />
+          </button>
           <button
             className="icon-btn text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
             title="Delete"
@@ -68,7 +86,9 @@ function Metric({ label, value }) {
   return (
     <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/70">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">{value}</p>
+      <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">
+        {value}
+      </p>
     </div>
   );
 }

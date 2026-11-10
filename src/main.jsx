@@ -15,7 +15,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         zIndex: 999999,
       }}
       toastOptions={{
-        duration: 4000,
+        duration: 3500,
+        className: "ap-toast",
       }}
     />
   </React.StrictMode>,

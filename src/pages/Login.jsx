@@ -1,54 +1,172 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
+import {
+  FiArrowRight,
+  FiEye,
+  FiEyeOff,
+  FiLock,
+  FiMail,
+  FiHash,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import AuthShell from "../components/AuthShell";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, loginAuction, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [mode, setMode] = useState("admin");
+  const [form, setForm] = useState({
+    identifier: "",
+    password: "",
+    auctionId: "",
+  });
   const [show, setShow] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
   if (isAuthenticated) return <Navigate to="/dashboard" replace />;
-  const update = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
-
+  const update = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
   const submit = async (e) => {
     e.preventDefault();
-    const email = form.email.trim().toLowerCase();
-    if (!email || !form.password) return toast.error("Email and password are required.");
-    if (!/^\S+@\S+\.\S+$/.test(email)) return toast.error("Enter a valid email address.");
+    const identifier = form.identifier.trim().toLowerCase();
+    if (!identifier || !form.password)
+      return toast.error("Username and password are required.");
+    if (mode === "auction" && form.auctionId.trim().length < 8)
+      return toast.error("Auction ID must be at least 8 characters.");
     setSubmitting(true);
     try {
-      await login({ email, password: form.password });
+      if (mode === "auction")
+        await loginAuction({
+          username: identifier,
+          password: form.password,
+          auctionId: form.auctionId.trim(),
+        });
+      else await login({ identifier, password: form.password });
       toast.success("Login successful");
       navigate(location.state?.from || "/dashboard", { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to sign in.");
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
-
-  return <AuthShell title="Welcome back" subtitle="Sign in to continue to AuctionPro.">
-    <form onSubmit={submit} className="space-y-5">
-      <Field icon={<FiMail />} label="Email" name="email" type="email" value={form.email} onChange={update} placeholder="you@example.com" autoComplete="email" />
-      <div>
-        <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Password</label>
-        <div className="relative">
-          <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-          <input name="password" type={show ? "text" : "password"} value={form.password} onChange={update} placeholder="Enter your password" autoComplete="current-password" className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700" />
-          <button type="button" onClick={() => setShow((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500 dark:text-slate-400" aria-label={show ? "Hide password" : "Show password"}>{show ? <FiEyeOff /> : <FiEye />}</button>
-        </div>
+  return (
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to continue to AuctionPro."
+    >
+      <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+        <button
+          type="button"
+          onClick={() => setMode("admin")}
+          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "admin" ? "bg-white text-slate-950 shadow dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}
+        >
+          Admin / User
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("auction")}
+          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "auction" ? "bg-white text-slate-950 shadow dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}
+        >
+          Auction login
+        </button>
       </div>
-      <div className="flex justify-end"><Link to="/forgot-password" className="text-sm font-bold text-slate-700 hover:underline dark:text-slate-300">Forgot password?</Link></div>
-      <button disabled={submitting} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200">{submitting ? "Signing in…" : "Sign in"} {!submitting && <FiArrowRight />}</button>
-      <p className="text-center text-sm text-slate-500 dark:text-slate-400">Don't have an account? <Link to="/register" className="font-bold text-slate-950 hover:underline dark:text-white">Create one</Link></p>
-    </form>
-  </AuthShell>;
+      <form onSubmit={submit} className="space-y-5">
+        <Field
+          icon={<FiMail />}
+          label={mode === "auction" ? "Username" : "Username or e-mail"}
+          name="identifier"
+          type="text"
+          value={form.identifier}
+          onChange={update}
+          placeholder="Enter your username or e-mail"
+          autoComplete="username"
+        />
+        {mode === "auction" && (
+          <Field
+            icon={<FiHash />}
+            label="Auction ID"
+            name="auctionId"
+            type="text"
+            value={form.auctionId}
+            onChange={update}
+            placeholder="Enter your auction ID"
+            autoComplete="off"
+          />
+        )}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Password
+          </label>
+          <div className="relative">
+            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              name="password"
+              type={show ? "text" : "password"}
+              value={form.password}
+              onChange={update}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+            />
+            <button
+              type="button"
+              onClick={() => setShow((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-slate-500 dark:text-slate-400"
+              aria-label={show ? "Hide password" : "Show password"}
+            >
+              {show ? <FiEyeOff /> : <FiEye />}
+            </button>
+          </div>
+        </div>
+        {mode === "admin" && (
+          <div className="flex justify-end">
+            <Link
+              to="/forgot-password"
+              className="text-sm font-bold text-slate-700 hover:underline dark:text-slate-300"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        )}
+        <button
+          disabled={submitting}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+        >
+          {submitting ? "Signing in…" : "Sign in"}{" "}
+          {!submitting && <FiArrowRight />}
+        </button>
+        {mode === "admin" && (
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="font-bold text-slate-950 hover:underline dark:text-white"
+            >
+              Create one
+            </Link>
+          </p>
+        )}
+      </form>
+    </AuthShell>
+  );
 }
-
 function Field({ icon, label, ...props }) {
-  return <div><label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</label><div className="relative">{<span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">{icon}</span>}<input {...props} className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700" /></div></div>;
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+        {label}
+      </label>
+      <div className="relative">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
+          {icon}
+        </span>
+        <input
+          {...props}
+          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+        />
+      </div>
+    </div>
+  );
 }

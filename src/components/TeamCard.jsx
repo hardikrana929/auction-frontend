@@ -35,7 +35,7 @@ export default function TeamCard({ team }) {
   const statusStyles = {
     active: "bg-success-500/10 text-success-500",
 
-    inactive: "bg-gray-500/10 text-gray-500",
+    inactive: "bg-slate-500/10 text-slate-500",
 
     approved: "bg-success-500/10 text-success-500",
 
@@ -62,7 +62,7 @@ export default function TeamCard({ team }) {
         overflow-hidden
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         shadow-sm
         transition
@@ -154,7 +154,7 @@ export default function TeamCard({ team }) {
             text-xs
             font-bold
             capitalize
-            ${statusStyles[status] || "bg-gray-500/10 text-gray-300"}
+            ${statusStyles[status] || "bg-slate-500/10 text-slate-300"}
           `}
         >
           {status}
@@ -187,8 +187,8 @@ export default function TeamCard({ team }) {
               items-center
               gap-2
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             <FiUser size={16} className="text-cyan-500" />
@@ -223,7 +223,7 @@ export default function TeamCard({ team }) {
                 flex
                 items-center
                 gap-2
-                text-gray-400
+                text-slate-400
               "
             >
               <RupeeIcon size={15} />
@@ -268,7 +268,7 @@ export default function TeamCard({ team }) {
                 flex
                 items-center
                 gap-2
-                text-gray-400
+                text-slate-400
               "
             >
               <FiUsers size={15} />

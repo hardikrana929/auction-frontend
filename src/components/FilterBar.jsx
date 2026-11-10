@@ -8,7 +8,7 @@ export default function FilterBar({ status, onStatusChange }) {
         sm:flex-row sm:items-center
       "
     >
-      <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+      <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
         <FiFilter size={17} />
         Status
       </div>
@@ -18,7 +18,7 @@ export default function FilterBar({ status, onStatusChange }) {
         onChange={(event) => onStatusChange(event.target.value)}
         className="
           rounded-xl
-          border border-gray-300
+          border border-slate-300
           bg-white
           px-4 py-3
           text-sm

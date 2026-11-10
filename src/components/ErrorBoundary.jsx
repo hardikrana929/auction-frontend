@@ -34,10 +34,14 @@ export default class ErrorBoundary extends Component {
               Something went wrong
             </h1>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-              This page ran into an unexpected error. You can try again, or go back to the dashboard.
+              This page ran into an unexpected error. You can try again, or go
+              back to the dashboard.
             </p>
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
-              <button onClick={() => window.location.reload()} className="primary-btn">
+              <button
+                onClick={() => window.location.reload()}
+                className="primary-btn"
+              >
                 <FiRefreshCw /> Reload page
               </button>
               <a href="/dashboard" className="secondary-btn">

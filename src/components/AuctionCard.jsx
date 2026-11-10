@@ -27,7 +27,7 @@ export default function AuctionCard({ auction }) {
 
     paused: "bg-warning-500/10 text-warning-500",
 
-    completed: "bg-gray-500/10 text-gray-600 dark:text-gray-400",
+    completed: "bg-slate-500/10 text-slate-600 dark:text-slate-400",
   };
 
   return (
@@ -38,7 +38,7 @@ export default function AuctionCard({ auction }) {
         flex-col
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         p-6
         shadow-sm
@@ -77,7 +77,7 @@ export default function AuctionCard({ auction }) {
             capitalize
             ${
               statusClasses[status] ||
-              "bg-gray-500/10 text-gray-600 dark:text-gray-400"
+              "bg-slate-500/10 text-slate-600 dark:text-slate-400"
             }
           `}
         >
@@ -105,8 +105,8 @@ export default function AuctionCard({ auction }) {
             line-clamp-2
             text-sm
             leading-6
-            text-gray-500
-            dark:text-gray-400
+            text-slate-500
+            dark:text-slate-400
           "
         >
           {description}
@@ -121,8 +121,8 @@ export default function AuctionCard({ auction }) {
               items-center
               gap-2
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             <FiClock size={16} />
@@ -139,7 +139,7 @@ export default function AuctionCard({ auction }) {
         {/* Price */}
         {budget !== undefined && (
           <div className="mt-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
               Starting Value
             </p>
 
@@ -159,7 +159,7 @@ export default function AuctionCard({ auction }) {
       </div>
 
       {/* Footer */}
-      <div className="mt-6 border-t border-gray-100 pt-5 dark:border-navy-700">
+      <div className="mt-6 border-t border-slate-100 pt-5 dark:border-navy-700">
         {auctionId ? (
           <Link
             to={`/auctions/${auctionId}`}
@@ -187,13 +187,13 @@ export default function AuctionCard({ auction }) {
             className="
               block
               rounded-xl
-              bg-gray-100
+              bg-slate-100
               px-4
               py-3
               text-center
               text-sm
               font-medium
-              text-gray-400
+              text-slate-400
               dark:bg-navy-800
             "
           >

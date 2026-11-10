@@ -34,14 +34,28 @@ export default function TeamDetails() {
     }
   };
 
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => {
+    load();
+  }, [id]);
 
   if (loading) return <LoadingScreen />;
-  if (error) return <section className="page-container"><ErrorState title="Unable to load team" message={error} onRetry={load} /></section>;
+  if (error)
+    return (
+      <section className="page-container">
+        <ErrorState
+          title="Unable to load team"
+          message={error}
+          onRetry={load}
+        />
+      </section>
+    );
 
   return (
     <section className="page-container">
-      <Link to={isAdmin ? "/admin/teams" : "/auctions"} className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+      <Link
+        to={isAdmin ? "/admin/teams" : "/auctions"}
+        className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400"
+      >
         <FiArrowLeft /> {isAdmin ? "Back to teams" : "Back to auctions"}
       </Link>
 
@@ -49,7 +63,11 @@ export default function TeamDetails() {
         <div className="flex flex-col gap-5 border-b border-slate-200 p-6 sm:flex-row sm:items-center dark:border-slate-800">
           <div className="h-24 w-24 overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800">
             {team.logo?.url ? (
-              <img src={team.logo.url} alt={`${team.name} logo`} className="h-full w-full object-cover" />
+              <img
+                src={team.logo.url}
+                alt={`${team.name} logo`}
+                className="h-full w-full object-cover"
+              />
             ) : (
               <div className="flex h-full items-center justify-center text-2xl font-black text-slate-400 dark:text-slate-500">
                 {team.name?.slice(0, 2).toUpperCase()}
@@ -62,14 +80,22 @@ export default function TeamDetails() {
               <TeamStatusBadge status={team.status} />
             </div>
             <p className="page-subtitle">Owner: {team.ownerName}</p>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{team.auction?.name || "Auction"}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              {team.auction?.name || "Auction"}
+            </p>
           </div>
         </div>
 
         <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
           <Metric label="Total budget" value={money(team.totalBudget)} />
-          <Metric label="Remaining budget" value={money(team.remainingBudget)} />
-          <Metric label="Players" value={Array.isArray(team.players) ? team.players.length : 0} />
+          <Metric
+            label="Remaining budget"
+            value={money(team.remainingBudget)}
+          />
+          <Metric
+            label="Players"
+            value={Array.isArray(team.players) ? team.players.length : 0}
+          />
           <Metric label="Status" value={team.status} />
         </div>
       </div>
@@ -79,7 +105,8 @@ export default function TeamDetails() {
           <FiUsers /> Squad
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Player allocation will be connected to the Player/Auction workflow in the later groups.
+          Player allocation will be connected to the Player/Auction workflow in
+          the later groups.
         </p>
       </div>
     </section>
@@ -90,7 +117,9 @@ function Metric({ label, value }) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/70">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-1 text-xl font-black text-slate-900 dark:text-white">{value}</p>
+      <p className="mt-1 text-xl font-black text-slate-900 dark:text-white">
+        {value}
+      </p>
     </div>
   );
 }

@@ -526,52 +526,7 @@ const TeamSelectionModal = ({
                             TEAM LOGO
                         ================================== */}
 
-                      <span
-                        className="
-                            flex
-                            h-11
-                            w-11
-                            shrink-0
-                            items-center
-                            justify-center
-                            overflow-hidden
-                            rounded-xl
-                            border
-                            border-cyan-500/20
-                            bg-[#07152a]
-                          "
-                      >
-                        {teamLogo ? (
-                          <img
-                            src={teamLogo}
-                            alt=""
-                            className="
-                                h-full
-                                w-full
-                                object-cover
-                              "
-                            onError={(event) => {
-                              event.currentTarget.style.display = "none";
-
-                              const parent = event.currentTarget.parentElement;
-
-                              if (parent) {
-                                parent.innerHTML = `<span style="color:#22d3ee;font-size:12px;font-weight:700;">${getInitials(teamName)}</span>`;
-                              }
-                            }}
-                          />
-                        ) : (
-                          <span
-                            className="
-                                text-xs
-                                font-bold
-                                text-cyan-400
-                              "
-                          >
-                            {getInitials(teamName)}
-                          </span>
-                        )}
-                      </span>
+                      <TeamLogo logo={teamLogo} teamName={teamName} />
 
                       {/* =================================
                             NAME
@@ -779,5 +734,32 @@ const TeamSelectionModal = ({
 
   return createPortal(modal, document.body);
 };
+
+function TeamLogo({ logo, teamName }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const initials = (teamName || "TM")
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.charAt(0))
+    .join("")
+    .slice(0, 3)
+    .toUpperCase();
+  return (
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-cyan-500/20 bg-[#07152a]">
+      {logo && !imageFailed ? (
+        <img
+          src={logo}
+          alt=""
+          className="h-full w-full object-cover"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <span className="text-xs font-bold text-cyan-400">
+          {initials || "TM"}
+        </span>
+      )}
+    </span>
+  );
+}
 
 export default TeamSelectionModal;

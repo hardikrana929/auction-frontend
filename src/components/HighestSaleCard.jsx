@@ -46,7 +46,9 @@ export default function HighestSaleCard({ player, highestBid }) {
             Top Auction Result
           </p>
 
-          <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white">Highest Sale</h2>
+          <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white">
+            Highest Sale
+          </h2>
         </div>
       </div>
 
@@ -72,7 +74,7 @@ export default function HighestSaleCard({ player, highestBid }) {
               justify-center
               rounded-xl
               bg-slate-100 dark:bg-navy-800
-              text-slate-500 dark:text-gray-400
+              text-slate-500 dark:text-slate-400
             "
           >
             <FiUser size={25} />
@@ -84,13 +86,15 @@ export default function HighestSaleCard({ player, highestBid }) {
             {playerName}
           </h3>
 
-          <p className="mt-1 text-sm text-slate-500 dark:text-gray-400">{playerRole}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {playerRole}
+          </p>
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-slate-50 dark:bg-navy-850 p-4">
-          <p className="text-xs text-slate-500 dark:text-gray-400">Sold For</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Sold For</p>
 
           <p className="mt-2 text-lg font-bold text-emerald-400">
             {formatCurrency(salePrice)}
@@ -98,7 +102,9 @@ export default function HighestSaleCard({ player, highestBid }) {
         </div>
 
         <div className="rounded-xl bg-slate-50 dark:bg-navy-850 p-4">
-          <p className="text-xs text-slate-500 dark:text-gray-400">Highest Bid</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Highest Bid
+          </p>
 
           <div className="mt-2 flex items-center gap-1">
             <RupeeIcon size={15} className="text-cyan-400" />

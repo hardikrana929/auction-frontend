@@ -29,7 +29,7 @@ function HowItWorksStep({ number, icon, title, description }) {
           {title}
         </h3>
 
-        <p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-gray-600 dark:text-gray-400">
+        <p className="mx-auto mt-3 max-w-xs text-sm leading-6 text-slate-600 dark:text-slate-400">
           {description}
         </p>
       </div>
@@ -49,7 +49,7 @@ function WorkflowItem({ icon, title, text }) {
           {title}
         </p>
 
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{text}</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{text}</p>
       </div>
     </div>
   );
@@ -86,7 +86,7 @@ export default function Home() {
             </h1>
 
             {/* Description */}
-            <p className="mt-6 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg dark:text-gray-400">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-400">
               AuctionPro brings cricket auctions into one powerful platform.
               Manage players, teams, budgets, registrations, live bidding and
               auction results with complete control.
@@ -104,7 +104,7 @@ export default function Home() {
 
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3.5 text-sm font-bold text-navy-950 transition hover:border-cyan-400 hover:text-cyan-600 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:border-cyan-500 dark:hover:text-cyan-400"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-bold text-navy-950 transition hover:border-cyan-400 hover:text-cyan-600 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:border-cyan-500 dark:hover:text-cyan-400"
               >
                 Create Account
               </Link>
@@ -122,11 +122,11 @@ export default function Home() {
           <div className="relative">
             <div className="relative mx-auto max-w-lg">
               {/* Main dashboard card */}
-              <div className="rounded-3xl border border-gray-200 bg-gray-50 p-4 shadow-2xl dark:border-navy-700 dark:bg-navy-900">
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-2xl dark:border-navy-700 dark:bg-navy-900">
                 {/* Top bar */}
                 <div className="flex items-center justify-between rounded-2xl bg-white p-4 dark:bg-navy-850">
                   <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       LIVE AUCTION
                     </p>
 
@@ -157,14 +157,14 @@ export default function Home() {
                         Premium Player
                       </h3>
 
-                      <p className="mt-1 text-sm text-gray-400">All Rounder</p>
+                      <p className="mt-1 text-sm text-slate-400">All Rounder</p>
                     </div>
                   </div>
 
                   {/* Current bid */}
                   <div className="mt-6 rounded-2xl bg-white/5 p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-400">Current Bid</span>
+                      <span className="text-sm text-slate-400">Current Bid</span>
 
                       <span className="text-xs font-semibold text-cyan-400">
                         NEXT BID AVAILABLE
@@ -176,7 +176,7 @@ export default function Home() {
                         ₹12.5L
                       </span>
 
-                      <span className="text-sm text-gray-400">+ ₹50K</span>
+                      <span className="text-sm text-slate-400">+ ₹50K</span>
                     </div>
                   </div>
 
@@ -201,14 +201,14 @@ export default function Home() {
               </div>
 
               {/* Floating notification */}
-              <div className="absolute -left-4 top-20 hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
+              <div className="absolute -left-4 top-20 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">
                     <FiCheckCircle className="h-5 w-5" />
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                       PLAYER SOLD
                     </p>
 
@@ -220,14 +220,14 @@ export default function Home() {
               </div>
 
               {/* Floating teams */}
-              <div className="absolute -bottom-5 -right-5 hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
+              <div className="absolute -bottom-5 -right-5 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
                     <FiUsers className="h-5 w-5" />
                   </div>
 
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       ACTIVE TEAMS
                     </p>
 
@@ -245,7 +245,7 @@ export default function Home() {
       {/* =====================================================
           FEATURES
       ====================================================== */}
-      <section className="border-y border-gray-200 bg-gray-50 py-20 dark:border-navy-800 dark:bg-navy-900">
+      <section className="border-y border-slate-200 bg-slate-50 py-20 dark:border-navy-800 dark:bg-navy-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-bold uppercase tracking-wider text-cyan-500">
@@ -256,7 +256,7 @@ export default function Home() {
               One platform for the entire auction
             </h2>
 
-            <p className="mt-4 text-gray-600 dark:text-gray-400">
+            <p className="mt-4 text-slate-600 dark:text-slate-400">
               From registration to the final player sale, AuctionPro keeps your
               auction organized and under control.
             </p>
@@ -293,7 +293,7 @@ export default function Home() {
       {/* =====================================================
     HOW AUCTIONPRO WORKS
 ====================================================== */}
-      <section className="relative overflow-hidden border-y border-gray-200 bg-gray-50 py-20 dark:border-navy-800 dark:bg-navy-900">
+      <section className="relative overflow-hidden border-y border-slate-200 bg-slate-50 py-20 dark:border-navy-800 dark:bg-navy-900">
         {/* Background decoration */}
         <div className="pointer-events-none absolute -right-40 top-20 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
         <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
@@ -309,7 +309,7 @@ export default function Home() {
               How AuctionPro Works
             </h2>
 
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-600 dark:text-gray-400">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400">
               From creating your team to winning your favourite players,
               AuctionPro makes every stage of the auction simple, transparent
               and exciting.
@@ -357,7 +357,7 @@ export default function Home() {
           </div>
 
           {/* Bottom workflow */}
-          <div className="mt-16 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-850 sm:p-8">
+          <div className="mt-16 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-850 sm:p-8">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
               {/* Registration */}
               <WorkflowItem
@@ -413,7 +413,7 @@ export default function Home() {
                 Create your team and enter the next auction.
               </h2>
 
-              <p className="mt-4 max-w-xl text-gray-400">
+              <p className="mt-4 max-w-xl text-slate-400">
                 Join AuctionPro and experience a modern, organized cricket
                 auction platform.
               </p>
@@ -442,19 +442,19 @@ export default function Home() {
       {/* =====================================================
           FOOTER
       ====================================================== */}
-      <footer className="border-t border-gray-200 bg-gray-50 dark:border-navy-800 dark:bg-navy-900">
+      <footer className="border-t border-slate-200 bg-slate-50 dark:border-navy-800 dark:bg-navy-900">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-10">
           <div>
             <p className="text-sm font-bold text-navy-950 dark:text-white">
               AuctionPro
             </p>
 
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Professional cricket auction management platform.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-5 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap gap-5 text-sm text-slate-600 dark:text-slate-400">
             <Link to="/auctions" className="transition hover:text-cyan-500">
               Auctions
             </Link>
@@ -479,7 +479,7 @@ export default function Home() {
 
 function TrustPoint({ text }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
       <FiCheckCircle className="h-4 w-4 text-green-500" />
       {text}
     </div>
@@ -491,7 +491,7 @@ function MiniStat({ label, value }) {
     <div className="rounded-xl bg-white p-3 text-center dark:bg-navy-850">
       <p className="text-lg font-bold text-navy-950 dark:text-white">{value}</p>
 
-      <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
         {label}
       </p>
     </div>
@@ -500,7 +500,7 @@ function MiniStat({ label, value }) {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="group rounded-2xl border border-gray-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-xl hover:shadow-cyan-500/5 dark:border-navy-700 dark:bg-navy-850 dark:hover:border-cyan-500/40">
+    <div className="group rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-xl hover:shadow-cyan-500/5 dark:border-navy-700 dark:bg-navy-850 dark:hover:border-cyan-500/40">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 transition group-hover:bg-cyan-500 group-hover:text-white dark:bg-cyan-500/10 dark:text-cyan-400 dark:group-hover:bg-cyan-500">
         <span className="text-xl">{icon}</span>
       </div>
@@ -509,7 +509,7 @@ function FeatureCard({ icon, title, description }) {
         {title}
       </h3>
 
-      <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
+      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
         {description}
       </p>
     </div>
@@ -526,7 +526,7 @@ function Step({ number, title, description }) {
       <div>
         <h3 className="font-bold text-navy-950 dark:text-white">{title}</h3>
 
-        <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
           {description}
         </p>
       </div>
@@ -536,7 +536,7 @@ function Step({ number, title, description }) {
 
 function LargeStat({ icon, value, label }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-850">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-850">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
         {icon}
       </div>
@@ -545,7 +545,7 @@ function LargeStat({ icon, value, label }) {
         {value}
       </p>
 
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{label}</p>
     </div>
   );
 }

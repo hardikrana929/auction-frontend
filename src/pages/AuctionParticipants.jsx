@@ -215,9 +215,9 @@ const AuctionParticipants = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-indigo-600 dark:border-gray-700 dark:border-t-indigo-400" />
+          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400" />
 
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
             Loading auction participants...
           </p>
         </div>
@@ -226,13 +226,13 @@ const AuctionParticipants = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 transition-colors dark:bg-gray-950 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 py-6 transition-colors dark:bg-slate-950 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-6">
           <Link
             to={`/auctions/${id}`}
-            className="mb-4 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-indigo-400"
+            className="mb-4 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
           >
             <FiArrowLeft />
             Back to Auction
@@ -250,11 +250,11 @@ const AuctionParticipants = () => {
                 </span>
               </div>
 
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
                 {pageTitle}
               </h1>
 
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Teams approved to participate in this auction.
               </p>
             </div>
@@ -300,14 +300,14 @@ const AuctionParticipants = () => {
 
         {/* Summary */}
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   Approved Teams
                 </p>
 
-                <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+                <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
                   {displayParticipants.length}
                 </p>
               </div>
@@ -318,14 +318,14 @@ const AuctionParticipants = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   Auction Status
                 </p>
 
-                <p className="mt-1 text-lg font-bold capitalize text-gray-900 dark:text-white">
+                <p className="mt-1 text-lg font-bold capitalize text-slate-900 dark:text-white">
                   {auction?.status || "Available"}
                 </p>
               </div>
@@ -336,10 +336,10 @@ const AuctionParticipants = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   Access
                 </p>
 
@@ -357,16 +357,16 @@ const AuctionParticipants = () => {
 
         {/* Empty */}
         {!error && displayParticipants.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center dark:border-gray-700 dark:bg-gray-900">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
               <FiUsers className="text-2xl" />
             </div>
 
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               No approved teams yet
             </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
               There are currently no approved participants for this auction.
             </p>
           </div>
@@ -385,14 +385,14 @@ const AuctionParticipants = () => {
               return (
                 <div
                   key={teamId || `participant-${index}`}
-                  className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
+                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
                 >
                   {/* Card top */}
                   <div className="h-2 bg-indigo-600" />
 
                   <div className="p-5">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 text-xl font-bold text-indigo-600 dark:bg-gray-800 dark:text-indigo-400">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-xl font-bold text-indigo-600 dark:bg-slate-800 dark:text-indigo-400">
                         {teamLogo ? (
                           <img
                             src={teamLogo}
@@ -419,13 +419,13 @@ const AuctionParticipants = () => {
 
                       <div className="min-w-0 flex-1">
                         <h2
-                          className="truncate text-base font-bold text-gray-900 dark:text-white"
+                          className="truncate text-base font-bold text-slate-900 dark:text-white"
                           title={teamName}
                         >
                           {teamName}
                         </h2>
 
-                        <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                        <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                           <FiUsers className="shrink-0" />
                           <span className="truncate">{ownerName}</span>
                         </div>
@@ -433,8 +433,8 @@ const AuctionParticipants = () => {
                     </div>
 
                     {/* Status */}
-                    <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
-                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
+                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                         Registration
                       </span>
 
@@ -449,7 +449,7 @@ const AuctionParticipants = () => {
                           Pending
                         </span>
                       ) : (
-                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold capitalize text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold capitalize text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                           {status}
                         </span>
                       )}

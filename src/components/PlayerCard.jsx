@@ -34,7 +34,7 @@ export default function PlayerCard({ player }) {
 
     unsold: "bg-red-500/10 text-red-500",
 
-    inactive: "bg-gray-500/10 text-gray-500",
+    inactive: "bg-slate-500/10 text-slate-500",
 
     active: "bg-success-500/10 text-success-500",
   };
@@ -57,7 +57,7 @@ export default function PlayerCard({ player }) {
         overflow-hidden
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         shadow-sm
         transition
@@ -181,8 +181,8 @@ export default function PlayerCard({ player }) {
               className="
                 mt-1
                 text-sm
-                text-gray-500
-                dark:text-gray-400
+                text-slate-500
+                dark:text-slate-400
               "
             >
               {role}
@@ -206,7 +206,7 @@ export default function PlayerCard({ player }) {
               flex
               items-center
               gap-2
-              text-gray-400
+              text-slate-400
             "
           >
             <RupeeIcon size={15} />
@@ -248,7 +248,7 @@ export default function PlayerCard({ player }) {
                 justify-between
                 rounded-xl
                 border
-                border-gray-200
+                border-slate-200
                 px-4
                 py-3
                 text-sm
@@ -272,12 +272,12 @@ export default function PlayerCard({ player }) {
               className="
                 block
                 rounded-xl
-                bg-gray-100
+                bg-slate-100
                 px-4
                 py-3
                 text-center
                 text-sm
-                text-gray-400
+                text-slate-400
                 dark:bg-navy-800
               "
             >

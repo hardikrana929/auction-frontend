@@ -9,7 +9,7 @@ export default function AuthBrandPanel({
     <div
       className="
         relative hidden overflow-hidden
-        border-r border-gray-200
+        border-r border-slate-200
         bg-white
         lg:flex lg:w-1/2
         lg:items-center lg:justify-center
@@ -63,8 +63,8 @@ export default function AuthBrandPanel({
             className="
               mt-6 max-w-lg
               text-lg leading-8
-              text-gray-600
-              dark:text-gray-400
+              text-slate-600
+              dark:text-slate-400
             "
           >
             {description}
@@ -102,8 +102,8 @@ function Feature({ text }) {
       <span
         className="
           text-sm font-medium
-          text-gray-700
-          dark:text-gray-300
+          text-slate-700
+          dark:text-slate-300
         "
       >
         {text}

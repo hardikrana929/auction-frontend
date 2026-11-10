@@ -64,7 +64,11 @@ const BidHistory = ({ bids = [], directory = {}, myTeamId = "" }) => {
 
               return (
                 <li
-                  key={bid?._id || bid?.id || `${team.id}-${getAmount(bid)}-${index}`}
+                  key={
+                    bid?._id ||
+                    bid?.id ||
+                    `${team.id}-${getAmount(bid)}-${index}`
+                  }
                   className={`flex items-center justify-between gap-3 rounded-2xl border p-3 ${
                     index === 0
                       ? "border-emerald-500/40 bg-emerald-500/10"

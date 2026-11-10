@@ -27,7 +27,9 @@ export const updatePlayer = async (playerId, formData) => {
 };
 
 export const updatePlayerStatus = async (playerId, status) => {
-  const response = await api.patch(`/api/players/${playerId}/status`, { status });
+  const response = await api.patch(`/api/players/${playerId}/status`, {
+    status,
+  });
   return response.data;
 };
 

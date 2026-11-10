@@ -56,12 +56,12 @@ export default function AuctionControls({
             Auction Controls
           </h2>
 
-          <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
+          <p className="mt-1 text-sm text-slate-400 dark:text-slate-500">
             Control the live auction session.
           </p>
         </div>
 
-        <div className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:border-navy-700 dark:text-gray-300">
+        <div className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:border-navy-700 dark:text-slate-300">
           Status:
           <span className="ml-1 text-cyan-400">{status || "Unknown"}</span>
         </div>
@@ -138,8 +138,8 @@ export default function AuctionControls({
 
       {/* LOADING */}
       {loading && (
-        <div className="mt-4 flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-cyan-500 dark:border-gray-600 dark:border-t-cyan-400" />
+        <div className="mt-4 flex items-center gap-2 text-sm text-slate-400 dark:text-slate-500">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-cyan-500 dark:border-slate-600 dark:border-t-cyan-400" />
           Processing auction control...
         </div>
       )}

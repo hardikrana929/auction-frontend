@@ -325,7 +325,7 @@ export default function AdminAuctions() {
             Auction Management
           </h1>
 
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-slate-600 dark:text-slate-400">
             Create, manage and control your AuctionPro auctions.
           </p>
         </div>
@@ -342,20 +342,20 @@ export default function AdminAuctions() {
               gap-2
               rounded-xl
               border
-              border-gray-200
+              border-slate-200
               bg-white
               px-4
               py-3
               text-sm
               font-semibold
-              text-gray-700
+              text-slate-700
               transition
-              hover:bg-gray-50
+              hover:bg-slate-50
               disabled:cursor-not-allowed
               disabled:opacity-60
               dark:border-navy-700
               dark:bg-navy-900
-              dark:text-gray-200
+              dark:text-slate-200
               dark:hover:bg-navy-800
             "
           >
@@ -451,7 +451,7 @@ export default function AdminAuctions() {
             mb-6
             rounded-2xl
             border
-            border-gray-200
+            border-slate-200
             bg-white
             p-4
             shadow-sm
@@ -470,7 +470,7 @@ export default function AdminAuctions() {
                   left-3
                   top-1/2
                   -translate-y-1/2
-                  text-gray-400
+                  text-slate-400
                 "
               />
 
@@ -483,13 +483,13 @@ export default function AdminAuctions() {
                   w-full
                   rounded-xl
                   border
-                  border-gray-200
-                  bg-gray-50
+                  border-slate-200
+                  bg-slate-50
                   py-3
                   pl-10
                   pr-10
                   text-sm
-                  text-gray-900
+                  text-slate-900
                   outline-none
                   transition
                   focus:border-cyan-500
@@ -510,8 +510,8 @@ export default function AdminAuctions() {
                     right-3
                     top-1/2
                     -translate-y-1/2
-                    text-gray-400
-                    hover:text-gray-700
+                    text-slate-400
+                    hover:text-slate-700
                     dark:hover:text-white
                   "
                 >
@@ -578,7 +578,7 @@ export default function AdminAuctions() {
                   overflow-hidden
                   rounded-2xl
                   border
-                  border-gray-200
+                  border-slate-200
                   bg-white
                   shadow-sm
                   transition
@@ -659,7 +659,7 @@ export default function AdminAuctions() {
                           overflow-hidden
                           rounded-xl
                           border
-                          border-gray-200
+                          border-slate-200
                           bg-white
                           py-1
                           shadow-xl
@@ -733,7 +733,7 @@ export default function AdminAuctions() {
                           </MenuButton>
                         )}
 
-                        <div className="my-1 border-t border-gray-100 dark:border-navy-700" />
+                        <div className="my-1 border-t border-slate-100 dark:border-navy-700" />
 
                         <MenuButton
                           danger
@@ -770,8 +770,8 @@ export default function AdminAuctions() {
                         line-clamp-2
                         text-sm
                         leading-6
-                        text-gray-600
-                        dark:text-gray-400
+                        text-slate-600
+                        dark:text-slate-400
                       "
                     >
                       {auction.description}
@@ -790,7 +790,9 @@ export default function AdminAuctions() {
                       label="Starting Budget"
                       value={
                         (auction?.teamBudget ?? auction?.startingBudget) != null
-                          ? formatCurrency(auction.teamBudget ?? auction.startingBudget)
+                          ? formatCurrency(
+                              auction.teamBudget ?? auction.startingBudget,
+                            )
                           : "—"
                       }
                     />
@@ -823,7 +825,7 @@ export default function AdminAuctions() {
                         items-center
                         gap-2
                         rounded-xl
-                        bg-gray-50
+                        bg-slate-50
                         px-3
                         py-2.5
                         dark:bg-navy-800
@@ -832,7 +834,7 @@ export default function AdminAuctions() {
                       <FiUsers size={16} className="text-cyan-500" />
 
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           Max Teams
                         </p>
 
@@ -848,7 +850,7 @@ export default function AdminAuctions() {
                         items-center
                         gap-2
                         rounded-xl
-                        bg-gray-50
+                        bg-slate-50
                         px-3
                         py-2.5
                         dark:bg-navy-800
@@ -857,7 +859,7 @@ export default function AdminAuctions() {
                       <FiUsers size={16} className="text-cyan-500" />
 
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           Players / Team
                         </p>
 
@@ -880,16 +882,16 @@ export default function AdminAuctions() {
                         gap-2
                         rounded-xl
                         border
-                        border-gray-200
+                        border-slate-200
                         px-4
                         py-2.5
                         text-sm
                         font-semibold
-                        text-gray-700
+                        text-slate-700
                         transition
-                        hover:bg-gray-50
+                        hover:bg-slate-50
                         dark:border-navy-700
-                        dark:text-gray-200
+                        dark:text-slate-200
                         dark:hover:bg-navy-800
                       "
                     >
@@ -951,7 +953,7 @@ export default function AdminAuctions() {
               max-w-md
               rounded-2xl
               border
-              border-gray-200
+              border-slate-200
               bg-white
               p-6
               shadow-2xl
@@ -973,7 +975,7 @@ export default function AdminAuctions() {
                   Delete Auction?
                 </h3>
 
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   This action cannot be undone.
                 </p>
               </div>
@@ -985,10 +987,10 @@ export default function AdminAuctions() {
                 className="
                   rounded-lg
                   p-2
-                  text-gray-400
+                  text-slate-400
                   transition
-                  hover:bg-gray-100
-                  hover:text-gray-700
+                  hover:bg-slate-100
+                  hover:text-slate-700
                   dark:hover:bg-navy-800
                   dark:hover:text-white
                 "
@@ -1023,17 +1025,17 @@ export default function AdminAuctions() {
                   flex-1
                   rounded-xl
                   border
-                  border-gray-200
+                  border-slate-200
                   px-4
                   py-3
                   text-sm
                   font-semibold
-                  text-gray-700
+                  text-slate-700
                   transition
-                  hover:bg-gray-50
+                  hover:bg-slate-50
                   disabled:opacity-50
                   dark:border-navy-700
-                  dark:text-gray-200
+                  dark:text-slate-200
                   dark:hover:bg-navy-800
                 "
               >
@@ -1079,7 +1081,7 @@ function AdminStat({ label, value, icon }) {
       className="
         rounded-2xl
         border
-        border-gray-200
+        border-slate-200
         bg-white
         p-4
         shadow-sm
@@ -1089,7 +1091,7 @@ function AdminStat({ label, value, icon }) {
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
 
           <p
             className="
@@ -1142,11 +1144,11 @@ function FilterButton({ active, onClick, children }) {
               text-white
             `
             : `
-              bg-gray-100
-              text-gray-600
-              hover:bg-gray-200
+              bg-slate-100
+              text-slate-600
+              hover:bg-slate-200
               dark:bg-navy-800
-              dark:text-gray-300
+              dark:text-slate-300
               dark:hover:bg-navy-700
             `
         }
@@ -1195,9 +1197,9 @@ function MenuButton({
               dark:hover:bg-red-500/10
             `
             : `
-              text-gray-700
-              hover:bg-gray-50
-              dark:text-gray-200
+              text-slate-700
+              hover:bg-slate-50
+              dark:text-slate-200
               dark:hover:bg-navy-700
             `
         }
@@ -1217,7 +1219,7 @@ function MenuButton({
 function InfoItem({ label, value }) {
   return (
     <div>
-      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
 
       <p
         className="

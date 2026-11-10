@@ -1,2 +1,24 @@
 import { FiAlertCircle } from "react-icons/fi";
-export default function ErrorState({ title="Something went wrong", message="Please try again.", onRetry }) { return <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center dark:border-red-900/60 dark:bg-red-950/20"><FiAlertCircle className="mx-auto text-3xl text-red-500"/><h3 className="mt-3 font-bold text-slate-900 dark:text-white">{title}</h3><p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{message}</p>{onRetry && <button onClick={onRetry} className="mt-5 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:opacity-90 dark:bg-white dark:text-slate-950">Retry</button>}</div>; }
+export default function ErrorState({
+  title = "Something went wrong",
+  message = "Please try again.",
+  onRetry,
+}) {
+  return (
+    <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center dark:border-red-900/60 dark:bg-red-950/20">
+      <FiAlertCircle className="mx-auto text-3xl text-red-500" />
+      <h3 className="mt-3 font-bold text-slate-900 dark:text-white">{title}</h3>
+      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+        {message}
+      </p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="mt-5 rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:opacity-90 dark:bg-white dark:text-slate-950"
+        >
+          Retry
+        </button>
+      )}
+    </div>
+  );
+}

@@ -19,7 +19,7 @@ export default function StatCard({
     <div
       className="
         rounded-2xl
-        border border-gray-200
+        border border-slate-200
         bg-white
         p-5
         shadow-sm
@@ -35,8 +35,8 @@ export default function StatCard({
           <p
             className="
               text-sm font-medium
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             {title}
@@ -71,8 +71,8 @@ export default function StatCard({
         <p
           className="
             mt-4 text-xs
-            text-gray-500
-            dark:text-gray-400
+            text-slate-500
+            dark:text-slate-400
           "
         >
           {description}

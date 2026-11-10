@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getUserProfile, loginUser, registerUser } from "../api/authApi";
+import {
+  getUserProfile,
+  loginUser,
+  auctionLogin as requestAuctionLogin,
+  registerUser,
+} from "../api/authApi";
 
 export const AuthContext = createContext(null);
 const TOKEN_KEY = "auctionpro_token";
@@ -31,13 +36,28 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const loginAuction = async (credentials) => {
+    const data = await requestAuctionLogin(credentials);
+    persistAuth(data);
+    return data;
+  };
+
   const register = async (payload) => {
     const data = await registerUser(payload);
     persistAuth(data);
     return data;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const currentToken = localStorage.getItem(TOKEN_KEY);
+    if (currentToken) {
+      try {
+        const { default: api } = await import("../api/axios");
+        await api.post("/api/auth/logout");
+      } catch {
+        /* local logout must still complete */
+      }
+    }
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setToken(null);
@@ -52,6 +72,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    const handleForcedLogout = () => {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      setToken(null);
+      setUser(null);
+    };
+    window.addEventListener("auth:logout", handleForcedLogout);
     let mounted = true;
     const bootstrap = async () => {
       if (!localStorage.getItem(TOKEN_KEY)) {
@@ -60,8 +87,8 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         await refreshUser();
-      } catch {
-        if (mounted) logout();
+      } catch (error) {
+        if (mounted && error.response?.status === 401) logout();
       } finally {
         if (mounted) setLoading(false);
       }
@@ -69,6 +96,7 @@ export const AuthProvider = ({ children }) => {
     bootstrap();
     return () => {
       mounted = false;
+      window.removeEventListener("auth:logout", handleForcedLogout);
     };
   }, []);
 
@@ -78,11 +106,14 @@ export const AuthProvider = ({ children }) => {
       token,
       loading,
       login,
+      loginAuction,
       register,
       logout,
       refreshUser,
       isAuthenticated: Boolean(token && user),
       isAdmin: user?.role === "admin",
+      isAuctionManager: user?.role === "auction_manager",
+      canManage: user?.role === "admin" || user?.role === "auction_manager",
     }),
     [user, token, loading],
   );

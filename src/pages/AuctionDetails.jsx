@@ -1,3 +1,4 @@
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -29,6 +30,7 @@ const money = (value) =>
   }).format(Number(value || 0));
 
 export default function AuctionDetails() {
+  const { confirm } = useConfirmDialog();
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
@@ -78,9 +80,12 @@ export default function AuctionDetails() {
   const canModify = isAdmin && !["live", "completed"].includes(auction.status);
 
   const remove = async () => {
-    if (!window.confirm(`Delete "${auction.name}"? This cannot be undone.`)) {
-      return;
-    }
+    const ok = await confirm({
+      title: "Delete auction?",
+      message: `"${auction.name}" will be permanently deleted. This cannot be undone.`,
+      confirmText: "Delete auction",
+    });
+    if (!ok) return;
 
     try {
       await deleteAuction(auction._id);

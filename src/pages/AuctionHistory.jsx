@@ -39,9 +39,6 @@ export default function AuctionHistory() {
       }
 
       const response = await getAuctionHistory(id, params);
-
-      console.log("Auction history response:", response);
-
       const data = response?.data || response;
 
       const history = data?.transactions || data?.history || [];
@@ -85,7 +82,7 @@ export default function AuctionHistory() {
       <div className="mb-8">
         <Link
           to={`/auctions/${id}`}
-          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-gray-400 hover:text-cyan-400"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-cyan-400"
         >
           <FiArrowLeft size={16} />
           Back to Auction
@@ -109,7 +106,7 @@ export default function AuctionHistory() {
               </div>
             </div>
 
-            <p className="mt-3 text-sm text-slate-500 dark:text-gray-400">
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
               {auction?.name ||
                 auction?.title ||
                 "Complete auction transaction history"}
@@ -156,7 +153,10 @@ export default function AuctionHistory() {
             {Array.from({
               length: 6,
             }).map((_, index) => (
-              <div key={index} className="h-16 rounded-xl bg-slate-50 dark:bg-navy-850" />
+              <div
+                key={index}
+                className="h-16 rounded-xl bg-slate-50 dark:bg-navy-850"
+              />
             ))}
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function AuctionHistory() {
             Previous
           </button>
 
-          <span className="rounded-xl bg-slate-50 dark:bg-navy-850 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-gray-300">
+          <span className="rounded-xl bg-slate-50 dark:bg-navy-850 px-4 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300">
             Page {currentPage} of {totalPages}
           </span>
 

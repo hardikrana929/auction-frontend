@@ -47,13 +47,16 @@ export default function AuctionHistoryTable({ transactions = [] }) {
   if (items.length === 0) {
     return (
       <div className="rounded-2xl border border-slate-200 dark:border-navy-700 bg-white dark:bg-navy-900 p-10 text-center">
-        <FiUser size={34} className="mx-auto text-slate-600 dark:text-gray-400" />
+        <FiUser
+          size={34}
+          className="mx-auto text-slate-600 dark:text-slate-400"
+        />
 
         <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-white">
           No auction history
         </h3>
 
-        <p className="mt-2 text-sm text-slate-500 dark:text-gray-400">
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           Transactions will appear here once auction activity begins.
         </p>
       </div>
@@ -67,23 +70,23 @@ export default function AuctionHistoryTable({ transactions = [] }) {
         <table className="min-w-full">
           <thead className="border-b border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-850">
             <tr>
-              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Player
               </th>
 
-              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Team
               </th>
 
-              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Amount
               </th>
 
-              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Status
               </th>
 
-              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+              <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Date
               </th>
             </tr>
@@ -126,22 +129,24 @@ export default function AuctionHistoryTable({ transactions = [] }) {
                           className="h-10 w-10 rounded-lg object-cover"
                         />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-gray-500">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-slate-500">
                           <FiUser size={17} />
                         </div>
                       )}
 
                       <div>
-                        <p className="font-semibold text-slate-900 dark:text-white">{playerName}</p>
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {playerName}
+                        </p>
 
-                        <p className="text-xs text-slate-500 dark:text-gray-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-500">
                           {player?.role || "—"}
                         </p>
                       </div>
                     </div>
                   </td>
 
-                  <td className="px-5 py-4 text-sm text-slate-600 dark:text-gray-300">
+                  <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-300">
                     {teamName}
                   </td>
 
@@ -153,7 +158,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
                     <StatusBadge transaction={transaction} />
                   </td>
 
-                  <td className="px-5 py-4 text-sm text-slate-500 dark:text-gray-400">
+                  <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
                     {formatDate(date)}
                   </td>
                 </tr>
@@ -201,7 +206,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
                       className="h-11 w-11 shrink-0 rounded-lg object-cover"
                     />
                   ) : (
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-gray-500">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-slate-500">
                       <FiUser size={18} />
                     </div>
                   )}
@@ -211,7 +216,9 @@ export default function AuctionHistoryTable({ transactions = [] }) {
                       {playerName}
                     </p>
 
-                    <p className="truncate text-xs text-slate-500 dark:text-gray-500">{teamName}</p>
+                    <p className="truncate text-xs text-slate-500 dark:text-slate-500">
+                      {teamName}
+                    </p>
                   </div>
                 </div>
 
@@ -219,7 +226,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-slate-500 dark:text-gray-500">
+                <span className="text-xs text-slate-500 dark:text-slate-500">
                   {formatDate(date)}
                 </span>
 

@@ -90,7 +90,7 @@ export default function AuctionStatsCards({ summary = {} }) {
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500 dark:text-gray-400">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                   {card.label}
                 </p>
 

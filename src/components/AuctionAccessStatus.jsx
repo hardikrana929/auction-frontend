@@ -8,13 +8,13 @@ export default function AuctionAccessStatus({
 }) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 animate-pulse rounded-xl bg-gray-200 dark:bg-navy-800" />
+          <div className="h-10 w-10 animate-pulse rounded-xl bg-slate-200 dark:bg-navy-800" />
 
           <div className="flex-1">
-            <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-navy-800" />
-            <div className="mt-2 h-3 w-56 animate-pulse rounded bg-gray-200 dark:bg-navy-800" />
+            <div className="h-4 w-32 animate-pulse rounded bg-slate-200 dark:bg-navy-800" />
+            <div className="mt-2 h-3 w-56 animate-pulse rounded bg-slate-200 dark:bg-navy-800" />
           </div>
         </div>
       </div>
@@ -93,16 +93,16 @@ export default function AuctionAccessStatus({
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-navy-700 dark:bg-navy-850">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-navy-700 dark:bg-navy-850">
       <div className="flex items-start gap-3">
-        <FiLock size={22} className="mt-0.5 text-gray-500" />
+        <FiLock size={22} className="mt-0.5 text-slate-500" />
 
         <div>
           <h3 className="font-bold text-navy-950 dark:text-white">
             Auction Access Restricted
           </h3>
 
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {message ||
               "You do not currently have access to participate in this auction."}
           </p>

@@ -35,7 +35,9 @@ const AuctionInfoCard = ({ auction, auctionId, status, nextBid = 0 }) => {
           >
             <dt className="text-slate-400">{label}</dt>
 
-            <dd className="text-right font-bold capitalize text-white">{value}</dd>
+            <dd className="text-right font-bold capitalize text-white">
+              {value}
+            </dd>
           </div>
         ))}
       </dl>

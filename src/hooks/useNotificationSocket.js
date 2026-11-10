@@ -1,51 +1,36 @@
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
-const useNotificationSocket = ({
-    socket,
-    onNotification,
-    enabled = true,
-}) => {
-    useEffect(() => {
-        if (!socket || !enabled) {
-            return;
-        }
+const useNotificationSocket = ({ socket, onNotification, enabled = true }) => {
+  useEffect(() => {
+    if (!socket || !enabled) {
+      return;
+    }
 
-        const handleNewNotification = (notification) => {
-            console.log(
-                "🔔 New notification received:",
-                notification
-            );
+    const handleNewNotification = (notification) => {
+      if (onNotification) {
+        onNotification(notification);
+      }
 
-            if (onNotification) {
-                onNotification(notification);
-            }
+      const message =
+        notification?.message ||
+        notification?.description ||
+        notification?.content ||
+        "You have a new notification.";
 
-            const message =
-                notification?.message ||
-                notification?.description ||
-                notification?.content ||
-                "You have a new notification.";
+      toast(message, {
+        icon: "🔔",
+        duration: 4000,
+        position: "top-right",
+      });
+    };
 
-            toast(message, {
-                icon: "🔔",
-                duration: 4000,
-                position: "top-right",
-            });
-        };
+    socket.on("notification:new", handleNewNotification);
 
-        socket.on(
-            "notification:new",
-            handleNewNotification
-        );
-
-        return () => {
-            socket.off(
-                "notification:new",
-                handleNewNotification
-            );
-        };
-    }, [socket, enabled, onNotification]);
+    return () => {
+      socket.off("notification:new", handleNewNotification);
+    };
+  }, [socket, enabled, onNotification]);
 };
 
 export default useNotificationSocket;

@@ -50,7 +50,9 @@ export default function ResetPassword() {
           <div className="mx-auto grid size-12 place-items-center rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950">
             <FiCheck />
           </div>
-          <h2 className="mt-4 font-bold text-slate-900 dark:text-white">Password updated</h2>
+          <h2 className="mt-4 font-bold text-slate-900 dark:text-white">
+            Password updated
+          </h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             Redirecting you to login…
           </p>
@@ -72,10 +74,22 @@ export default function ResetPassword() {
             setShow={setShow}
           />
           <div className="space-y-2 text-sm">
-            <p className={rules.length ? "text-slate-900 dark:text-white" : "text-slate-500 dark:text-slate-500"}>
+            <p
+              className={
+                rules.length
+                  ? "text-slate-900 dark:text-white"
+                  : "text-slate-500 dark:text-slate-500"
+              }
+            >
               {rules.length ? "✓" : "○"} At least 8 characters
             </p>
-            <p className={rules.match ? "text-slate-900 dark:text-white" : "text-slate-500 dark:text-slate-500"}>
+            <p
+              className={
+                rules.match
+                  ? "text-slate-900 dark:text-white"
+                  : "text-slate-500 dark:text-slate-500"
+              }
+            >
               {rules.match ? "✓" : "○"} Passwords match
             </p>
           </div>

@@ -32,22 +32,35 @@ export default function AdminRegistrationsPage() {
         <div>
           <p className="eyebrow">Administration</p>
           <h1 className="page-title">Registrations</h1>
-          <p className="page-subtitle">Approve or reject teams requesting to join an auction.</p>
+          <p className="page-subtitle">
+            Approve or reject teams requesting to join an auction.
+          </p>
         </div>
       </div>
 
       <div className="surface-card mb-6 grid gap-4 p-4 sm:grid-cols-[minmax(220px,1fr)_auto]">
         <div>
           <label className="label">Auction</label>
-          <select className="input" value={auctionId} onChange={(e) => setAuctionId(e.target.value)}>
+          <select
+            className="input"
+            value={auctionId}
+            onChange={(e) => setAuctionId(e.target.value)}
+          >
             <option value="">Select auction</option>
             {auctions.map((auction) => (
-              <option key={auction._id} value={auction._id}>{auction.name}</option>
+              <option key={auction._id} value={auction._id}>
+                {auction.name}
+              </option>
             ))}
           </select>
         </div>
-        <button className="secondary-btn self-end" onClick={loadAuctions} disabled={loading}>
-          <FiRefreshCw className={loading ? "animate-spin" : ""} /> Refresh auctions
+        <button
+          className="secondary-btn self-end"
+          onClick={loadAuctions}
+          disabled={loading}
+        >
+          <FiRefreshCw className={loading ? "animate-spin" : ""} /> Refresh
+          auctions
         </button>
       </div>
 

@@ -13,7 +13,7 @@ export default function SearchBar({
           pointer-events-none
           absolute left-4 top-1/2
           -translate-y-1/2
-          text-gray-400
+          text-slate-400
         "
       />
 
@@ -24,14 +24,14 @@ export default function SearchBar({
         placeholder={placeholder}
         className="
           w-full rounded-xl
-          border border-gray-300
+          border border-slate-300
           bg-white
           py-3 pl-11 pr-11
           text-sm
           text-navy-950
           outline-none
           transition
-          placeholder:text-gray-400
+          placeholder:text-slate-400
           focus:border-cyan-500
           focus:ring-2
           focus:ring-cyan-500/20
@@ -52,10 +52,10 @@ export default function SearchBar({
             -translate-y-1/2
             rounded-lg
             p-1.5
-            text-gray-400
+            text-slate-400
             transition
-            hover:bg-gray-100
-            hover:text-gray-700
+            hover:bg-slate-100
+            hover:text-slate-700
             dark:hover:bg-navy-700
             dark:hover:text-white
           "

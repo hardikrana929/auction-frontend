@@ -26,15 +26,21 @@ export default function RecentTransactions({ transactions = [] }) {
           </h2>
         </div>
 
-        <FiArrowUpRight size={20} className="text-slate-500 dark:text-gray-500" />
+        <FiArrowUpRight
+          size={20}
+          className="text-slate-500 dark:text-slate-500"
+        />
       </div>
 
       <div className="mt-6 space-y-3">
         {items.length === 0 ? (
           <div className="py-8 text-center">
-            <FiUser size={28} className="mx-auto text-slate-600 dark:text-gray-400" />
+            <FiUser
+              size={28}
+              className="mx-auto text-slate-600 dark:text-slate-400"
+            />
 
-            <p className="mt-3 text-sm text-slate-500 dark:text-gray-400">
+            <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
               No transactions available.
             </p>
           </div>
@@ -80,7 +86,7 @@ export default function RecentTransactions({ transactions = [] }) {
                     {playerName}
                   </p>
 
-                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-gray-400">
+                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">
                     {teamName} · {type}
                   </p>
                 </div>

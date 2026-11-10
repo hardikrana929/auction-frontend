@@ -1,19 +1,19 @@
 const formatDate = (date) => {
-    if (!date) {
-        return "N/A";
-    }
+  if (!date) {
+    return "N/A";
+  }
 
-    const parsedDate = new Date(date);
+  const parsedDate = new Date(date);
 
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "N/A";
-    }
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "N/A";
+  }
 
-    return parsedDate.toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
+  return parsedDate.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 };
 
 export { formatDate };

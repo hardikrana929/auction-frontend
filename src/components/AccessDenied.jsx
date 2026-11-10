@@ -1,7 +1,6 @@
 import { FiShield } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-
 export default function AccessDenied() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-pitch-50 px-6 dark:bg-navy-950">
@@ -14,7 +13,7 @@ export default function AccessDenied() {
           Access Denied
         </h1>
 
-        <p className="mt-3 text-gray-600 dark:text-gray-400">
+        <p className="mt-3 text-slate-600 dark:text-slate-400">
           You do not have permission to access this page.
         </p>
 

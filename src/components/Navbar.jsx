@@ -36,11 +36,11 @@ export default function Navbar() {
     `text-sm font-medium transition ${
       isActive
         ? "text-cyan-500"
-        : "text-gray-600 hover:text-cyan-500 dark:text-gray-300 dark:hover:text-cyan-400"
+        : "text-slate-600 hover:text-cyan-500 dark:text-slate-300 dark:hover:text-cyan-400"
     }`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-navy-700 dark:bg-navy-950/95">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-navy-700 dark:bg-navy-950/95">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* =====================================================
             LOGO
@@ -85,11 +85,11 @@ export default function Navbar() {
             className="
               flex h-10 w-10 items-center justify-center
               rounded-xl
-              text-gray-600
+              text-slate-600
               transition
-              hover:bg-gray-100
+              hover:bg-slate-100
               hover:text-cyan-500
-              dark:text-gray-300
+              dark:text-slate-300
               dark:hover:bg-navy-800
               dark:hover:text-cyan-400
             "
@@ -120,10 +120,10 @@ export default function Navbar() {
                   rounded-xl
                   px-3 py-2
                   text-sm font-medium
-                  text-gray-700
+                  text-slate-700
                   transition
-                  hover:bg-gray-100
-                  dark:text-gray-200
+                  hover:bg-slate-100
+                  dark:text-slate-200
                   dark:hover:bg-navy-800
                 "
               >
@@ -141,15 +141,15 @@ export default function Navbar() {
                 className="
                   flex items-center gap-2
                   rounded-xl
-                  border border-gray-300
+                  border border-slate-300
                   px-4 py-2
                   text-sm font-semibold
-                  text-gray-700
+                  text-slate-700
                   transition
                   hover:border-red-500
                   hover:text-red-500
                   dark:border-navy-700
-                  dark:text-gray-200
+                  dark:text-slate-200
                   dark:hover:border-red-500
                   dark:hover:text-red-400
                 "
@@ -168,10 +168,10 @@ export default function Navbar() {
                   rounded-xl
                   px-4 py-2
                   text-sm font-semibold
-                  text-gray-700
+                  text-slate-700
                   transition
                   hover:text-cyan-500
-                  dark:text-gray-200
+                  dark:text-slate-200
                   dark:hover:text-cyan-400
                 "
               >
@@ -211,11 +211,11 @@ export default function Navbar() {
             className="
               flex h-10 w-10 items-center justify-center
               rounded-xl
-              text-gray-600
+              text-slate-600
               transition
-              hover:bg-gray-100
+              hover:bg-slate-100
               hover:text-cyan-500
-              dark:text-gray-300
+              dark:text-slate-300
               dark:hover:bg-navy-800
               dark:hover:text-cyan-400
             "
@@ -242,10 +242,10 @@ export default function Navbar() {
             className="
               flex h-10 w-10 items-center justify-center
               rounded-xl
-              text-gray-700
+              text-slate-700
               transition
-              hover:bg-gray-100
-              dark:text-gray-200
+              hover:bg-slate-100
+              dark:text-slate-200
               dark:hover:bg-navy-800
             "
           >
@@ -261,7 +261,7 @@ export default function Navbar() {
         <div
           className="
             border-t
-            border-gray-200
+            border-slate-200
             bg-white
             px-4 py-5
             shadow-lg
@@ -277,7 +277,7 @@ export default function Navbar() {
                 className="
                   block rounded-xl
                   px-3 py-3
-                  hover:bg-gray-100
+                  hover:bg-slate-100
                   dark:hover:bg-navy-800
                 "
               >
@@ -295,7 +295,7 @@ export default function Navbar() {
                 className="
                   block rounded-xl
                   px-3 py-3
-                  hover:bg-gray-100
+                  hover:bg-slate-100
                   dark:hover:bg-navy-800
                 "
               >
@@ -313,7 +313,7 @@ export default function Navbar() {
                 className="
                   block rounded-xl
                   px-3 py-3
-                  hover:bg-gray-100
+                  hover:bg-slate-100
                   dark:hover:bg-navy-800
                 "
               >
@@ -321,7 +321,7 @@ export default function Navbar() {
               </span>
             </NavLink>
 
-            <div className="my-3 border-t border-gray-200 dark:border-navy-700" />
+            <div className="my-3 border-t border-slate-200 dark:border-navy-700" />
 
             {/* =================================================
                 LOGGED-IN MOBILE MENU
@@ -337,10 +337,10 @@ export default function Navbar() {
                     rounded-xl
                     px-3 py-3
                     text-sm font-medium
-                    text-gray-700
+                    text-slate-700
                     transition
-                    hover:bg-gray-100
-                    dark:text-gray-200
+                    hover:bg-slate-100
+                    dark:text-slate-200
                     dark:hover:bg-navy-800
                   "
                 >
@@ -359,10 +359,10 @@ export default function Navbar() {
                     px-3 py-3
                     text-left
                     text-sm font-medium
-                    text-gray-700
+                    text-slate-700
                     transition
-                    hover:bg-gray-100
-                    dark:text-gray-200
+                    hover:bg-slate-100
+                    dark:text-slate-200
                     dark:hover:bg-navy-800
                   "
                 >
@@ -403,10 +403,10 @@ export default function Navbar() {
                     rounded-xl
                     px-3 py-3
                     text-sm font-medium
-                    text-gray-700
+                    text-slate-700
                     transition
-                    hover:bg-gray-100
-                    dark:text-gray-200
+                    hover:bg-slate-100
+                    dark:text-slate-200
                     dark:hover:bg-navy-800
                   "
                 >

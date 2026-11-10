@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiLoader, FiLock, FiMinus, FiPlus } from "react-icons/fi";
+import { FiLoader, FiLock } from "react-icons/fi";
 
 import RupeeIcon from "../RupeeIcon";
 import { formatCurrency } from "../../utils/formatCurrency";
@@ -33,7 +33,11 @@ const BidPanel = ({
   const step = increment > 0 ? increment : 1;
 
   const lastBidTeamId =
-    lastBidTeam?._id || lastBidTeam?.id || lastBidTeam?.teamId || lastBidTeam || null;
+    lastBidTeam?._id ||
+    lastBidTeam?.id ||
+    lastBidTeam?.teamId ||
+    lastBidTeam ||
+    null;
 
   // Prefer a server-calculated next bid. Before the first bid, use the supplied
   // minimum/base price; after a bid, require at least current + increment.
@@ -57,7 +61,8 @@ const BidPanel = ({
     }
   }, [automaticNextBid, customAmount]);
 
-  const bidAmount = customAmount === "" ? automaticNextBid : Number(customAmount);
+  const bidAmount =
+    customAmount === "" ? automaticNextBid : Number(customAmount);
   const isLastBidder = Boolean(
     teamId && lastBidTeamId && String(teamId) === String(lastBidTeamId),
   );
@@ -100,12 +105,9 @@ const BidPanel = ({
     !playerActive ||
     (approvedTeamCount != null && Number(approvedTeamCount) < 2) ||
     isLastBidder;
-  const invalidAmount = !Number.isFinite(bidAmount) || bidAmount < automaticNextBid;
+  const invalidAmount =
+    !Number.isFinite(bidAmount) || bidAmount < automaticNextBid;
   const placeDisabled = inputsDisabled || invalidAmount || Boolean(reason);
-
-  const decrease = () =>
-    setCustomAmount(String(Math.max(automaticNextBid, bidAmount - step)));
-  const increase = () => setCustomAmount(String(bidAmount + step));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -113,9 +115,6 @@ const BidPanel = ({
     await onPlaceBid(bidAmount);
     setCustomAmount("");
   };
-
-  const roundButton =
-    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-slate-700 bg-slate-800 text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-white sm:p-5">
@@ -135,17 +134,10 @@ const BidPanel = ({
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-wrap items-stretch gap-2 md:flex-nowrap">
-        <button
-          type="button"
-          onClick={decrease}
-          disabled={inputsDisabled || bidAmount <= automaticNextBid}
-          aria-label="Decrease bid"
-          className={roundButton}
-        >
-          <FiMinus />
-        </button>
-
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-wrap items-stretch gap-2 md:flex-nowrap"
+      >
         <div className="relative min-w-[150px] flex-1">
           <RupeeIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
@@ -160,10 +152,6 @@ const BidPanel = ({
             className="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 pl-9 pr-3 text-lg font-black tabular-nums text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-70 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
           />
         </div>
-
-        <button type="button" onClick={increase} disabled={inputsDisabled} aria-label="Increase bid" className={roundButton}>
-          <FiPlus />
-        </button>
 
         <button
           type="submit"
@@ -188,8 +176,11 @@ const BidPanel = ({
         </div>
       ) : (
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-          Increment {formatCurrency(step)} · Minimum next bid {formatCurrency(automaticNextBid)}
-          {lastBidTeam?.name ? ` · Latest bid: ${lastBidTeam.name}` : " · Any approved team may bid first"}
+          Increment {formatCurrency(step)} · Minimum next bid{" "}
+          {formatCurrency(automaticNextBid)}
+          {lastBidTeam?.name
+            ? ` · Latest bid: ${lastBidTeam.name}`
+            : " · Any approved team may bid first"}
         </p>
       )}
     </section>

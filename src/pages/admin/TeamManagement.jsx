@@ -1,3 +1,4 @@
+import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiRefreshCw, FiSearch, FiUsers } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ import ErrorState from "../../components/ErrorState";
 import LoadingScreen from "../../components/LoadingScreen";
 
 export default function TeamManagement() {
+  const { confirm } = useConfirmDialog();
   const [auctions, setAuctions] = useState([]);
   const [auctionId, setAuctionId] = useState("");
   const [teams, setTeams] = useState([]);
@@ -95,7 +97,13 @@ export default function TeamManagement() {
 
   const toggleStatus = async (team) => {
     const next = team.status === "active" ? "inactive" : "active";
-    if (!window.confirm(`Change ${team.name} to ${next}?`)) return;
+    const ok = await confirm({
+      title: `Mark team ${next}?`,
+      message: `${team.name} will be set to ${next}.`,
+      confirmText: "Confirm",
+      tone: next === "inactive" ? "danger" : "primary",
+    });
+    if (!ok) return;
 
     try {
       const result = await updateTeamStatus(team._id, next);
@@ -109,7 +117,12 @@ export default function TeamManagement() {
   };
 
   const remove = async (team) => {
-    if (!window.confirm(`Delete ${team.name}? This cannot be undone.`)) return;
+    const ok = await confirm({
+      title: "Delete team?",
+      message: `${team.name} will be permanently deleted. This cannot be undone.`,
+      confirmText: "Delete team",
+    });
+    if (!ok) return;
 
     try {
       const result = await deleteTeam(team._id);

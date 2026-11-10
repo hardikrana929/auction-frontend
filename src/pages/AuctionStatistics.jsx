@@ -23,9 +23,6 @@ export default function AuctionStatistics() {
 
     try {
       const response = await getAuctionStats(id);
-
-      console.log("Auction statistics response:", response);
-
       const data = response?.data || response?.stats || response;
 
       setStats(data);
@@ -54,7 +51,10 @@ export default function AuctionStatistics() {
 
           <div className="grid gap-4 md:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="h-32 rounded-2xl bg-slate-100 dark:bg-navy-800" />
+              <div
+                key={index}
+                className="h-32 rounded-2xl bg-slate-100 dark:bg-navy-800"
+              />
             ))}
           </div>
 
@@ -86,7 +86,7 @@ export default function AuctionStatistics() {
         <div>
           <Link
             to={`/auctions/${id}`}
-            className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-gray-400 transition hover:text-cyan-400"
+            className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 transition hover:text-cyan-400"
           >
             <FiArrowLeft size={16} />
             Back to Auction

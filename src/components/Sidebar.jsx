@@ -72,8 +72,8 @@ function SidebarLink({ item, onNavigate }) {
         ${
           isActive
             ? `bg-cyan-500/10 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400`
-            : `text-gray-600 hover:bg-gray-100 hover:text-navy-950
-               dark:text-gray-300 dark:hover:bg-navy-800 dark:hover:text-white`
+            : `text-slate-600 hover:bg-slate-100 hover:text-navy-950
+               dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white`
         }
       `}
     >
@@ -127,7 +127,7 @@ export default function Sidebar({ onNavigate }) {
         fixed left-0 top-0 z-40
         h-screen w-64
         flex-col
-        border-r border-gray-200 bg-white
+        border-r border-slate-200 bg-white
         dark:border-navy-700 dark:bg-navy-900
       "
     >
@@ -151,12 +151,12 @@ export default function Sidebar({ onNavigate }) {
           [&::-webkit-scrollbar]:w-1.5
           [&::-webkit-scrollbar-track]:bg-transparent
           [&::-webkit-scrollbar-thumb]:rounded-full
-          [&::-webkit-scrollbar-thumb]:bg-gray-300
+          [&::-webkit-scrollbar-thumb]:bg-slate-300
           dark:[&::-webkit-scrollbar-thumb]:bg-navy-700
-          [&::-webkit-scrollbar-thumb]:hover:bg-gray-400
+          [&::-webkit-scrollbar-thumb]:hover:bg-slate-400
         "
       >
-        <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+        <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
           Navigation
         </p>
 
@@ -168,7 +168,7 @@ export default function Sidebar({ onNavigate }) {
 
         {isAdmin && auctionId && (
           <div className="mt-7">
-            <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
               Current Auction
             </p>
             <div className="space-y-1">
@@ -188,7 +188,7 @@ export default function Sidebar({ onNavigate }) {
           FOOTER — shrink-0 keeps it pinned at a fixed size,
           always visible below the scrollable nav.
       ================================================== */}
-      <div className="shrink-0 border-t border-gray-200 p-4 dark:border-navy-700">
+      <div className="shrink-0 border-t border-slate-200 p-4 dark:border-navy-700">
         <button
           onClick={logout}
           className="
@@ -203,7 +203,7 @@ export default function Sidebar({ onNavigate }) {
 
         <div
           className="
-            rounded-xl border border-gray-200 bg-white p-4 shadow-sm
+            rounded-xl border border-slate-200 bg-white p-4 shadow-sm
             dark:border-navy-700 dark:bg-navy-950
           "
         >
@@ -215,7 +215,7 @@ export default function Sidebar({ onNavigate }) {
               AuctionPro
             </p>
           </div>
-          <p className="mt-2 text-xs leading-5 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-400">
             Professional cricket auction management platform.
           </p>
         </div>

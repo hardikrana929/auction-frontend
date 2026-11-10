@@ -105,8 +105,8 @@ export default function TeamsSection({ auctionId }) {
             className="
               mt-1
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             Teams participating in this AuctionPro auction.
@@ -153,7 +153,7 @@ export default function TeamsSection({ auctionId }) {
                 h-72
                 animate-pulse
                 rounded-2xl
-                bg-gray-200
+                bg-slate-200
                 dark:bg-navy-850
               "
             />
@@ -194,8 +194,8 @@ export default function TeamsSection({ auctionId }) {
             className="
               mt-2
               text-sm
-              text-gray-500
-              dark:text-gray-400
+              text-slate-500
+              dark:text-slate-400
             "
           >
             {error}
@@ -236,7 +236,7 @@ export default function TeamsSection({ auctionId }) {
               mt-6
               rounded-2xl
               border
-              border-gray-200
+              border-slate-200
               bg-white
               p-10
               text-center
@@ -279,8 +279,8 @@ export default function TeamsSection({ auctionId }) {
                 max-w-md
                 text-sm
                 leading-6
-                text-gray-500
-                dark:text-gray-400
+                text-slate-500
+                dark:text-slate-400
               "
           >
             No teams are currently associated with this auction.

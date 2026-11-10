@@ -21,13 +21,7 @@ export default function AdminPlayers() {
 
     try {
       setLoading(true);
-
-      console.log("Loading players for auction:", id);
-
       const response = await getPlayersByAuction(id);
-
-      console.log("Players API response:", response);
-
       /*
        * Handle different possible response structures.
        *
@@ -57,9 +51,6 @@ export default function AdminPlayers() {
       } else if (Array.isArray(response?.results)) {
         playerList = response.results;
       }
-
-      console.log("Final player list:", playerList);
-
       setPlayers(playerList);
 
       if (playerList.length === 0) {
@@ -104,7 +95,7 @@ export default function AdminPlayers() {
               Player Management
             </h1>
 
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               View players registered for an auction.
             </p>
           </div>
@@ -113,13 +104,13 @@ export default function AdminPlayers() {
 
       {/* ================= AUCTION SEARCH ================= */}
 
-      <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+      <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
         <div className="mb-4">
           <h2 className="font-semibold text-navy-950 dark:text-white">
             Select Auction
           </h2>
 
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Enter the Auction ID to load its players.
           </p>
         </div>
@@ -139,12 +130,12 @@ export default function AdminPlayers() {
               flex-1
               rounded-xl
               border
-              border-gray-300
+              border-slate-300
               bg-white
               px-4
               py-3
               text-sm
-              text-gray-900
+              text-slate-900
               outline-none
               transition
               focus:border-cyan-500
@@ -197,7 +188,7 @@ export default function AdminPlayers() {
                 Players
               </h2>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 {players.length} player
                 {players.length !== 1 ? "s" : ""} found
               </p>
@@ -210,7 +201,7 @@ export default function AdminPlayers() {
                   left-3
                   top-1/2
                   -translate-y-1/2
-                  text-gray-400
+                  text-slate-400
                 "
                 size={18}
               />
@@ -224,7 +215,7 @@ export default function AdminPlayers() {
                   w-full
                   rounded-xl
                   border
-                  border-gray-200
+                  border-slate-200
                   bg-white
                   py-2.5
                   pl-10
@@ -243,14 +234,14 @@ export default function AdminPlayers() {
           {/* ================= PLAYER CARDS ================= */}
 
           {filteredPlayers.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center dark:border-navy-700 dark:bg-navy-900">
-              <FiSearch className="mx-auto mb-3 text-gray-400" size={35} />
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-navy-700 dark:bg-navy-900">
+              <FiSearch className="mx-auto mb-3 text-slate-400" size={35} />
 
               <h3 className="font-semibold text-navy-950 dark:text-white">
                 No matching players
               </h3>
 
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-slate-500">
                 Try a different search.
               </p>
             </div>
@@ -289,7 +280,7 @@ export default function AdminPlayers() {
                       overflow-hidden
                       rounded-2xl
                       border
-                      border-gray-200
+                      border-slate-200
                       bg-white
                       shadow-sm
                       transition
@@ -302,7 +293,7 @@ export default function AdminPlayers() {
                   >
                     {/* Player Image */}
 
-                    <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gray-100 dark:bg-navy-800">
+                    <div className="relative flex h-48 items-center justify-center overflow-hidden bg-slate-100 dark:bg-navy-800">
                       {image ? (
                         <img
                           src={image}
@@ -333,10 +324,10 @@ export default function AdminPlayers() {
                         py-1
                         text-xs
                         font-semibold
-                        text-gray-700
+                        text-slate-700
                         shadow
                         dark:bg-navy-950/90
-                        dark:text-gray-200
+                        dark:text-slate-200
                       "
                       >
                         {status}
@@ -352,9 +343,9 @@ export default function AdminPlayers() {
 
                       <p className="mt-1 text-sm text-cyan-500">{role}</p>
 
-                      <div className="mt-5 border-t border-gray-100 pt-4 dark:border-navy-700">
+                      <div className="mt-5 border-t border-slate-100 pt-4 dark:border-navy-700">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <span className="text-xs text-slate-500 dark:text-slate-400">
                             Base Price
                           </span>
 
@@ -375,7 +366,7 @@ export default function AdminPlayers() {
       {/* ================= EMPTY STATE ================= */}
 
       {!loading && players.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center dark:border-navy-700 dark:bg-navy-900">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-navy-700 dark:bg-navy-900">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-500">
             <FiUsers size={30} />
           </div>
@@ -384,9 +375,9 @@ export default function AdminPlayers() {
             No Players Loaded
           </h2>
 
-          <p className="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
+          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
             Enter an Auction ID above and click
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
+            <span className="font-semibold text-slate-700 dark:text-slate-300">
               {" "}
               Load Players
             </span>{" "}

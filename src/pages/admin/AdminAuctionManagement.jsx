@@ -1,8 +1,13 @@
+import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiEdit3, FiEye, FiPlus, FiRefreshCw, FiTrash2 } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { deleteAuction, getAuctions, updateAuctionStatus } from "../../api/auctionApi";
+import {
+  deleteAuction,
+  getAuctions,
+  updateAuctionStatus,
+} from "../../api/auctionApi";
 import AuctionStatusBadge from "../../components/auction/AuctionStatusBadge";
 import LoadingScreen from "../../components/LoadingScreen";
 import ErrorState from "../../components/ErrorState";
@@ -11,6 +16,7 @@ import EmptyState from "../../components/EmptyState";
 const statuses = ["draft", "upcoming", "live", "completed", "cancelled"];
 
 export default function AdminAuctionManagement() {
+  const { confirm } = useConfirmDialog();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,7 +50,12 @@ export default function AdminAuctionManagement() {
   };
 
   const remove = async (a) => {
-    if (!window.confirm(`Delete "${a.name}"?`)) return;
+    const ok = await confirm({
+      title: "Delete auction?",
+      message: `"${a.name}" will be permanently deleted.`,
+      confirmText: "Delete",
+    });
+    if (!ok) return;
     try {
       await deleteAuction(a._id);
       toast.success("Auction deleted");
@@ -62,7 +73,9 @@ export default function AdminAuctionManagement() {
         <div>
           <p className="eyebrow">Admin</p>
           <h1 className="page-title">Auction Management</h1>
-          <p className="page-subtitle">Create, review, update and control auction status.</p>
+          <p className="page-subtitle">
+            Create, review, update and control auction status.
+          </p>
         </div>
         <div className="flex gap-2">
           <button onClick={load} className="secondary-btn">
@@ -77,7 +90,10 @@ export default function AdminAuctionManagement() {
       {error ? (
         <ErrorState message={error} onRetry={load} />
       ) : rows.length === 0 ? (
-        <EmptyState title="No auctions" message="Create your first auction to get started." />
+        <EmptyState
+          title="No auctions"
+          message="Create your first auction to get started."
+        />
       ) : (
         <div className="surface-card overflow-hidden">
           <div className="overflow-x-auto">
@@ -93,9 +109,14 @@ export default function AdminAuctionManagement() {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {rows.map((a) => (
-                  <tr key={a._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <tr
+                    key={a._id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                  >
                     <td className="px-5 py-4">
-                      <p className="font-black text-slate-900 dark:text-white">{a.name}</p>
+                      <p className="font-black text-slate-900 dark:text-white">
+                        {a.name}
+                      </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         {a.maxTeams} teams · {a.maxPlayersPerTeam} players/team
                       </p>
@@ -104,7 +125,10 @@ export default function AdminAuctionManagement() {
                       {new Date(a.date).toLocaleString("en-IN")}
                     </td>
                     <td className="px-5 py-4 font-bold text-slate-900 dark:text-white">
-                      ₹{Number(a.teamBudget ?? a.startingBudget ?? 0).toLocaleString("en-IN")}
+                      ₹
+                      {Number(
+                        a.teamBudget ?? a.startingBudget ?? 0,
+                      ).toLocaleString("en-IN")}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
@@ -115,7 +139,11 @@ export default function AdminAuctionManagement() {
                           className="rounded-lg border border-slate-200 bg-transparent px-2 py-1 text-xs text-slate-700 outline-none focus:border-slate-400 dark:border-slate-700 dark:text-slate-200 dark:focus:border-slate-500"
                         >
                           {statuses.map((s) => (
-                            <option key={s} value={s} className="text-slate-900 dark:bg-slate-800 dark:text-white">
+                            <option
+                              key={s}
+                              value={s}
+                              className="text-slate-900 dark:bg-slate-800 dark:text-white"
+                            >
                               {s}
                             </option>
                           ))}

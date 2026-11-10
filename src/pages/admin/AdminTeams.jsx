@@ -47,14 +47,14 @@ export default function AdminTeams() {
             Team Management
           </h1>
 
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             View teams participating in an auction.
           </p>
         </div>
       </div>
 
-      <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
-        <label className="mb-2 block text-sm font-medium dark:text-gray-300">
+      <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
+        <label className="mb-2 block text-sm font-medium dark:text-slate-300">
           Auction ID
         </label>
 
@@ -63,7 +63,7 @@ export default function AdminTeams() {
             value={auctionId}
             onChange={(e) => setAuctionId(e.target.value)}
             placeholder="Enter auction ID"
-            className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none focus:border-cyan-500 dark:border-navy-700 dark:bg-navy-950 dark:text-white"
+            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-cyan-500 dark:border-navy-700 dark:bg-navy-950 dark:text-white"
           />
 
           <button
@@ -79,8 +79,8 @@ export default function AdminTeams() {
       </div>
 
       {teams.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-gray-300 p-12 text-center dark:border-navy-700">
-          <FiUsers className="mx-auto mb-4 text-gray-400" size={40} />
+        <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center dark:border-navy-700">
+          <FiUsers className="mx-auto mb-4 text-slate-400" size={40} />
 
           <h2 className="font-semibold text-navy-950 dark:text-white">
             No Teams Found
@@ -102,7 +102,7 @@ export default function AdminTeams() {
             return (
               <div
                 key={id}
-                className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900"
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900"
               >
                 <div className="mb-4 flex justify-between">
                   <div className="rounded-xl bg-cyan-500/10 p-3 text-cyan-500">
@@ -120,7 +120,7 @@ export default function AdminTeams() {
 
                 <div className="mt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Budget</span>
+                    <span className="text-slate-500">Budget</span>
 
                     <span className="font-semibold text-cyan-500">
                       {formatCurrency(budget)}
@@ -128,7 +128,7 @@ export default function AdminTeams() {
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Players</span>
+                    <span className="text-slate-500">Players</span>
 
                     <span className="font-semibold dark:text-white">
                       {team?.players?.length || team?.playerCount || 0}

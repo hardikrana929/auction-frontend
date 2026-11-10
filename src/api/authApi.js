@@ -10,6 +10,11 @@ export const loginUser = async (data) => {
   return response.data;
 };
 
+export const auctionLogin = async (data) => {
+  const response = await api.post("/api/auth/auction-login", data);
+  return response.data;
+};
+
 export const getUserProfile = async () => {
   const response = await api.get("/api/auth/me");
   return response.data;
@@ -27,6 +32,9 @@ export const verifyResetOtp = async (email, otp) => {
 };
 
 export const resetPassword = async (token, password) => {
-  const response = await api.post(`/api/auth/reset-password/${encodeURIComponent(token)}`, { password });
+  const response = await api.post(
+    `/api/auth/reset-password/${encodeURIComponent(token)}`,
+    { password },
+  );
   return response.data;
 };

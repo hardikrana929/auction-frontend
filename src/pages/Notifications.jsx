@@ -1,3 +1,4 @@
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FiBell,
@@ -261,6 +262,7 @@ const NotificationCard = ({ notification, onRead, onDelete }) => {
 */
 
 const Notifications = () => {
+  const { confirm } = useConfirmDialog();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -437,7 +439,11 @@ const Notifications = () => {
     */
 
   const handleDelete = async (notificationId) => {
-    const confirmed = window.confirm("Delete this notification?");
+    const confirmed = await confirm({
+      title: "Delete notification?",
+      message: "This notification will be removed.",
+      confirmText: "Delete",
+    });
 
     if (!confirmed) return;
 
@@ -476,9 +482,11 @@ const Notifications = () => {
       return;
     }
 
-    const confirmed = window.confirm(
-      `Delete all ${readCount} read notifications?`,
-    );
+    const confirmed = await confirm({
+      title: "Delete read notifications?",
+      message: `All ${readCount} read notifications will be removed.`,
+      confirmText: "Delete all",
+    });
 
     if (!confirmed) return;
 

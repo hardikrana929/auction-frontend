@@ -6,20 +6,13 @@ import api from "./axios";
 |--------------------------------------------------------------------------
 */
 
-export const getAuctionHistory = async (
-    auctionId,
-    params = {}
-) => {
-    const response = await api.get(
-        `/api/auction-history/${auctionId}`,
-        {
-            params,
-        }
-    );
+export const getAuctionHistory = async (auctionId, params = {}) => {
+  const response = await api.get(`/api/auction-history/${auctionId}`, {
+    params,
+  });
 
-    return response.data;
+  return response.data;
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -27,20 +20,13 @@ export const getAuctionHistory = async (
 |--------------------------------------------------------------------------
 */
 
-export const getSoldHistory = async (
-    auctionId,
-    params = {}
-) => {
-    const response = await api.get(
-        `/api/auction-history/${auctionId}/sold`,
-        {
-            params,
-        }
-    );
+export const getSoldHistory = async (auctionId, params = {}) => {
+  const response = await api.get(`/api/auction-history/${auctionId}/sold`, {
+    params,
+  });
 
-    return response.data;
+  return response.data;
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -48,20 +34,13 @@ export const getSoldHistory = async (
 |--------------------------------------------------------------------------
 */
 
-export const getUnsoldHistory = async (
-    auctionId,
-    params = {}
-) => {
-    const response = await api.get(
-        `/api/auction-history/${auctionId}/unsold`,
-        {
-            params,
-        }
-    );
+export const getUnsoldHistory = async (auctionId, params = {}) => {
+  const response = await api.get(`/api/auction-history/${auctionId}/unsold`, {
+    params,
+  });
 
-    return response.data;
+  return response.data;
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -69,20 +48,13 @@ export const getUnsoldHistory = async (
 |--------------------------------------------------------------------------
 */
 
-export const getAuctionBidHistory = async (
-    auctionId,
-    params = {}
-) => {
-    const response = await api.get(
-        `/api/auction-history/${auctionId}/bids`,
-        {
-            params,
-        }
-    );
+export const getAuctionBidHistory = async (auctionId, params = {}) => {
+  const response = await api.get(`/api/auction-history/${auctionId}/bids`, {
+    params,
+  });
 
-    return response.data;
+  return response.data;
 };
-
 
 /*
 |--------------------------------------------------------------------------
@@ -90,21 +62,16 @@ export const getAuctionBidHistory = async (
 |--------------------------------------------------------------------------
 */
 
-export const getPlayerAuctionHistory = async (
-    playerId
-) => {
-    const response = await api.get(
-        `/api/auction-history/player/${playerId}`
-    );
+export const getPlayerAuctionHistory = async (playerId) => {
+  const response = await api.get(`/api/auction-history/player/${playerId}`);
 
-    return response.data;
+  return response.data;
 };
 
-
 export default {
-    getAuctionHistory,
-    getSoldHistory,
-    getUnsoldHistory,
-    getAuctionBidHistory,
-    getPlayerAuctionHistory,
+  getAuctionHistory,
+  getSoldHistory,
+  getUnsoldHistory,
+  getAuctionBidHistory,
+  getPlayerAuctionHistory,
 };

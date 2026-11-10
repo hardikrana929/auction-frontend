@@ -1,3 +1,4 @@
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -125,6 +126,7 @@ const getUserRole = (user) => {
 };
 
 const LiveAuction = () => {
+  const { confirm } = useConfirmDialog();
   const { id: auctionId } = useParams();
   const navigate = useNavigate();
 
@@ -154,7 +156,7 @@ const LiveAuction = () => {
   const [resultMessage, setResultMessage] = useState(null);
 
   const isAdmin = useMemo(() => {
-    return getUserRole(user) === "admin";
+    return ["admin", "auction_manager"].includes(getUserRole(user));
   }, [user]);
 
   const auctionStatus = useMemo(
@@ -395,18 +397,39 @@ const LiveAuction = () => {
    * Join auction Socket.IO room.
    */
   useEffect(() => {
-    if (!socket || !auctionId || !connected) {
-      return;
-    }
-
-    socket.emit("auction:join", {
-      auctionId,
-    });
-
+    if (!socket || !auctionId) return;
+    let joined = false;
+    const join = () => {
+      if (!joined && socket.connected)
+        socket.emit("auction:join", { auctionId });
+    };
+    const handleJoined = (payload) => {
+      if (
+        !payload?.auctionId ||
+        String(payload.auctionId) === String(auctionId)
+      )
+        joined = true;
+    };
+    const handleJoinError = (payload) => {
+      if (payload?.message) toast.error(payload.message);
+    };
+    const handleStarted = () => {
+      joined = false;
+      join();
+    };
+    socket.on("connect", join);
+    socket.on("auction:joined", handleJoined);
+    socket.on("auction:error", handleJoinError);
+    socket.on("auction:started", handleStarted);
+    if (connected || socket.connected) join();
+    const retry = window.setInterval(join, 5000);
     return () => {
-      socket.emit("auction:leave", {
-        auctionId,
-      });
+      window.clearInterval(retry);
+      socket.off("connect", join);
+      socket.off("auction:joined", handleJoined);
+      socket.off("auction:error", handleJoinError);
+      socket.off("auction:started", handleStarted);
+      socket.emit("auction:leave", { auctionId });
     };
   }, [socket, auctionId, connected]);
 
@@ -864,9 +887,12 @@ const LiveAuction = () => {
     }
 
     if (
-      !window.confirm(
-        `Sell ${getPlayerName(player)} to the current highest bidder?`,
-      )
+      !(await confirm({
+        title: "Sell player?",
+        message: `Sell ${getPlayerName(player)} to the current highest bidder?`,
+        confirmText: "Sell player",
+        tone: "primary",
+      }))
     ) {
       return;
     }
@@ -896,7 +922,13 @@ const LiveAuction = () => {
       return;
     }
 
-    if (!window.confirm(`Mark ${getPlayerName(player)} as unsold?`)) {
+    if (
+      !(await confirm({
+        title: "Mark as unsold?",
+        message: `${getPlayerName(player)} will be marked unsold.`,
+        confirmText: "Mark unsold",
+      }))
+    ) {
       return;
     }
 
@@ -949,7 +981,14 @@ const LiveAuction = () => {
       return;
     }
 
-    if (!window.confirm("Are you sure you want to complete this auction?")) {
+    if (
+      !(await confirm({
+        title: "Complete this auction?",
+        message: "Bidding will close for everyone.",
+        confirmText: "Complete auction",
+        tone: "primary",
+      }))
+    ) {
       return;
     }
 
@@ -976,11 +1015,19 @@ const LiveAuction = () => {
     return (
       <div className="min-h-[70vh] bg-slate-50 px-4 py-10 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl">
-          <div className="flex min-h-[50vh] flex-col items-center justify-center">
-            <FiRefreshCw className="h-10 w-10 animate-spin text-indigo-600" />
-
-            <p className="mt-4 font-semibold text-slate-700 dark:text-slate-300">
-              Loading live auction...
+          <div
+            className="flex min-h-[50vh] flex-col items-center justify-center"
+            role="status"
+            aria-label="Checking auction session"
+          >
+            <div className="relative flex h-24 w-24 items-center justify-center">
+              <div className="absolute inset-2 animate-spin motion-reduce:animate-none rounded-full border-4 border-emerald-200 border-t-emerald-600 dark:border-emerald-800 dark:border-t-emerald-300" />
+              <div className="flex h-14 w-14 animate-bounce motion-reduce:animate-none items-center justify-center rounded-full border-4 border-amber-400 bg-amber-200 text-lg font-black text-emerald-900 shadow-lg dark:border-amber-300 dark:bg-amber-400 dark:text-emerald-950">
+                ₹
+              </div>
+            </div>
+            <p className="mt-5 font-bold text-slate-700 dark:text-slate-300">
+              Checking auction session...
             </p>
           </div>
         </div>
@@ -1237,6 +1284,9 @@ const LiveAuction = () => {
                   Number(player?.basePrice || 0),
                 )}
                 bidIncrement={auction?.bidIncrement || 0}
+                bidRules={
+                  Array.isArray(auction?.bidRules) ? auction.bidRules : []
+                }
                 playerActive={playerActive}
                 auctionPaused={auctionPaused}
                 accessApproved={accessApproved}
