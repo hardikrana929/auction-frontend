@@ -93,7 +93,7 @@ export default function AuctionFormPage({ edit = false }) {
       </div>
       {managerCredentials && (
         <div className="fixed inset-0 z-[100] grid place-items-center bg-slate-950/70 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900">
+          <div className="w-full max-w-lg rounded-2xl bg-white/55 backdrop-blur-xl p-6 shadow-2xl dark:bg-slate-900/45">
             <h2 className="text-xl font-black text-slate-900 dark:text-white">
               Auction manager credentials
             </h2>
@@ -114,7 +114,7 @@ export default function AuctionFormPage({ edit = false }) {
                   <input
                     readOnly
                     value={value || ""}
-                    className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                    className="min-w-0 flex-1 rounded-lg border border-white/70 bg-white/40 px-3 py-2 font-mono text-sm text-slate-900 dark:border-white/10 dark:bg-white/[0.05] dark:text-white"
                   />
                   <button
                     type="button"
@@ -144,7 +144,7 @@ export default function AuctionFormPage({ edit = false }) {
                     : "/admin/auctions",
                 )
               }
-              className="mt-6 w-full rounded-xl bg-slate-950 px-4 py-3 font-bold text-white dark:bg-white dark:text-slate-950"
+              className="mt-6 w-full rounded-xl px-4 py-3 font-bold bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-inset ring-white/20 hover:brightness-110"
             >
               I have saved the credentials
             </button>

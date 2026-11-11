@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   FiArrowRight,
   FiBarChart2,
@@ -14,7 +15,7 @@ function HowItWorksStep({ number, icon, title, description }) {
   return (
     <div className="group relative text-center">
       {/* Number / Icon */}
-      <div className="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-200 bg-white text-cyan-600 shadow-lg shadow-cyan-500/10 transition duration-300 group-hover:-translate-y-1 group-hover:border-cyan-400 group-hover:bg-cyan-500 group-hover:text-white dark:border-cyan-500/20 dark:bg-navy-850 dark:text-cyan-400 dark:group-hover:border-cyan-500 dark:group-hover:bg-cyan-500 dark:group-hover:text-white">
+      <div className="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-white/70 bg-white/60 text-cyan-600 shadow-lg shadow-cyan-500/10 backdrop-blur-xl transition duration-300 group-hover:-translate-y-1 group-hover:border-cyan-400 group-hover:bg-cyan-500 group-hover:text-white dark:border-white/10 dark:bg-white/[0.06] dark:text-cyan-400 dark:group-hover:border-cyan-500 dark:group-hover:bg-cyan-500 dark:group-hover:text-white">
         <span className="text-2xl">{icon}</span>
 
         {/* Step number */}
@@ -54,24 +55,63 @@ function WorkflowItem({ icon, title, text }) {
     </div>
   );
 }
+const TEAMS = ["Mumbai Strikers", "Delhi Titans", "Chennai Kings", "Punjab Hawks"];
+const START_BID = 1250000;
+const STEP = 50000;
+const CAP = 1600000;
+
+const lakh = (n) => `₹${(n / 100000).toFixed(2).replace(/\.?0+$/, "")}L`;
+
+/* Looping, self-playing mini auction so the hero feels alive */
+function useLiveAuction() {
+  const [state, setState] = useState({
+    bid: START_BID,
+    bids: 128,
+    team: 0,
+    sold: false,
+  });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setState((prev) => {
+        if (prev.sold) return { bid: START_BID, bids: 128, team: 0, sold: false };
+        if (prev.bid >= CAP) return { ...prev, sold: true };
+        return {
+          bid: prev.bid + STEP,
+          bids: prev.bids + 1,
+          team: (prev.team + 1) % TEAMS.length,
+          sold: false,
+        };
+      });
+    }, 2200);
+    return () => clearInterval(id);
+  }, []);
+
+  return state;
+}
+
 export default function Home() {
+  const live = useLiveAuction();
+  const sold = live.sold;
+
   return (
-    <div className="min-h-screen bg-white text-navy-950 dark:bg-navy-950 dark:text-white">
+    <div className="min-h-screen  text-navy-950  dark:text-white">
       {/* =====================================================
           HERO SECTION
       ====================================================== */}
-      <section className="relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl" />
-          <div className="absolute -left-40 top-60 h-96 w-96 rounded-full bg-cyan-500/5 blur-3xl" />
+      <section className="relative overflow-x-clip">
+        {/* Animated colour orbs (the glass blurs these) */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="ap-orb absolute -right-32 top-4 h-[26rem] w-[26rem] rounded-full bg-cyan-400/40 blur-3xl dark:bg-cyan-500/25" />
+          <div className="ap-orb ap-orb-b absolute -left-40 top-52 h-[24rem] w-[24rem] rounded-full bg-violet-400/35 blur-3xl dark:bg-violet-600/25" />
+          <div className="ap-orb absolute bottom-0 right-1/3 h-72 w-72 rounded-full bg-amber-300/30 blur-3xl dark:bg-amber-500/10" />
         </div>
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:px-10 lg:pb-28 lg:pt-24">
           {/* Left content */}
           <div>
             {/* Badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-700 dark:border-cyan-500/20 dark:bg-cyan-500/10 dark:text-cyan-400">
+            <div className="ap-rise mb-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/55 px-4 py-2 text-sm font-semibold text-cyan-700 shadow-lg shadow-cyan-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-cyan-400">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500" />
@@ -81,22 +121,35 @@ export default function Home() {
 
             {/* Heading */}
             <h1 className="max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-navy-950 sm:text-5xl lg:text-6xl dark:text-white">
-              Build your team.
-              <span className="block text-cyan-500">Win the auction.</span>
+              <span style={{ "--d": "120ms" }} className="ap-rise block">
+                Build your team.
+              </span>
+              <span
+                style={{ "--d": "280ms" }}
+                className="ap-rise block pb-1"
+              >
+                <span className="ap-shimmer-text">Win the auction.</span>
+              </span>
             </h1>
 
             {/* Description */}
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-400">
+            <p
+              style={{ "--d": "440ms" }}
+              className="ap-rise mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-400"
+            >
               AuctionPro brings cricket auctions into one powerful platform.
               Manage players, teams, budgets, registrations, live bidding and
               auction results with complete control.
             </p>
 
             {/* Buttons */}
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div
+              style={{ "--d": "580ms" }}
+              className="ap-rise mt-8 flex flex-col gap-3 sm:flex-row"
+            >
               <Link
                 to="/auctions"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-600 hover:shadow-cyan-500/30"
+                className="glass-primary ap-shine px-6 py-3.5 text-sm"
               >
                 Explore Auctions
                 <FiArrowRight className="h-4 w-4" />
@@ -104,14 +157,17 @@ export default function Home() {
 
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-bold text-navy-950 transition hover:border-cyan-400 hover:text-cyan-600 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:border-cyan-500 dark:hover:text-cyan-400"
+                className="inline-flex items-center justify-center gap-2 rounded-[0.875rem] border border-white/70 bg-white/55 px-6 py-3.5 text-sm font-bold text-navy-950 backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/80 hover:text-cyan-700 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:hover:text-cyan-400"
               >
                 Create Account
               </Link>
             </div>
 
             {/* Trust points */}
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+            <div
+              style={{ "--d": "720ms" }}
+              className="ap-rise mt-8 flex flex-wrap gap-x-6 gap-y-3"
+            >
               <TrustPoint text="Real-time bidding" />
               <TrustPoint text="Secure access" />
               <TrustPoint text="Team management" />
@@ -121,119 +177,156 @@ export default function Home() {
           {/* Right visual */}
           <div className="relative">
             <div className="relative mx-auto max-w-lg">
-              {/* Main dashboard card */}
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-2xl dark:border-navy-700 dark:bg-navy-900">
-                {/* Top bar */}
-                <div className="flex items-center justify-between rounded-2xl bg-white p-4 dark:bg-navy-850">
-                  <div>
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      LIVE AUCTION
-                    </p>
+              <div style={{ "--d": "300ms" }} className="ap-zoom">
+                <div className="ap-float">
+                  {/* Main glass dashboard card */}
+                  <div className="ap-tilt rounded-3xl border border-white/70 bg-white/45 p-4 shadow-[0_30px_80px_-20px_rgba(15,23,42,0.4)] backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-slate-900/40 dark:shadow-black/50">
+                    {/* Top bar */}
+                    <div className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/60 p-4 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06]">
+                      <div>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          LIVE AUCTION
+                        </p>
+                        <p className="mt-1 text-sm font-bold text-navy-950 dark:text-white">
+                          Cricket Premier Auction
+                        </p>
+                      </div>
 
-                    <p className="mt-1 text-sm font-bold text-navy-950 dark:text-white">
-                      Cricket Premier Auction
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700 dark:bg-green-500/10 dark:text-green-400">
-                    <span className="h-2 w-2 rounded-full bg-green-500" />
-                    LIVE
-                  </div>
-                </div>
-
-                {/* Player card */}
-                <div className="mt-4 rounded-2xl bg-navy-950 p-5">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-cyan-500 text-2xl font-extrabold text-white">
-                      AP
+                      <div
+                        className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold transition-colors duration-500 ${
+                          sold
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400"
+                            : "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                        }`}
+                      >
+                        <span className="relative flex h-2 w-2">
+                          <span
+                            className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${
+                              sold ? "bg-amber-400" : "bg-green-400"
+                            }`}
+                          />
+                          <span
+                            className={`relative inline-flex h-2 w-2 rounded-full ${
+                              sold ? "bg-amber-500" : "bg-green-500"
+                            }`}
+                          />
+                        </span>
+                        {sold ? "SOLD" : "LIVE"}
+                      </div>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
-                        Current Player
-                      </p>
+                    {/* Player card */}
+                    <div className="mt-4 rounded-2xl bg-slate-950/80 p-5 ring-1 ring-white/10 backdrop-blur-xl">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-600 text-2xl font-extrabold text-white shadow-lg shadow-indigo-500/30">
+                          AP
+                        </div>
 
-                      <h3 className="mt-1 truncate text-xl font-bold text-white">
-                        Premium Player
-                      </h3>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                            Current Player
+                          </p>
+                          <h3 className="mt-1 truncate text-xl font-bold text-white">
+                            Premium Player
+                          </h3>
+                          <p className="mt-1 text-sm text-slate-400">
+                            All Rounder
+                          </p>
+                        </div>
+                      </div>
 
-                      <p className="mt-1 text-sm text-slate-400">All Rounder</p>
+                      {/* Current bid */}
+                      <div className="mt-6 rounded-2xl bg-white/5 p-4 ring-1 ring-white/5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-400">
+                            {sold ? "Sold for" : "Current Bid"}
+                          </span>
+                          <span className="text-xs font-semibold text-cyan-400">
+                            {sold ? "CONGRATULATIONS" : "NEXT BID AVAILABLE"}
+                          </span>
+                        </div>
+
+                        <div className="mt-2 flex items-end justify-between">
+                          <span
+                            key={live.bid}
+                            className="ap-pop inline-block text-3xl font-extrabold text-white"
+                          >
+                            {lakh(live.bid)}
+                          </span>
+                          <span className="text-sm text-slate-400">
+                            {sold ? TEAMS[live.team] : "+ ₹50K"}
+                          </span>
+                        </div>
+
+                        {/* auto-restarting countdown bar */}
+                        <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
+                          {!sold && (
+                            <div
+                              key={live.bid}
+                              className="ap-bar h-full rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500"
+                              style={{ animationDuration: "2.2s" }}
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Bid button */}
+                      <button
+                        type="button"
+                        className="glass-primary ap-shine mt-4 flex w-full py-3"
+                      >
+                        <FiZap className="h-4 w-4" />
+                        Place Bid
+                      </button>
+                    </div>
+
+                    {/* Bottom stats */}
+                    <div className="mt-4 grid grid-cols-3 gap-3">
+                      <MiniStat label="Teams" value="08" />
+                      <MiniStat label="Players" value="64" />
+                      <MiniStat label="Bids" value={String(live.bids)} />
                     </div>
                   </div>
-
-                  {/* Current bid */}
-                  <div className="mt-6 rounded-2xl bg-white/5 p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-400">Current Bid</span>
-
-                      <span className="text-xs font-semibold text-cyan-400">
-                        NEXT BID AVAILABLE
-                      </span>
-                    </div>
-
-                    <div className="mt-2 flex items-end justify-between">
-                      <span className="text-3xl font-extrabold text-white">
-                        ₹12.5L
-                      </span>
-
-                      <span className="text-sm text-slate-400">+ ₹50K</span>
-                    </div>
-                  </div>
-
-                  {/* Bid button */}
-                  <button
-                    type="button"
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 py-3 font-bold text-white"
-                  >
-                    <FiZap className="h-4 w-4" />
-                    Place Bid
-                  </button>
-                </div>
-
-                {/* Bottom stats */}
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  <MiniStat label="Teams" value="08" />
-
-                  <MiniStat label="Players" value="64" />
-
-                  <MiniStat label="Bids" value="128" />
                 </div>
               </div>
 
-              {/* Floating notification */}
-              <div className="absolute -left-4 top-20 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">
-                    <FiCheckCircle className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      PLAYER SOLD
-                    </p>
-
-                    <p className="text-sm font-bold text-navy-950 dark:text-white">
-                      ₹12.5 Lakhs
-                    </p>
+              {/* Floating notification: follows the live bids */}
+              <div className="ap-rise absolute -top-14 left-6 hidden sm:block" style={{ "--d": "900ms" }}>
+                <div className="ap-float-slow rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xl shadow-slate-900/20 backdrop-blur-xl dark:border-white/15 dark:bg-slate-900/80 dark:shadow-black/40">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">
+                      <FiCheckCircle className="h-5 w-5" />
+                    </div>
+                    <div key={`${live.bid}-${sold}`} className="ap-pop">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        {sold ? "PLAYER SOLD" : "NEW BID"}
+                      </p>
+                      <p className="text-sm font-bold text-navy-950 dark:text-white">
+                        {lakh(live.bid)}{" "}
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                          · {TEAMS[live.team]}
+                        </span>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Floating teams */}
-              <div className="absolute -bottom-5 -right-5 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:block dark:border-navy-700 dark:bg-navy-850">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
-                    <FiUsers className="h-5 w-5" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      ACTIVE TEAMS
-                    </p>
-
-                    <p className="text-lg font-bold text-navy-950 dark:text-white">
-                      08 Teams
-                    </p>
+              <div className="ap-rise absolute -bottom-14 right-4 hidden sm:block" style={{ "--d": "1050ms" }}>
+                <div className="ap-float rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xl shadow-slate-900/20 backdrop-blur-xl dark:border-white/15 dark:bg-slate-900/80 dark:shadow-black/40">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
+                      <FiUsers className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        ACTIVE TEAMS
+                      </p>
+                      <p className="text-lg font-bold text-navy-950 dark:text-white">
+                        08 Teams
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -245,7 +338,7 @@ export default function Home() {
       {/* =====================================================
           FEATURES
       ====================================================== */}
-      <section className="border-y border-slate-200 bg-slate-50 py-20 dark:border-navy-800 dark:bg-navy-900">
+      <section className="border-y border-white/60 bg-white/30 py-20 backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.03]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-bold uppercase tracking-wider text-cyan-500">
@@ -293,7 +386,7 @@ export default function Home() {
       {/* =====================================================
     HOW AUCTIONPRO WORKS
 ====================================================== */}
-      <section className="relative overflow-hidden border-y border-slate-200 bg-slate-50 py-20 dark:border-navy-800 dark:bg-navy-900">
+      <section className="relative overflow-hidden border-y border-white/60 bg-white/30 py-20 backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.03]">
         {/* Background decoration */}
         <div className="pointer-events-none absolute -right-40 top-20 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
         <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
@@ -357,7 +450,7 @@ export default function Home() {
           </div>
 
           {/* Bottom workflow */}
-          <div className="mt-16 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-850 sm:p-8">
+          <div className="mt-16 rounded-3xl border border-white/70 bg-white/55 p-6 shadow-xl shadow-slate-900/[0.06] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06] dark:shadow-black/30 sm:p-8">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center">
               {/* Registration */}
               <WorkflowItem
@@ -390,7 +483,7 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Link
               to="/auctions"
-              className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-600"
+              className="inline-flex items-center gap-2 glass-primary px-6 py-3.5 text-sm"
             >
               Explore Auctions
               <FiArrowRight className="h-4 w-4" />
@@ -402,7 +495,7 @@ export default function Home() {
           CTA
       ====================================================== */}
       <section className="px-4 pb-20 sm:px-6 lg:px-10">
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl bg-navy-950 px-6 py-14 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl bg-slate-950/75 px-6 py-14 shadow-2xl shadow-black/30 ring-1 ring-white/10 backdrop-blur-2xl sm:px-10 lg:px-16">
           <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
             <div>
               <p className="text-sm font-bold uppercase tracking-wider text-cyan-400">
@@ -422,7 +515,7 @@ export default function Home() {
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-cyan-600"
+                className="inline-flex items-center justify-center gap-2 glass-primary px-6 py-3.5 text-sm"
               >
                 Get Started
                 <FiArrowRight className="h-4 w-4" />
@@ -430,7 +523,7 @@ export default function Home() {
 
               <Link
                 to="/auctions"
-                className="inline-flex items-center justify-center rounded-xl border border-navy-700 px-6 py-3.5 text-sm font-bold text-white transition hover:border-cyan-500 hover:text-cyan-400"
+                className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur transition hover:border-cyan-500 hover:text-cyan-400"
               >
                 Browse Auctions
               </Link>
@@ -442,7 +535,7 @@ export default function Home() {
       {/* =====================================================
           FOOTER
       ====================================================== */}
-      <footer className="border-t border-slate-200 bg-slate-50 dark:border-navy-800 dark:bg-navy-900">
+      <footer className="border-t border-white/60 bg-white/40 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/40">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-10">
           <div>
             <p className="text-sm font-bold text-navy-950 dark:text-white">
@@ -488,7 +581,7 @@ function TrustPoint({ text }) {
 
 function MiniStat({ label, value }) {
   return (
-    <div className="rounded-xl bg-white p-3 text-center dark:bg-navy-850">
+    <div className="rounded-xl border border-white/70 bg-white/60 p-3 text-center backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06]">
       <p className="text-lg font-bold text-navy-950 dark:text-white">{value}</p>
 
       <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -500,7 +593,7 @@ function MiniStat({ label, value }) {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-xl hover:shadow-cyan-500/5 dark:border-navy-700 dark:bg-navy-850 dark:hover:border-cyan-500/40">
+    <div className="group rounded-2xl border border-white/70 bg-white/55 p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1.5 hover:border-cyan-300 hover:bg-white/75 hover:shadow-xl hover:shadow-cyan-500/15 dark:border-white/10 dark:bg-white/[0.05] dark:hover:border-cyan-400/40 dark:hover:bg-white/[0.09]">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 transition group-hover:bg-cyan-500 group-hover:text-white dark:bg-cyan-500/10 dark:text-cyan-400 dark:group-hover:bg-cyan-500">
         <span className="text-xl">{icon}</span>
       </div>
@@ -536,7 +629,7 @@ function Step({ number, title, description }) {
 
 function LargeStat({ icon, value, label }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-850">
+    <div className="rounded-2xl border border-white/70 bg-white/55 p-5 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06]">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
         {icon}
       </div>

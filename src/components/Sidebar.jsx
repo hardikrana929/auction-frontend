@@ -127,8 +127,8 @@ export default function Sidebar({ onNavigate }) {
         fixed left-0 top-0 z-40
         h-screen w-64
         flex-col
-        border-r border-slate-200 bg-white
-        dark:border-navy-700 dark:bg-navy-900
+        border-r border-white/70 bg-white/45 backdrop-blur-2xl backdrop-saturate-150
+        dark:border-white/10 dark:bg-slate-900/45
       "
     >
       {/* Spacer for your fixed header height (adjust h-16 to match) */}
@@ -203,8 +203,8 @@ export default function Sidebar({ onNavigate }) {
 
         <div
           className="
-            rounded-xl border border-slate-200 bg-white p-4 shadow-sm
-            dark:border-navy-700 dark:bg-navy-950
+            rounded-xl border border-white/70 bg-white/55 backdrop-blur-xl p-4 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
+            dark:border-white/10 dark:bg-slate-900/45
           "
         >
           <div className="flex items-center gap-2">

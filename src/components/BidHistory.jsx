@@ -43,7 +43,7 @@ const BidHistory = ({ bids = [], currentBid = 0 }) => {
   });
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
       <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
         <div className="flex items-center gap-2">
           <FiUsers className="h-5 w-5 text-blue-500" />

@@ -151,7 +151,7 @@ const NotificationCard = ({ notification, onRead, onDelete }) => {
         "group relative rounded-2xl border p-4 sm:p-5",
         "transition-all duration-200",
         read
-          ? "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+          ? "border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45"
           : "border-cyan-200 bg-cyan-50/60 shadow-sm dark:border-cyan-900/60 dark:bg-cyan-950/20",
       ].join(" ")}
     >
@@ -210,7 +210,7 @@ const NotificationCard = ({ notification, onRead, onDelete }) => {
             </span>
 
             {notification?.auction?.name && (
-              <span className="rounded-full bg-slate-100 px-2 py-1 dark:bg-slate-800">
+              <span className="rounded-full bg-slate-900/5 px-2 py-1 dark:bg-white/10">
                 {notification.auction.name}
               </span>
             )}
@@ -529,9 +529,9 @@ const Notifications = () => {
 
   if (error) {
     return (
-      <div className="min-h-[70vh] bg-slate-50 px-4 py-8 dark:bg-slate-950">
+      <div className="min-h-[70vh]  px-4 py-8 ">
         <div className="mx-auto max-w-5xl">
-          <div className="rounded-2xl border border-red-200 bg-white p-8 text-center dark:border-red-900/50 dark:bg-slate-900">
+          <div className="rounded-2xl border border-red-200 bg-white/55 backdrop-blur-xl p-8 text-center dark:border-red-900/50 dark:bg-slate-900/45">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400">
               <FiBell size={24} />
             </div>
@@ -565,7 +565,7 @@ const Notifications = () => {
     */
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8 dark:bg-slate-950">
+    <div className="min-h-screen  px-4 py-6 sm:px-6 lg:px-8 ">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -591,7 +591,7 @@ const Notifications = () => {
             type="button"
             disabled={refreshing || actionLoading}
             onClick={() => loadNotifications(false)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-cyan-800 dark:hover:text-cyan-400"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/70 bg-white/55 backdrop-blur-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-cyan-300 hover:text-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-slate-900/45 dark:text-slate-300 dark:hover:border-cyan-800 dark:hover:text-cyan-400"
           >
             <FiRefreshCw
               size={16}
@@ -603,7 +603,7 @@ const Notifications = () => {
 
         {/* Stats */}
         <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-4 dark:border-white/10 dark:bg-slate-900/45">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Total
             </p>
@@ -621,7 +621,7 @@ const Notifications = () => {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-4 dark:border-white/10 dark:bg-slate-900/45">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Read
             </p>
@@ -632,8 +632,8 @@ const Notifications = () => {
         </div>
 
         {/* Toolbar */}
-        <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+        <div className="mb-5 flex flex-col gap-3 rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-3 dark:border-white/10 dark:bg-slate-900/45 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex rounded-xl bg-slate-900/5 p-1 dark:bg-white/10">
             {[
               ["all", "All"],
               ["unread", "Unread"],
@@ -684,7 +684,7 @@ const Notifications = () => {
 
         {/* Notifications */}
         {filteredNotifications.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white py-10 dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl py-10 dark:border-white/10 dark:bg-slate-900/45">
             <EmptyState
               icon={FiBell}
               title={

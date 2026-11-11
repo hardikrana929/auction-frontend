@@ -77,7 +77,7 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen  text-slate-900  dark:text-slate-100">
       {/* ==================================================
           SIDEBAR
           flex flex-col + h-full turns this into a real
@@ -89,7 +89,7 @@ export default function DashboardLayout() {
           the absolutely-positioned footer.
       ================================================== */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 flex h-full w-72 transform flex-col border-r border-slate-200 bg-white transition-transform dark:border-slate-800 dark:bg-slate-900 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex h-full w-72 transform flex-col border-r border-white/70 bg-white/45 backdrop-blur-2xl backdrop-saturate-150 transition-transform dark:border-white/10 dark:bg-slate-900/45 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         } ${collapsed ? "lg:w-20" : ""}`}
       >
@@ -100,7 +100,7 @@ export default function DashboardLayout() {
               collapsed ? "lg:w-full lg:justify-center" : ""
             }`}
           >
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30">
               <FiActivity />
             </span>
             {!collapsed && (
@@ -136,8 +136,8 @@ export default function DashboardLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
                   isActive
-                    ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
-                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+                    : "text-slate-600 hover:bg-white/60 dark:text-slate-300 dark:hover:bg-white/10"
                 } ${collapsed ? "lg:justify-center" : ""}`
               }
             >
@@ -173,7 +173,7 @@ export default function DashboardLayout() {
       <div
         className={`${collapsed ? "lg:pl-20" : "lg:pl-72"} min-h-screen transition-all`}
       >
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 sm:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-white/60 bg-white/50 px-4 backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-slate-950/40 sm:px-6">
           <div className="flex items-center gap-3">
             <button className="lg:hidden" onClick={() => setOpen(true)}>
               <FiMenu className="text-xl" />

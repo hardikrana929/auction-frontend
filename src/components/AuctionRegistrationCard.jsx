@@ -23,12 +23,12 @@ export default function AuctionRegistrationCard({
       className="
         rounded-2xl
         border
-        border-slate-200
-        bg-white
+        border-white/70
+        bg-white/55 backdrop-blur-xl
         p-6
-        shadow-sm
-        dark:border-navy-700
-        dark:bg-navy-900
+        shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       <div

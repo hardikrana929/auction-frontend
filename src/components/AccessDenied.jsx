@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function AccessDenied() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-pitch-50 px-6 dark:bg-navy-950">
+    <div className="flex min-h-screen items-center justify-center  px-6 ">
       <div className="max-w-md text-center">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400">
           <FiShield size={30} />

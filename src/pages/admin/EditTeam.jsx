@@ -203,9 +203,9 @@ const EditTeam = () => {
    */
   if (!team) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen  ">
         <div className="mx-auto flex min-h-screen max-w-xl items-center justify-center px-4">
-          <div className="w-full rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="w-full rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-8 text-center shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400">
               <FiUsers size={24} />
             </div>
@@ -232,9 +232,9 @@ const EditTeam = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen  ">
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+      <header className="border-b border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Title */}

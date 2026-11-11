@@ -8,7 +8,7 @@ export default function PlaceholderPage({ title, description }) {
         <h1 className="mt-2 text-3xl font-black">{title}</h1>
         <p className="mt-2 text-slate-500 dark:text-slate-400">{description}</p>
       </div>
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 dark:border-slate-700 dark:bg-slate-900">
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white/55 backdrop-blur-xl p-10 dark:border-white/10 dark:bg-slate-900/45">
         <p className="font-bold">
           Module reserved for the next delivery group.
         </p>

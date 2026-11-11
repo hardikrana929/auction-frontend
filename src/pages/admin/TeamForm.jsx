@@ -301,7 +301,7 @@ const TeamForm = ({
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
       {/* Team Information */}
-      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
         <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
@@ -459,7 +459,7 @@ const TeamForm = ({
 
       {/* Auction */}
       {showAuction && (
-        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
           <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400">
@@ -480,7 +480,7 @@ const TeamForm = ({
 
           <div className="p-6">
             {loadingAuctions ? (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
+              <div className="rounded-xl border border-white/70 bg-white/40 p-4 dark:border-white/10 dark:bg-white/[0.05]">
                 <div className="flex items-center gap-3">
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-600" />
 
@@ -568,10 +568,10 @@ const TeamForm = ({
       )}
 
       {/* Team Logo */}
-      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
         <div className="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900/5 text-slate-600 dark:bg-white/10 dark:text-slate-300">
               <FiImage size={19} />
             </div>
 
@@ -666,7 +666,7 @@ const TeamForm = ({
           type="button"
           onClick={onCancel}
           disabled={submitting}
-          className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="rounded-xl border border-slate-300 bg-white/55 backdrop-blur-xl px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-slate-900/45 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           Cancel
         </button>

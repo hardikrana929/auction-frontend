@@ -83,8 +83,8 @@ export default function OtpInput({
     }
 
     return digit
-      ? "border-slate-950 bg-white text-slate-950 focus:border-slate-950 focus:ring-slate-300 dark:border-slate-200 dark:bg-slate-800 dark:text-white dark:focus:border-white dark:focus:ring-slate-600"
-      : "border-slate-300 bg-white text-slate-950 focus:border-slate-950 focus:ring-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:border-white dark:focus:ring-slate-600";
+      ? "border-cyan-500 bg-white/80 text-slate-950 shadow-md shadow-cyan-500/10 backdrop-blur focus:border-cyan-500 focus:ring-cyan-500/25 dark:border-cyan-400 dark:bg-white/10 dark:text-white dark:focus:border-cyan-400 dark:focus:ring-cyan-400/25"
+      : "border-white/70 bg-white/55 text-slate-950 backdrop-blur focus:border-cyan-500 focus:bg-white/80 focus:ring-cyan-500/25 dark:border-white/15 dark:bg-white/5 dark:text-white dark:focus:border-cyan-400 dark:focus:ring-cyan-400/25";
   };
 
   return (

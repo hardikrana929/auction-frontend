@@ -14,8 +14,8 @@ const formatCurrency = (value) => {
 const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
   if (!player) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+      <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-8 text-center shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-900/5 dark:bg-white/10">
           <FiUser className="h-8 w-8 text-slate-400" />
         </div>
 
@@ -47,7 +47,7 @@ const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
   const isUnsold = status === "player-unsold" || player.status === "unsold";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
+    <div className="overflow-hidden rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/10 dark:shadow-black/40 dark:border-white/10 dark:bg-slate-900/45">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
         <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
 
       {/* Player */}
       <div className="grid gap-6 p-5 md:grid-cols-[220px_1fr]">
-        <div className="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+        <div className="overflow-hidden rounded-xl bg-slate-900/5 dark:bg-white/10">
           {image ? (
             <img
               src={image}
@@ -102,7 +102,7 @@ const LivePlayerCard = ({ player, currentBid = 0, status = "waiting" }) => {
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+            <div className="rounded-xl bg-white/40 p-4 dark:bg-white/[0.05]">
               <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                 <RupeeIcon />
                 Base Price

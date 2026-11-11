@@ -226,7 +226,7 @@ const AuctionParticipants = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 transition-colors dark:bg-slate-950 sm:px-6 lg:px-8">
+    <div className="min-h-screen  px-4 py-6 transition-colors  sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-6">
@@ -300,7 +300,7 @@ const AuctionParticipants = () => {
 
         {/* Summary */}
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -318,7 +318,7 @@ const AuctionParticipants = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -336,7 +336,7 @@ const AuctionParticipants = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -357,8 +357,8 @@ const AuctionParticipants = () => {
 
         {/* Empty */}
         {!error && displayParticipants.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white/55 backdrop-blur-xl px-6 py-14 text-center dark:border-white/10 dark:bg-slate-900/45">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/5 text-slate-500 dark:bg-white/10 dark:text-slate-400">
               <FiUsers className="text-2xl" />
             </div>
 
@@ -385,14 +385,14 @@ const AuctionParticipants = () => {
               return (
                 <div
                   key={teamId || `participant-${index}`}
-                  className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+                  className="group overflow-hidden rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 transition hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-slate-900/45"
                 >
                   {/* Card top */}
                   <div className="h-2 bg-indigo-600" />
 
                   <div className="p-5">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-xl font-bold text-indigo-600 dark:bg-slate-800 dark:text-indigo-400">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-900/5 text-xl font-bold text-indigo-600 dark:bg-white/10 dark:text-indigo-400">
                         {teamLogo ? (
                           <img
                             src={teamLogo}
@@ -449,7 +449,7 @@ const AuctionParticipants = () => {
                           Pending
                         </span>
                       ) : (
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold capitalize text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        <span className="rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-semibold capitalize text-slate-700 dark:bg-white/10 dark:text-slate-300">
                           {status}
                         </span>
                       )}

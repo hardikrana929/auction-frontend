@@ -219,7 +219,7 @@ const AuctionAccess = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] bg-slate-50 px-4 py-10 dark:bg-slate-950">
+      <div className="min-h-[60vh]  px-4 py-10 ">
         <div className="flex min-h-[50vh] items-center justify-center">
           <div className="text-center">
             <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400" />
@@ -234,7 +234,7 @@ const AuctionAccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 transition-colors dark:bg-slate-950 sm:px-6 lg:px-8">
+    <div className="min-h-screen  px-4 py-6 transition-colors  sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         {/* Back */}
         <Link
@@ -246,7 +246,7 @@ const AuctionAccess = () => {
         </Link>
 
         {/* Main Card */}
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="overflow-hidden rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
           {/* Header */}
           <div className="border-b border-slate-200 bg-slate-50 px-6 py-7 dark:border-slate-800 dark:bg-slate-900 sm:px-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
@@ -419,7 +419,7 @@ const AuctionAccess = () => {
                 </p>
 
                 {error && (
-                  <div className="mx-auto mt-5 max-w-lg rounded-xl bg-slate-100 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                  <div className="mx-auto mt-5 max-w-lg rounded-xl bg-slate-900/5 p-4 text-sm text-slate-600 dark:bg-white/10 dark:text-slate-300">
                     {error}
                   </div>
                 )}
@@ -449,7 +449,7 @@ const AuctionAccess = () => {
             {/* No response */}
             {!approvedState && !pendingState && !deniedState && !error && (
               <div className="text-center">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-slate-900/5 text-slate-500 dark:bg-white/10 dark:text-slate-400">
                   <FiLock className="text-3xl" />
                 </div>
 

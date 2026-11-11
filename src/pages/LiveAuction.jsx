@@ -1013,7 +1013,7 @@ const LiveAuction = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] bg-slate-50 px-4 py-10 dark:bg-slate-950">
+      <div className="min-h-[70vh]  px-4 py-10 ">
         <div className="mx-auto max-w-7xl">
           <div
             className="flex min-h-[50vh] flex-col items-center justify-center"
@@ -1045,9 +1045,9 @@ const LiveAuction = () => {
 
   if (!isAdmin && !accessApproved) {
     return (
-      <div className="min-h-[70vh] bg-slate-50 px-4 py-10 dark:bg-slate-950">
+      <div className="min-h-[70vh]  px-4 py-10 ">
         <div className="mx-auto max-w-xl">
-          <div className="rounded-3xl border border-red-200 bg-white p-8 text-center shadow-sm dark:border-red-900/50 dark:bg-slate-900">
+          <div className="rounded-3xl border border-red-200 bg-white/55 backdrop-blur-xl p-8 text-center shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-red-900/50 dark:bg-slate-900/45">
             <FiXCircle className="mx-auto h-14 w-14 text-red-500" />
 
             <h1 className="mt-5 text-2xl font-black text-slate-900 dark:text-white">
@@ -1111,8 +1111,8 @@ const LiveAuction = () => {
     "inline-flex max-w-full items-center gap-1.5 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-1 text-xs text-slate-300";
 
   return (
-    <div className="min-h-screen bg-slate-50 px-3 py-4 dark:bg-slate-950 sm:px-5">
-      <div className="mx-auto max-w-[1600px] rounded-[2rem] bg-slate-950 p-3 text-white ring-1 ring-slate-800 sm:p-5">
+    <div className="min-h-screen  px-3 py-4  sm:px-5">
+      <div className="mx-auto max-w-[1600px] rounded-[2rem] bg-slate-950/75 p-3 text-white shadow-2xl shadow-black/30 ring-1 ring-white/10 backdrop-blur-2xl sm:p-5">
         {/* Header */}
         <header className="mb-5 flex flex-col gap-4 rounded-3xl border border-slate-800 bg-slate-900 p-4 shadow-xl sm:p-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex min-w-0 items-start gap-3">

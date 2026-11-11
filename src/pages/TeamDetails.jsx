@@ -61,7 +61,7 @@ export default function TeamDetails() {
 
       <div className="surface-card overflow-hidden">
         <div className="flex flex-col gap-5 border-b border-slate-200 p-6 sm:flex-row sm:items-center dark:border-slate-800">
-          <div className="h-24 w-24 overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800">
+          <div className="h-24 w-24 overflow-hidden rounded-3xl bg-slate-900/5 dark:bg-white/10">
             {team.logo?.url ? (
               <img
                 src={team.logo.url}
@@ -115,7 +115,7 @@ export default function TeamDetails() {
 
 function Metric({ label, value }) {
   return (
-    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/70">
+    <div className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-1 text-xl font-black text-slate-900 dark:text-white">
         {value}

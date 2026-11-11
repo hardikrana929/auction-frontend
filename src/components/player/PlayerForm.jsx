@@ -191,7 +191,7 @@ export default function PlayerForm({
             Player photo
           </p>
           <label className="block cursor-pointer">
-            <div className="aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+            <div className="aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-white/40 dark:border-white/10 dark:bg-white/[0.05]">
               {preview ? (
                 <img
                   src={preview}

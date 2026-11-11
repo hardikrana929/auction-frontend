@@ -40,7 +40,7 @@ export default function Navbar() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-navy-700 dark:bg-navy-950/95">
+    <header className="sticky top-0 z-50 border-b border-white/60 bg-white/50 shadow-[0_1px_30px_rgba(15,23,42,0.06)] backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-slate-950/40">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* =====================================================
             LOGO
@@ -261,12 +261,12 @@ export default function Navbar() {
         <div
           className="
             border-t
-            border-slate-200
-            bg-white
+            border-white/70
+            bg-white/55 backdrop-blur-xl
             px-4 py-5
-            shadow-lg
-            dark:border-navy-700
-            dark:bg-navy-950
+            shadow-xl shadow-slate-900/10 dark:shadow-black/40
+            dark:border-white/10
+            dark:bg-slate-900/45
             md:hidden
           "
         >

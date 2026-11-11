@@ -16,7 +16,7 @@ export default function PlayerCard({
   onDelete,
 }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+    <article className="overflow-hidden rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/10 dark:bg-slate-900/45">
       <div className="relative aspect-[4/3] bg-slate-100 dark:bg-slate-800">
         {player.photo?.url ? (
           <img
@@ -84,7 +84,7 @@ export default function PlayerCard({
 
 function Metric({ label, value }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/70">
+    <div className="rounded-xl bg-white/40 p-3 dark:bg-white/[0.05]">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">
         {value}

@@ -173,8 +173,8 @@ export default function PlayersSection({ auctionId }) {
                   w-full
                   rounded-xl
                   border
-                  border-slate-200
-                  bg-white
+                  border-white/70
+                  bg-white/55
                   py-3
                   pl-11
                   pr-4
@@ -184,8 +184,8 @@ export default function PlayersSection({ auctionId }) {
                   focus:border-cyan-500
                   focus:ring-2
                   focus:ring-cyan-500/20
-                  dark:border-navy-700
-                  dark:bg-navy-900
+                  dark:border-white/10
+                  dark:bg-slate-900/45
                   dark:text-white
                 "
             />
@@ -233,11 +233,11 @@ export default function PlayersSection({ auctionId }) {
             rounded-2xl
             border
             border-red-200
-            bg-white
+            bg-white/55 backdrop-blur-xl
             p-8
             text-center
             dark:border-red-900/50
-            dark:bg-navy-900
+            dark:bg-slate-900/45
           "
         >
           <h3
@@ -297,12 +297,12 @@ export default function PlayersSection({ auctionId }) {
               mt-6
               rounded-2xl
               border
-              border-slate-200
-              bg-white
+              border-white/70
+              bg-white/55 backdrop-blur-xl
               p-10
               text-center
-              dark:border-navy-700
-              dark:bg-navy-900
+              dark:border-white/10
+              dark:bg-slate-900/45
             "
         >
           <div
@@ -362,12 +362,12 @@ export default function PlayersSection({ auctionId }) {
               mt-6
               rounded-2xl
               border
-              border-slate-200
-              bg-white
+              border-white/70
+              bg-white/55 backdrop-blur-xl
               p-8
               text-center
-              dark:border-navy-700
-              dark:bg-navy-900
+              dark:border-white/10
+              dark:bg-slate-900/45
             "
           >
             <FiSearch

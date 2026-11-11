@@ -362,11 +362,11 @@ const NotificationDropdown = ({
         overflow-hidden
         rounded-2xl
         border
-        border-slate-200
-        bg-white
+        border-white/70
+        bg-white/55 backdrop-blur-xl
         shadow-2xl
-        dark:border-slate-700
-        dark:bg-slate-900
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       {/* Header */}
@@ -663,9 +663,9 @@ const NotificationDropdown = ({
                   items-center
                   justify-center
                   rounded-full
-                  bg-slate-100
+                  bg-slate-900/5
                   text-slate-400
-                  dark:bg-slate-800
+                  dark:bg-white/10
                   dark:text-slate-500
                 "
             >

@@ -15,7 +15,7 @@ const TeamDashboard = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+          <div className="rounded-2xl bg-white/55 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:ring-slate-800">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Team Budget
             </p>
@@ -24,7 +24,7 @@ const TeamDashboard = () => {
             </h2>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+          <div className="rounded-2xl bg-white/55 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:ring-slate-800">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Players
             </p>
@@ -33,7 +33,7 @@ const TeamDashboard = () => {
             </h2>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+          <div className="rounded-2xl bg-white/55 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:ring-slate-800">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Players Bought
             </p>
@@ -42,7 +42,7 @@ const TeamDashboard = () => {
             </h2>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+          <div className="rounded-2xl bg-white/55 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:ring-slate-800">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Auctions
             </p>
@@ -52,7 +52,7 @@ const TeamDashboard = () => {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <div className="mt-8 rounded-2xl bg-white/55 backdrop-blur-xl p-8 text-center shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:ring-slate-800">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
             Welcome to AuctionPro
           </h2>

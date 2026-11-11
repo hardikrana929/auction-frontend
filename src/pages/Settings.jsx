@@ -67,15 +67,15 @@ export default function Settings() {
               rounded-xl
               border
               border-slate-300
-              bg-white
+              bg-white/55 backdrop-blur-xl
               px-5 py-3
               text-sm font-semibold
               text-navy-950
               transition
               hover:border-cyan-500
               hover:text-cyan-500
-              dark:border-navy-700
-              dark:bg-navy-900
+              dark:border-white/10
+              dark:bg-slate-900/45
               dark:text-white
               dark:hover:border-cyan-500
               dark:hover:text-cyan-400

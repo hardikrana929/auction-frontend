@@ -54,7 +54,7 @@ export default function PlayerDetails() {
 
       <div className="surface-card overflow-hidden">
         <div className="grid gap-7 p-6 md:grid-cols-[280px_1fr]">
-          <div className="aspect-[4/5] overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-800">
+          <div className="aspect-[4/5] overflow-hidden rounded-3xl bg-slate-900/5 dark:bg-white/10">
             {player.photo?.url ? (
               <img
                 src={player.photo.url}
@@ -100,7 +100,7 @@ export default function PlayerDetails() {
                   {player.specialization.map((item) => (
                     <span
                       key={item}
-                      className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold dark:bg-slate-800"
+                      className="rounded-full bg-slate-900/5 px-3 py-1 text-xs font-semibold dark:bg-white/10"
                     >
                       {item}
                     </span>
@@ -123,7 +123,7 @@ export default function PlayerDetails() {
 
 function Info({ label, value }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+    <div className="rounded-xl bg-white/40 p-3 dark:bg-white/[0.05]">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-1 font-bold text-slate-900 dark:text-white">
         {value || "—"}

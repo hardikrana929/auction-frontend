@@ -1,3 +1,4 @@
+import GlassSelect from "../../components/GlassSelect";
 import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiRefreshCw, FiSearch, FiUser } from "react-icons/fi";
@@ -188,18 +189,16 @@ export default function PlayerManagement() {
       <div className="surface-card mb-6 grid gap-4 p-4 lg:grid-cols-[minmax(220px,1fr)_minmax(180px,1fr)_minmax(160px,auto)_auto]">
         <div>
           <label className="label">Auction</label>
-          <select
-            className="input"
+          <GlassSelect
+            ariaLabel="Auction"
             value={auctionId}
-            onChange={(e) => setAuctionId(e.target.value)}
-          >
-            <option value="">Select auction</option>
-            {auctions.map((auction) => (
-              <option key={auction._id} value={auction._id}>
-                {auction.name}
-              </option>
-            ))}
-          </select>
+            onChange={setAuctionId}
+            placeholder="Select auction"
+            options={auctions.map((auction) => ({
+              value: auction._id,
+              label: auction.name,
+            }))}
+          />
         </div>
         <div>
           <label className="label">Search</label>
@@ -215,17 +214,18 @@ export default function PlayerManagement() {
         </div>
         <div>
           <label className="label">Status</label>
-          <select
-            className="input"
+          <GlassSelect
+            ariaLabel="Status"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="">All statuses</option>
-            <option value="available">Available</option>
-            <option value="auctioning">Auctioning</option>
-            <option value="sold">Sold</option>
-            <option value="unsold">Unsold</option>
-          </select>
+            onChange={setStatus}
+            options={[
+              { value: "", label: "All statuses" },
+              { value: "available", label: "Available" },
+              { value: "auctioning", label: "Auctioning" },
+              { value: "sold", label: "Sold" },
+              { value: "unsold", label: "Unsold" },
+            ]}
+          />
         </div>
         <button
           className="secondary-btn self-end"
@@ -279,11 +279,11 @@ export default function PlayerManagement() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-white p-6 dark:bg-slate-900 sm:rounded-3xl"
+            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-white/55 backdrop-blur-xl p-6 dark:bg-slate-900/45 sm:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col gap-5 sm:flex-row">
-              <div className="h-40 w-full overflow-hidden rounded-2xl bg-slate-100 sm:h-40 sm:w-40 dark:bg-slate-800">
+              <div className="h-40 w-full overflow-hidden rounded-2xl bg-slate-900/5 sm:h-40 sm:w-40 dark:bg-white/10">
                 {selected.photo?.url ? (
                   <img
                     src={selected.photo.url}
@@ -330,7 +330,7 @@ export default function PlayerManagement() {
               </div>
             </div>
             {selected.bio && (
-              <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+              <p className="mt-5 rounded-xl bg-white/40 p-4 text-sm text-slate-600 dark:bg-white/[0.05] dark:text-slate-300">
                 {selected.bio}
               </p>
             )}
@@ -343,7 +343,7 @@ export default function PlayerManagement() {
 
 function Info({ label, value }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+    <div className="rounded-xl bg-white/40 p-3 dark:bg-white/[0.05]">
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-1 font-bold text-slate-900 dark:text-white">{value}</p>
     </div>

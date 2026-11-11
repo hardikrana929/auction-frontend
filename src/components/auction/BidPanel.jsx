@@ -117,7 +117,7 @@ const BidPanel = ({
   };
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-white sm:p-5">
+    <section className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-4 text-slate-900 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45 dark:text-white sm:p-5">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
           Place your bid

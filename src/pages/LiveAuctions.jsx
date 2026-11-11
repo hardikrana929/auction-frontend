@@ -122,7 +122,7 @@ export default function LiveAuctions() {
       auction?.startTime || auction?.startDate || auction?.date;
 
     return (
-      <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-navy-700 dark:bg-navy-900">
+      <div className="group overflow-hidden rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/45">
         {/* ------------------------------------------
             Header
         ------------------------------------------ */}
@@ -260,7 +260,7 @@ export default function LiveAuctions() {
   // --------------------------------------------------
 
   return (
-    <div className="min-h-[calc(100vh-65px)] bg-pitch-50 dark:bg-navy-950">
+    <div className="min-h-[calc(100vh-65px)]  ">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10">
         {/* ------------------------------------------
             Page Header
@@ -291,7 +291,7 @@ export default function LiveAuctions() {
             type="button"
             onClick={() => loadAuctions(true)}
             disabled={refreshing}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-navy-700 dark:bg-navy-900 dark:text-white dark:hover:bg-navy-850"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white/55 backdrop-blur-xl px-4 py-2.5 text-sm font-semibold text-navy-950 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-slate-900/45 dark:text-white dark:hover:bg-navy-850"
           >
             <FiRefreshCw
               size={16}
@@ -334,7 +334,7 @@ export default function LiveAuctions() {
             </div>
           ) : liveAuctions.length === 0 ? (
             /* Empty */
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-navy-700 dark:bg-navy-900">
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/55 backdrop-blur-xl px-6 py-14 text-center dark:border-white/10 dark:bg-slate-900/45">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-500">
                 <FiRadio size={24} />
               </div>
@@ -385,7 +385,7 @@ export default function LiveAuctions() {
           </div>
 
           {upcomingAuctions.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center dark:border-navy-700 dark:bg-navy-900">
+            <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-8 text-center dark:border-white/10 dark:bg-slate-900/45">
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 No upcoming auctions available.
               </p>

@@ -9,12 +9,12 @@ export default function AuthBrandPanel({
     <div
       className="
         relative hidden overflow-hidden
-        border-r border-slate-200
-        bg-white
+        border-r border-white/70
+        bg-white/55 backdrop-blur-xl
         lg:flex lg:w-1/2
         lg:items-center lg:justify-center
-        dark:border-navy-800
-        dark:bg-navy-950
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       {/* Decorative circles */}

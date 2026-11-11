@@ -104,7 +104,7 @@ export default function AdminPlayers() {
 
       {/* ================= AUCTION SEARCH ================= */}
 
-      <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+      <div className="mb-6 rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
         <div className="mb-4">
           <h2 className="font-semibold text-navy-950 dark:text-white">
             Select Auction
@@ -131,7 +131,7 @@ export default function AdminPlayers() {
               rounded-xl
               border
               border-slate-300
-              bg-white
+              bg-white/55
               px-4
               py-3
               text-sm
@@ -141,8 +141,8 @@ export default function AdminPlayers() {
               focus:border-cyan-500
               focus:ring-2
               focus:ring-cyan-500/20
-              dark:border-navy-700
-              dark:bg-navy-950
+              dark:border-white/10
+              dark:bg-slate-900/45
               dark:text-white
             "
           />
@@ -215,16 +215,16 @@ export default function AdminPlayers() {
                   w-full
                   rounded-xl
                   border
-                  border-slate-200
-                  bg-white
+                  border-white/70
+                  bg-white/55
                   py-2.5
                   pl-10
                   pr-4
                   text-sm
                   outline-none
                   focus:border-cyan-500
-                  dark:border-navy-700
-                  dark:bg-navy-900
+                  dark:border-white/10
+                  dark:bg-slate-900/45
                   dark:text-white
                 "
               />
@@ -234,7 +234,7 @@ export default function AdminPlayers() {
           {/* ================= PLAYER CARDS ================= */}
 
           {filteredPlayers.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-navy-700 dark:bg-navy-900">
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/55 backdrop-blur-xl p-10 text-center dark:border-white/10 dark:bg-slate-900/45">
               <FiSearch className="mx-auto mb-3 text-slate-400" size={35} />
 
               <h3 className="font-semibold text-navy-950 dark:text-white">
@@ -280,15 +280,15 @@ export default function AdminPlayers() {
                       overflow-hidden
                       rounded-2xl
                       border
-                      border-slate-200
-                      bg-white
-                      shadow-sm
+                      border-white/70
+                      bg-white/55 backdrop-blur-xl
+                      shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
                       transition
                       duration-200
                       hover:-translate-y-1
                       hover:shadow-lg
-                      dark:border-navy-700
-                      dark:bg-navy-900
+                      dark:border-white/10
+                      dark:bg-slate-900/45
                     "
                   >
                     {/* Player Image */}
@@ -366,7 +366,7 @@ export default function AdminPlayers() {
       {/* ================= EMPTY STATE ================= */}
 
       {!loading && players.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-navy-700 dark:bg-navy-900">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white/55 backdrop-blur-xl p-12 text-center dark:border-white/10 dark:bg-slate-900/45">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-500">
             <FiUsers size={30} />
           </div>

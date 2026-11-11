@@ -11,8 +11,8 @@ export default function TeamSpendingCard({ teams = [] }) {
       className="
         rounded-2xl
         border
-        border-slate-200 dark:border-navy-700
-        bg-white dark:bg-navy-900
+        border-white/70 dark:border-white/10
+        bg-white/55 backdrop-blur-xl dark:bg-slate-900/45
         p-6
       "
     >

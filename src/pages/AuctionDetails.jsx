@@ -177,10 +177,10 @@ export default function AuctionDetails() {
           overflow-hidden
           rounded-3xl
           border
-          border-slate-200
-          bg-white
-          dark:border-slate-800
-          dark:bg-slate-900
+          border-white/70
+          bg-white/55 backdrop-blur-xl
+          dark:border-white/10
+          dark:bg-slate-900/45
         "
       >
         {/* Hero */}
@@ -286,9 +286,9 @@ export default function AuctionDetails() {
                   key={card.label}
                   className="
                     rounded-2xl
-                    bg-slate-50
+                    bg-white/40
                     p-4
-                    dark:bg-slate-800
+                    dark:bg-white/[0.05]
                   "
                 >
                   <div

@@ -22,24 +22,7 @@ export default function SearchBar({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="
-          w-full rounded-xl
-          border border-slate-300
-          bg-white
-          py-3 pl-11 pr-11
-          text-sm
-          text-navy-950
-          outline-none
-          transition
-          placeholder:text-slate-400
-          focus:border-cyan-500
-          focus:ring-2
-          focus:ring-cyan-500/20
-          dark:border-navy-700
-          dark:bg-navy-850
-          dark:text-white
-          dark:focus:bg-navy-850
-        "
+        className="glass-input py-3 pl-11 pr-11"
       />
 
       {value && (
@@ -54,10 +37,7 @@ export default function SearchBar({
             p-1.5
             text-slate-400
             transition
-            hover:bg-slate-100
-            hover:text-slate-700
-            dark:hover:bg-navy-700
-            dark:hover:text-white
+            hover:bg-white/60 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white
           "
         >
           <FiX size={17} />

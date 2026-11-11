@@ -342,8 +342,8 @@ export default function AdminAuctions() {
               gap-2
               rounded-xl
               border
-              border-slate-200
-              bg-white
+              border-white/70
+              bg-white/55 backdrop-blur-xl
               px-4
               py-3
               text-sm
@@ -353,8 +353,8 @@ export default function AdminAuctions() {
               hover:bg-slate-50
               disabled:cursor-not-allowed
               disabled:opacity-60
-              dark:border-navy-700
-              dark:bg-navy-900
+              dark:border-white/10
+              dark:bg-slate-900/45
               dark:text-slate-200
               dark:hover:bg-navy-800
             "
@@ -451,12 +451,12 @@ export default function AdminAuctions() {
             mb-6
             rounded-2xl
             border
-            border-slate-200
-            bg-white
+            border-white/70
+            bg-white/55 backdrop-blur-xl
             p-4
-            shadow-sm
-            dark:border-navy-700
-            dark:bg-navy-900
+            shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
+            dark:border-white/10
+            dark:bg-slate-900/45
           "
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -578,14 +578,14 @@ export default function AdminAuctions() {
                   overflow-hidden
                   rounded-2xl
                   border
-                  border-slate-200
-                  bg-white
-                  shadow-sm
+                  border-white/70
+                  bg-white/55 backdrop-blur-xl
+                  shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
                   transition
                   hover:-translate-y-0.5
                   hover:shadow-lg
-                  dark:border-navy-700
-                  dark:bg-navy-900
+                  dark:border-white/10
+                  dark:bg-slate-900/45
                 "
               >
                 {/* =================================================
@@ -953,12 +953,12 @@ export default function AdminAuctions() {
               max-w-md
               rounded-2xl
               border
-              border-slate-200
-              bg-white
+              border-white/70
+              bg-white/55 backdrop-blur-xl
               p-6
               shadow-2xl
-              dark:border-navy-700
-              dark:bg-navy-900
+              dark:border-white/10
+              dark:bg-slate-900/45
             "
             onClick={(event) => event.stopPropagation()}
           >
@@ -1081,12 +1081,12 @@ function AdminStat({ label, value, icon }) {
       className="
         rounded-2xl
         border
-        border-slate-200
-        bg-white
+        border-white/70
+        bg-white/55 backdrop-blur-xl
         p-4
-        shadow-sm
-        dark:border-navy-700
-        dark:bg-navy-900
+        shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       <div className="flex items-center justify-between">

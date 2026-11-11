@@ -1,3 +1,4 @@
+import GlassSelect from "../components/GlassSelect";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -74,34 +75,36 @@ export default function Auctions() {
         {isAdmin && (
           <Link
             to="/admin/auctions/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-bold text-white dark:bg-white dark:text-slate-950"
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-inset ring-white/20 hover:brightness-110"
           >
             <FiPlus /> Create auction
           </Link>
         )}
       </div>
-      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 sm:flex-row">
+      <div className="flex flex-col gap-3 rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-3 dark:border-white/10 dark:bg-slate-900/45 sm:flex-row">
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-3.5 text-slate-400 dark:text-slate-500" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search auctions..."
-            className="w-full rounded-xl bg-slate-100 py-3 pl-10 pr-3 text-slate-900 outline-none placeholder:text-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
+            className="glass-input py-3 pl-10 pr-3"
           />
         </div>
-        <select
+        <GlassSelect
+          ariaLabel="Filter by status"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="rounded-xl bg-slate-100 px-3 py-3 font-semibold text-slate-900 outline-none dark:bg-slate-800 dark:text-white"
-        >
-          <option value="all">All statuses</option>
-          <option value="draft">Draft</option>
-          <option value="upcoming">Upcoming</option>
-          <option value="live">Live</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+          onChange={setStatus}
+          className="sm:w-48"
+          options={[
+            { value: "all", label: "All statuses" },
+            { value: "draft", label: "Draft" },
+            { value: "upcoming", label: "Upcoming" },
+            { value: "live", label: "Live" },
+            { value: "completed", label: "Completed" },
+            { value: "cancelled", label: "Cancelled" },
+          ]}
+        />
         <button
           onClick={() => {
             load();
@@ -135,7 +138,7 @@ export default function Auctions() {
 }
 function AuctionCard({ auction: a }) {
   return (
-    <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+    <article className="overflow-hidden rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-slate-900/45">
       <div className="relative h-44 bg-slate-100 dark:bg-slate-800">
         {a.image ? (
           <img

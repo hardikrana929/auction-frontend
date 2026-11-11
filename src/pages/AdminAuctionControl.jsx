@@ -35,7 +35,11 @@ import {
   completeAuction,
 } from "../api/auctionControlApi";
 
-import { sellPlayer, markPlayerUnsold, getBidHistory } from "../api/biddingApi";
+import {
+  sellPlayer,
+  markPlayerUnsold,
+  getBidHistory,
+} from "../api/biddingApi";
 
 import PageLoader from "../components/PageLoader";
 import ErrorState from "../components/ErrorState";
@@ -121,8 +125,6 @@ const AdminAuctionControl = () => {
 
   const [currentBid, setCurrentBid] = useState(0);
 
-  const [liveBids, setLiveBids] = useState([]);
-
   const [status, setStatus] = useState("waiting");
 
   const [loading, setLoading] = useState(true);
@@ -130,6 +132,7 @@ const AdminAuctionControl = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const [error, setError] = useState("");
+  const [liveBids, setLiveBids] = useState([]);
 
   /* =====================================================
        LOAD AUCTION
@@ -676,13 +679,13 @@ const AdminAuctionControl = () => {
   if (loading) {
     return (
       <div
-        className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 dark:bg-slate-950 dark:text-slate-100 sm:px-6 lg:px-8"
+        className="min-h-screen  px-4 py-6 text-slate-900  dark:text-slate-100 sm:px-6 lg:px-8"
         role="status"
         aria-live="polite"
         aria-label="Loading auction control"
       >
         <div className="mx-auto max-w-7xl animate-pulse space-y-6">
-          <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 dark:border-white/10 dark:bg-slate-900/45 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1 space-y-3">
               <div className="h-3 w-28 rounded bg-slate-200 dark:bg-slate-700" />
               <div className="h-7 w-56 max-w-full rounded-lg bg-slate-200 dark:bg-slate-700" />
@@ -691,10 +694,10 @@ const AdminAuctionControl = () => {
             <div className="h-10 w-32 rounded-xl bg-slate-200 dark:bg-slate-700" />
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
-            <div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" />
-            <div className="h-72 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
-            <div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:col-span-2" />
-            <div className="h-56 rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" />
+            <div className="h-72 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45 lg:col-span-2" />
+            <div className="h-72 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45" />
+            <div className="h-56 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45 lg:col-span-2" />
+            <div className="h-56 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45" />
           </div>
           <p className="text-center text-sm font-medium text-slate-500 dark:text-slate-400">
             Loading auction session and live bidding data…
@@ -710,7 +713,7 @@ const AdminAuctionControl = () => {
 
   if (error && !auction) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="min-h-screen  px-4 py-8 text-slate-900  dark:text-slate-100">
         <div className="mx-auto max-w-7xl">
           <ErrorState
             title="Unable to load auction"
@@ -728,7 +731,7 @@ const AdminAuctionControl = () => {
 
   if (!auction) {
     return (
-      <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <div className="min-h-screen  px-4 py-8 text-slate-900  dark:text-slate-100">
         <div className="mx-auto max-w-7xl">
           <EmptyState
             title="Auction not found"
@@ -797,12 +800,12 @@ const AdminAuctionControl = () => {
     ===================================================== */
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen  text-slate-900  dark:text-slate-100">
       {/* =================================================
                 HEADER
             ================================================= */}
 
-      <div className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+      <div className="border-b border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-3">
@@ -882,8 +885,8 @@ const AdminAuctionControl = () => {
                                     gap-2
                                     rounded-xl
                                     border
-                                    border-slate-200
-                                    bg-white
+                                    border-white/70
+                                    bg-white/55 backdrop-blur-xl
                                     px-4
                                     py-2
                                     text-sm
@@ -892,8 +895,8 @@ const AdminAuctionControl = () => {
                                     hover:bg-slate-50
                                     disabled:cursor-not-allowed
                                     disabled:opacity-50
-                                    dark:border-slate-700
-                                    dark:bg-slate-900
+                                    dark:border-white/10
+                                    dark:bg-slate-900/45
                                     dark:text-slate-200
                                     dark:hover:bg-slate-800
                                 "
@@ -920,7 +923,7 @@ const AdminAuctionControl = () => {
           </Link>
           <Link
             to="/admin/registrations"
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:text-indigo-300"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/70 bg-white/55 backdrop-blur-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-700 dark:border-white/10 dark:bg-slate-900/45 dark:text-slate-200 dark:hover:text-indigo-300"
           >
             <FiUsers /> Registrations & Approvals
           </Link>
@@ -936,7 +939,7 @@ const AdminAuctionControl = () => {
                     STATUS
                 ============================================= */}
 
-        <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="mb-6 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -987,7 +990,7 @@ const AdminAuctionControl = () => {
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="overflow-hidden rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
               {currentPlayer ? (
                 <>
                   <div className="border-b border-slate-200 p-5 dark:border-slate-800">
@@ -1017,7 +1020,7 @@ const AdminAuctionControl = () => {
                   </div>
 
                   <div className="grid gap-5 p-5 sm:grid-cols-2">
-                    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <div className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]">
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         Player ID
                       </p>
@@ -1027,7 +1030,7 @@ const AdminAuctionControl = () => {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <div className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]">
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         Base Price
                       </p>
@@ -1042,7 +1045,7 @@ const AdminAuctionControl = () => {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <div className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]">
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         Current Bid
                       </p>
@@ -1052,7 +1055,7 @@ const AdminAuctionControl = () => {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50">
+                    <div className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]">
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         Bid Increment
                       </p>
@@ -1074,7 +1077,7 @@ const AdminAuctionControl = () => {
                       .map(([label, value]) => (
                         <div
                           key={label}
-                          className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800/50"
+                          className="rounded-2xl bg-white/40 p-4 dark:bg-white/[0.05]"
                         >
                           <p className="text-xs text-slate-500 dark:text-slate-400">
                             {label}
@@ -1099,7 +1102,7 @@ const AdminAuctionControl = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="flex flex-col gap-3 border-b border-slate-100 p-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2">
@@ -1115,7 +1118,7 @@ const AdminAuctionControl = () => {
                 </p>
               </div>
               <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-full bg-slate-900/5 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-white/10 dark:text-slate-300">
                   {liveBids.length} bids
                 </span>
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
@@ -1140,7 +1143,7 @@ const AdminAuctionControl = () => {
                       className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:p-4 ${index === 0 ? "border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/5" : "border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50"}`}
                     >
                       <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-indigo-600 ring-1 ring-slate-200 dark:bg-slate-900 dark:text-indigo-300 dark:ring-slate-700">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/55 backdrop-blur-xl text-sm font-black text-indigo-600 ring-1 ring-slate-200 dark:bg-slate-900/45 dark:text-indigo-300 dark:ring-slate-700">
                           {teamLogo ? (
                             <img
                               src={teamLogo}
@@ -1203,7 +1206,7 @@ const AdminAuctionControl = () => {
                     ========================================= */}
 
           <div className="space-y-4">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
                   <RupeeIcon />
@@ -1223,7 +1226,7 @@ const AdminAuctionControl = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400">
                   <FiUsers />
@@ -1241,7 +1244,7 @@ const AdminAuctionControl = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
                   <FiFlag />
@@ -1265,7 +1268,7 @@ const AdminAuctionControl = () => {
                     CONTROL CENTER
                 ============================================= */}
 
-        <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <section className="mt-6 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45 sm:p-6">
           <div className="mb-5">
             <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
               Auction Controls
@@ -1491,7 +1494,7 @@ const AdminAuctionControl = () => {
                                     rounded-2xl
                                     border
                                     border-slate-300
-                                    bg-white
+                                    bg-white/55 backdrop-blur-xl
                                     min-w-0
                                     whitespace-normal
                                     break-words
@@ -1503,8 +1506,8 @@ const AdminAuctionControl = () => {
                                     hover:bg-slate-50
                                     disabled:cursor-not-allowed
                                     disabled:opacity-50
-                                    dark:border-slate-700
-                                    dark:bg-slate-900
+                                    dark:border-white/10
+                                    dark:bg-slate-900/45
                                     dark:text-slate-200
                                     dark:hover:bg-slate-800
                                 "
@@ -1598,9 +1601,9 @@ const AdminAuctionControl = () => {
                 ============================================= */}
 
         {session && (
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className="mt-6 rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900/5 text-slate-600 dark:bg-white/10 dark:text-slate-300">
                 <FiClock />
               </div>
 

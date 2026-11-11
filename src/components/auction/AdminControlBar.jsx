@@ -32,7 +32,7 @@ const AdminControlBar = ({
         Auctioneer controls
       </p>
 
-      <div className="flex flex-wrap items-stretch gap-2 lg:flex-nowrap">
+      <div className="flex flex-wrap items-stretch gap-2">
         <button
           type="button"
           onClick={onPauseResume}

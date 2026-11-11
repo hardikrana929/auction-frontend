@@ -70,7 +70,7 @@ export default function Profile() {
             banner itself clips now.
         ============================================ */}
         <div className="lg:col-span-1">
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-navy-700 dark:bg-navy-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             {/* Gradient cover — overflow-hidden lives HERE only */}
             <div className="relative h-24 overflow-hidden rounded-t-2xl bg-gradient-to-br from-cyan-500 via-cyan-600 to-navy-900">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_60%)]" />
@@ -140,7 +140,7 @@ export default function Profile() {
             RIGHT — Account details
         ============================================ */}
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+          <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
             <div className="mb-6 flex items-center gap-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-500">
                 <FiUser className="h-4.5 w-4.5" />

@@ -1,3 +1,4 @@
+import GlassSelect from "../../components/GlassSelect";
 import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useEffect, useMemo, useState } from "react";
 import { FiPlus, FiRefreshCw, FiSearch, FiUsers } from "react-icons/fi";
@@ -186,18 +187,16 @@ export default function TeamManagement() {
       <div className="surface-card mb-6 grid gap-4 p-4 lg:grid-cols-[minmax(220px,1fr)_minmax(220px,1fr)_auto]">
         <div>
           <label className="label">Auction</label>
-          <select
-            className="input"
+          <GlassSelect
+            ariaLabel="Auction"
             value={auctionId}
-            onChange={(e) => setAuctionId(e.target.value)}
-          >
-            <option value="">Select auction</option>
-            {auctions.map((auction) => (
-              <option key={auction._id} value={auction._id}>
-                {auction.name}
-              </option>
-            ))}
-          </select>
+            onChange={setAuctionId}
+            placeholder="Select auction"
+            options={auctions.map((auction) => ({
+              value: auction._id,
+              label: auction.name,
+            }))}
+          />
         </div>
         <div>
           <label className="label">Search teams</label>
@@ -264,7 +263,7 @@ export default function TeamManagement() {
           onClick={() => setSelected(null)}
         >
           <div
-            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-6 dark:bg-slate-900 sm:rounded-3xl"
+            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white/55 backdrop-blur-xl p-6 dark:bg-slate-900/45 sm:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-5 flex items-start justify-between">
@@ -311,7 +310,7 @@ export default function TeamManagement() {
 
 function Detail({ label, value, mono }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+    <div className="flex items-start justify-between gap-4 rounded-xl bg-white/40 p-3 dark:bg-white/[0.05]">
       <span className="text-slate-500 dark:text-slate-400">{label}</span>
       <span
         className={`max-w-[65%] break-all text-right font-semibold text-slate-900 dark:text-white ${mono ? "font-mono text-xs" : ""}`}

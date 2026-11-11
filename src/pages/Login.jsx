@@ -56,18 +56,18 @@ export default function Login() {
       title="Welcome back"
       subtitle="Sign in to continue to AuctionPro."
     >
-      <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+      <div className="mb-5 grid grid-cols-2 gap-2 glass-tabs !grid-cols-2">
         <button
           type="button"
           onClick={() => setMode("admin")}
-          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "admin" ? "bg-white text-slate-950 shadow dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}
+          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "admin" ? "bg-white/85 text-slate-950 shadow-md dark:bg-white/15 dark:text-white" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}
         >
           Admin / User
         </button>
         <button
           type="button"
           onClick={() => setMode("auction")}
-          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "auction" ? "bg-white text-slate-950 shadow dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}
+          className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${mode === "auction" ? "bg-white/85 text-slate-950 shadow-md dark:bg-white/15 dark:text-white" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}
         >
           Auction login
         </button>
@@ -108,7 +108,7 @@ export default function Login() {
               onChange={update}
               placeholder="Enter your password"
               autoComplete="current-password"
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+              className="glass-input py-3 pl-11 pr-12"
             />
             <button
               type="button"
@@ -124,7 +124,7 @@ export default function Login() {
           <div className="flex justify-end">
             <Link
               to="/forgot-password"
-              className="text-sm font-bold text-slate-700 hover:underline dark:text-slate-300"
+              className="text-sm font-bold text-cyan-700 hover:underline dark:text-cyan-400"
             >
               Forgot password?
             </Link>
@@ -132,7 +132,7 @@ export default function Login() {
         )}
         <button
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+          className="flex w-full items-center justify-center gap-2 px-5 py-3.5 font-bold disabled:cursor-not-allowed disabled:opacity-60 glass-primary"
         >
           {submitting ? "Signing in…" : "Sign in"}{" "}
           {!submitting && <FiArrowRight />}
@@ -142,7 +142,7 @@ export default function Login() {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-bold text-slate-950 hover:underline dark:text-white"
+              className="font-bold text-cyan-700 hover:underline dark:text-cyan-400"
             >
               Create one
             </Link>
@@ -164,7 +164,7 @@ function Field({ icon, label, ...props }) {
         </span>
         <input
           {...props}
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+          className="glass-input py-3 pl-11 pr-4"
         />
       </div>
     </div>

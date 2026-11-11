@@ -621,11 +621,11 @@ export default function AuctionRegistration() {
             rounded-2xl
             border
             border-red-200
-            bg-white
+            bg-white/55 backdrop-blur-xl
             p-10
             text-center
             dark:border-red-900/50
-            dark:bg-navy-900
+            dark:bg-slate-900/45
           "
         >
           <h1
@@ -754,12 +754,12 @@ export default function AuctionRegistration() {
             mt-8
             rounded-2xl
             border
-            border-slate-200
-            bg-white
+            border-white/70
+            bg-white/55 backdrop-blur-xl
             p-6
-            shadow-sm
-            dark:border-navy-700
-            dark:bg-navy-900
+            shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
+            dark:border-white/10
+            dark:bg-slate-900/45
           "
         >
           <div
@@ -1040,11 +1040,11 @@ function ProcessStep({ number, title, description }) {
       className="
         rounded-2xl
         border
-        border-slate-200
-        bg-white
+        border-white/70
+        bg-white/55 backdrop-blur-xl
         p-5
-        dark:border-navy-700
-        dark:bg-navy-900
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       <span

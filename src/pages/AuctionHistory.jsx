@@ -124,8 +124,8 @@ export default function AuctionHistory() {
               gap-2
               rounded-xl
               border
-              border-slate-200 dark:border-navy-700
-              bg-white dark:bg-navy-900
+              border-white/70 dark:border-white/10
+              bg-white/55 backdrop-blur-xl dark:bg-slate-900/45
               px-4
               py-3
               text-sm
@@ -148,7 +148,7 @@ export default function AuctionHistory() {
 
       {/* TABLE */}
       {loading ? (
-        <div className="rounded-2xl border border-slate-200 dark:border-navy-700 bg-white dark:bg-navy-900 p-6">
+        <div className="rounded-2xl border border-white/70 dark:border-white/10 bg-white/55 backdrop-blur-xl dark:bg-slate-900/45 p-6">
           <div className="animate-pulse space-y-4">
             {Array.from({
               length: 6,
@@ -174,8 +174,8 @@ export default function AuctionHistory() {
             className="
                 rounded-xl
                 border
-                border-slate-200 dark:border-navy-700
-                bg-white dark:bg-navy-900
+                border-white/70 dark:border-white/10
+                bg-white/55 backdrop-blur-xl dark:bg-slate-900/45
                 px-4
                 py-2.5
                 text-sm
@@ -199,8 +199,8 @@ export default function AuctionHistory() {
             className="
                 rounded-xl
                 border
-                border-slate-200 dark:border-navy-700
-                bg-white dark:bg-navy-900
+                border-white/70 dark:border-white/10
+                bg-white/55 backdrop-blur-xl dark:bg-slate-900/45
                 px-4
                 py-2.5
                 text-sm

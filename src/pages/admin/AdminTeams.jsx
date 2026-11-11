@@ -53,7 +53,7 @@ export default function AdminTeams() {
         </div>
       </div>
 
-      <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
+      <div className="mb-6 rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 dark:border-white/10 dark:bg-slate-900/45">
         <label className="mb-2 block text-sm font-medium dark:text-slate-300">
           Auction ID
         </label>
@@ -102,7 +102,7 @@ export default function AdminTeams() {
             return (
               <div
                 key={id}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900"
+                className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45"
               >
                 <div className="mb-4 flex justify-between">
                   <div className="rounded-xl bg-cyan-500/10 p-3 text-cyan-500">

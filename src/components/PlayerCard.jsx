@@ -57,15 +57,15 @@ export default function PlayerCard({ player }) {
         overflow-hidden
         rounded-2xl
         border
-        border-slate-200
-        bg-white
-        shadow-sm
+        border-white/70
+        bg-white/55 backdrop-blur-xl
+        shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30
         transition
         duration-200
         hover:-translate-y-1
         hover:shadow-lg
-        dark:border-navy-700
-        dark:bg-navy-900
+        dark:border-white/10
+        dark:bg-slate-900/45
       "
     >
       {/* ================================================

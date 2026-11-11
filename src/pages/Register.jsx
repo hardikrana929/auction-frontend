@@ -94,7 +94,7 @@ export default function Register() {
         />
         <button
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+          className="flex w-full items-center justify-center gap-2 px-5 py-3.5 font-bold disabled:cursor-not-allowed disabled:opacity-60 glass-primary"
         >
           {submitting ? "Creating account…" : "Create account"}{" "}
           {!submitting && <FiArrowRight />}
@@ -103,7 +103,7 @@ export default function Register() {
           Already registered?{" "}
           <Link
             to="/login"
-            className="font-bold text-slate-950 hover:underline dark:text-white"
+            className="font-bold text-cyan-700 hover:underline dark:text-cyan-400"
           >
             Sign in
           </Link>
@@ -124,7 +124,7 @@ function Field({ icon, label, ...props }) {
         </span>
         <input
           {...props}
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+          className="glass-input py-3 pl-11 pr-4"
         />
       </div>
     </div>
@@ -151,7 +151,7 @@ function PasswordField({
           type={show ? "text" : "password"}
           value={value}
           onChange={onChange}
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+          className="glass-input py-3 pl-11 pr-12"
           placeholder={placeholder}
           autoComplete={name === "password" ? "new-password" : "new-password"}
         />

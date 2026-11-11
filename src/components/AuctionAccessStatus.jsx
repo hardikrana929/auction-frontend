@@ -8,7 +8,7 @@ export default function AuctionAccessStatus({
 }) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-navy-700 dark:bg-navy-900">
+      <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 dark:border-white/10 dark:bg-slate-900/45">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 animate-pulse rounded-xl bg-slate-200 dark:bg-navy-800" />
 

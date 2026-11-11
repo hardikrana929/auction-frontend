@@ -46,8 +46,8 @@ export default function ResetPassword() {
       subtitle="Choose a new password for your AuctionPro account."
     >
       {done ? (
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/60">
-          <div className="mx-auto grid size-12 place-items-center rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950">
+        <div className="rounded-2xl border border-white/70 bg-white/40 p-6 text-center dark:border-white/10 dark:bg-white/[0.05]">
+          <div className="mx-auto grid size-12 place-items-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30">
             <FiCheck />
           </div>
           <h2 className="mt-4 font-bold text-slate-900 dark:text-white">
@@ -95,7 +95,7 @@ export default function ResetPassword() {
           </div>
           <button
             disabled={submitting}
-            className="w-full rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white disabled:opacity-60 dark:bg-white dark:text-slate-950"
+            className="w-full px-5 py-3.5 font-bold disabled:opacity-60 glass-primary"
           >
             {submitting ? "Updating…" : "Update password"}
           </button>
@@ -122,7 +122,7 @@ function PasswordInput({ label, value, onChange, show, setShow }) {
           type={show ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-12 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-950 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+          className="glass-input py-3 pl-11 pr-12"
           autoComplete="new-password"
         />
         <button

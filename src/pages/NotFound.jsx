@@ -5,7 +5,7 @@ export default function NotFound() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-12 dark:bg-slate-950">
+    <div className="min-h-screen  px-4 py-12 ">
       <div className="mx-auto flex min-h-[80vh] max-w-4xl items-center justify-center">
         <div className="w-full text-center">
           {/* 404 */}
@@ -15,7 +15,7 @@ export default function NotFound() {
             </p>
 
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="rounded-2xl border border-slate-200 bg-white px-6 py-3 shadow-lg shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
+              <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl px-6 py-3 shadow-xl shadow-slate-900/10 dark:shadow-black/40 shadow-slate-900/5 dark:border-white/10 dark:bg-slate-900/45 dark:shadow-none">
                 <span className="text-sm font-bold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
                   Page Not Found
                 </span>
@@ -25,7 +25,7 @@ export default function NotFound() {
 
           {/* Content */}
           <div className="mx-auto max-w-xl">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-950">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30">
               <FiSearch className="h-6 w-6" />
             </div>
 
@@ -39,7 +39,7 @@ export default function NotFound() {
             </p>
 
             {/* Current URL */}
-            <div className="mx-auto mt-5 max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+            <div className="mx-auto mt-5 max-w-md overflow-hidden rounded-xl border border-white/70 bg-white/55 backdrop-blur-xl px-4 py-3 dark:border-white/10 dark:bg-slate-900/45">
               <p className="truncate text-xs font-medium text-slate-400 dark:text-slate-500">
                 {location.pathname}
               </p>
@@ -49,7 +49,7 @@ export default function NotFound() {
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/dashboard"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:shadow-none dark:hover:bg-slate-200"
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-inset ring-white/20 hover:brightness-110 transition"
               >
                 <FiHome className="h-4 w-4" />
                 Go to Dashboard
@@ -58,7 +58,7 @@ export default function NotFound() {
               <button
                 type="button"
                 onClick={() => window.history.back()}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/70 bg-white/55 backdrop-blur-xl px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900/45 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 <FiArrowLeft className="h-4 w-4" />
                 Go Back

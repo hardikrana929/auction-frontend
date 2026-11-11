@@ -44,7 +44,7 @@ export default function AuctionControls({
     "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40";
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-navy-700 dark:bg-navy-900">
+    <section className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
       {/* HEADER */}
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -68,7 +68,7 @@ export default function AuctionControls({
       </div>
 
       {/* BUTTONS */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-3">
         {/* START */}
         <button
           type="button"
@@ -135,6 +135,7 @@ export default function AuctionControls({
           Complete Auction
         </button>
       </div>
+      
 
       {/* LOADING */}
       {loading && (

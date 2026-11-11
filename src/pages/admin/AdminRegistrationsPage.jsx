@@ -1,3 +1,4 @@
+import GlassSelect from "../../components/GlassSelect";
 import { useEffect, useState } from "react";
 import { FiRefreshCw } from "react-icons/fi";
 import { getAuctions } from "../../api/auctionApi";
@@ -41,18 +42,16 @@ export default function AdminRegistrationsPage() {
       <div className="surface-card mb-6 grid gap-4 p-4 sm:grid-cols-[minmax(220px,1fr)_auto]">
         <div>
           <label className="label">Auction</label>
-          <select
-            className="input"
+          <GlassSelect
+            ariaLabel="Auction"
             value={auctionId}
-            onChange={(e) => setAuctionId(e.target.value)}
-          >
-            <option value="">Select auction</option>
-            {auctions.map((auction) => (
-              <option key={auction._id} value={auction._id}>
-                {auction.name}
-              </option>
-            ))}
-          </select>
+            onChange={setAuctionId}
+            placeholder="Select auction"
+            options={auctions.map((auction) => ({
+              value: auction._id,
+              label: auction.name,
+            }))}
+          />
         </div>
         <button
           className="secondary-btn self-end"

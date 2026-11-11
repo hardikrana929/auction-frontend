@@ -115,7 +115,7 @@ const BidPanel = ({
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45">
       <div className="mb-5">
         <div className="flex items-center gap-2">
           <FiTrendingUp className="h-5 w-5 text-blue-500" />
@@ -131,7 +131,7 @@ const BidPanel = ({
       </div>
 
       {/* Team */}
-      <div className="mb-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+      <div className="mb-4 rounded-xl bg-white/40 p-4 dark:bg-white/[0.05]">
         <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
           Your Team
         </p>

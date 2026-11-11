@@ -112,8 +112,8 @@ const CreateTeam = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <header className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div className="min-h-screen  ">
+      <header className="border-b border-white/70 bg-white/55 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/45">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">

@@ -26,7 +26,7 @@ const links = [
 
 export default function MobileNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur dark:border-navy-700 dark:bg-navy-900/95 lg:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/60 bg-white/55 backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-slate-950/50 lg:hidden">
       <div className="grid grid-cols-4">
         {links.map((item) => {
           const Icon = item.icon;

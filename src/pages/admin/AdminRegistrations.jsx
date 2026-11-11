@@ -1030,7 +1030,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
               </span>
 
               {selectedAuction?.status && (
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold capitalize text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-full bg-slate-900/5 px-3 py-1 text-xs font-semibold capitalize text-slate-600 dark:bg-white/10 dark:text-slate-300">
                   {String(selectedAuction.status).replace(/_/g, " ")}
                 </span>
               )}
@@ -1070,7 +1070,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
         {/* Main content */}
         {!selectedAuctionId ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-[#07172c]">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-900/5 text-slate-400 dark:bg-white/10 dark:text-slate-500">
               <FiUsers size={29} />
             </div>
 
@@ -1234,7 +1234,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
                     ) : filteredRegistrations.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-16 text-center">
-                          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+                          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/5 text-slate-400 dark:bg-white/10 dark:text-slate-500">
                             <FiUsers size={26} />
                           </div>
 
@@ -1286,7 +1286,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
 
                             <td className="px-5 py-4">
                               <div className="flex items-center gap-2.5">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900/5 text-slate-500 dark:bg-white/10 dark:text-slate-400">
                                   <FiUser size={16} />
                                 </div>
 
@@ -1421,7 +1421,7 @@ export default function AdminRegistrations({ auctionId: routeAuctionId = "" }) {
                   </div>
                 ) : filteredRegistrations.length === 0 ? (
                   <div className="px-6 py-16 text-center">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-900/5 text-slate-400 dark:bg-white/10 dark:text-slate-500">
                       <FiUsers size={26} />
                     </div>
 

@@ -31,9 +31,9 @@ export default function AuctionRegistrationModal({
           max-w-lg
           overflow-hidden
           rounded-2xl
-          bg-white
+          bg-white/55 backdrop-blur-xl
           shadow-2xl
-          dark:bg-navy-900
+          dark:bg-slate-900/45
         "
       >
         {/* Header */}

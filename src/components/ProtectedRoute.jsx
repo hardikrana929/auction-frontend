@@ -7,7 +7,7 @@ export default function ProtectedRoute({ adminOnly = false }) {
 
   if (loading)
     return (
-      <div className="grid min-h-screen place-items-center bg-slate-50 text-slate-600 dark:bg-slate-950 dark:text-slate-300">
+      <div className="grid min-h-screen place-items-center  text-slate-600  dark:text-slate-300">
         Checking session…
       </div>
     );

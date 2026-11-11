@@ -46,7 +46,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200 dark:border-navy-700 bg-white dark:bg-navy-900 p-10 text-center">
+      <div className="rounded-2xl border border-white/70 dark:border-white/10 bg-white/55 backdrop-blur-xl dark:bg-slate-900/45 p-10 text-center">
         <FiUser
           size={34}
           className="mx-auto text-slate-600 dark:text-slate-400"
@@ -64,7 +64,7 @@ export default function AuctionHistoryTable({ transactions = [] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-navy-700 bg-white dark:bg-navy-900">
+    <div className="overflow-hidden rounded-2xl border border-white/70 dark:border-white/10 bg-white/55 backdrop-blur-xl dark:bg-slate-900/45">
       {/* DESKTOP TABLE */}
       <div className="hidden overflow-x-auto md:block">
         <table className="min-w-full">

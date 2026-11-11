@@ -56,7 +56,7 @@ export default function Dashboard() {
             A command center for managing cricket auctions and live activity.
           </p>
         </div>
-        <div className="rounded-2xl bg-slate-950 px-5 py-4 text-white dark:bg-white dark:text-slate-950">
+        <div className="rounded-2xl bg-slate-950/80 px-5 py-4 text-white ring-1 ring-white/10 backdrop-blur-xl">
           <p className="text-xs font-semibold opacity-70">Signed in as</p>
           <p className="mt-1 font-black">
             {user?.email || "Authenticated user"}
@@ -67,9 +67,9 @@ export default function Dashboard() {
         {cards.map(({ label, value, icon: Icon }) => (
           <div
             key={label}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            className="rounded-2xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-xl shadow-slate-900/[0.06] dark:shadow-black/30 dark:border-white/10 dark:bg-slate-900/45"
           >
-            <span className="grid size-11 place-items-center rounded-xl bg-slate-100 dark:bg-slate-800">
+            <span className="grid size-11 place-items-center rounded-xl bg-slate-900/5 dark:bg-white/10">
               <Icon />
             </span>
             <p className="mt-6 text-sm font-semibold text-slate-500 dark:text-slate-400">
@@ -80,7 +80,7 @@ export default function Dashboard() {
         ))}
       </section>
       <section className="grid gap-5 lg:grid-cols-3">
-        <div className="rounded-3xl bg-slate-950 p-7 text-white lg:col-span-2 dark:bg-white dark:text-slate-950">
+        <div className="rounded-3xl bg-slate-950/80 p-7 text-white ring-1 ring-white/10 backdrop-blur-xl lg:col-span-2">
           <p className="text-sm font-bold uppercase tracking-widest opacity-60">
             Auction workspace
           </p>
@@ -94,21 +94,21 @@ export default function Dashboard() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/auctions"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-950 dark:bg-slate-950 dark:text-white"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-slate-100"
             >
               Browse auctions <FiArrowRight />
             </Link>
             {isAdmin && (
               <Link
                 to="/admin/auctions/new"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 px-4 py-2.5 text-sm font-bold dark:border-slate-300"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-4 py-2.5 text-sm font-bold transition hover:bg-white/10"
               >
                 Create auction
               </Link>
             )}
           </div>
         </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-7 dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-7 dark:border-white/10 dark:bg-slate-900/45">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-black">Upcoming</h3>
@@ -124,7 +124,7 @@ export default function Dashboard() {
                 <Link
                   key={a._id}
                   to={`/auctions/${a._id}`}
-                  className="block rounded-xl bg-slate-50 p-3 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700"
+                  className="block rounded-xl bg-white/40 p-3 hover:bg-slate-100 dark:bg-white/[0.05] dark:hover:bg-slate-700"
                 >
                   <p className="font-bold">{a.name}</p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">

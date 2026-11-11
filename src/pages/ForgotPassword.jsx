@@ -27,13 +27,13 @@ const labelClass =
   "mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-200";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-300 bg-white py-3 pl-11 pr-4 text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-slate-950 focus:ring-2 focus:ring-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:border-white dark:focus:ring-slate-600";
+  "glass-input py-3 pl-11 pr-4";
 
 const iconClass =
   "absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400";
 
 const primaryButton =
-  "w-full rounded-xl bg-slate-950 px-5 py-3.5 font-bold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 dark:focus-visible:ring-white dark:focus-visible:ring-offset-slate-900";
+  "w-full px-5 py-3.5 font-bold disabled:cursor-not-allowed disabled:opacity-60 dark:focus-visible:ring-white dark:focus-visible:ring-offset-slate-900 glass-primary";
 
 const linkButton =
   "rounded font-bold text-slate-900 underline-offset-4 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 disabled:cursor-not-allowed disabled:text-slate-500 disabled:no-underline dark:text-white dark:focus-visible:ring-white dark:disabled:text-slate-400";
@@ -211,7 +211,7 @@ export default function ForgotPassword() {
               <span
                 className={`grid size-6 shrink-0 place-items-center rounded-full ${
                   complete || active
-                    ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
+                    ? "bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30"
                     : "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
                 }`}
               >
@@ -407,8 +407,8 @@ export default function ForgotPassword() {
       )}
 
       {done && (
-        <div className="rounded-2xl border border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-700 dark:bg-slate-800/60">
-          <div className="mx-auto grid size-12 place-items-center rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950">
+        <div className="rounded-2xl border border-slate-300 bg-white/40 p-6 text-center dark:border-white/10 dark:bg-white/[0.05]">
+          <div className="mx-auto grid size-12 place-items-center rounded-full bg-gradient-to-br from-cyan-500 to-indigo-600 text-white shadow-lg shadow-indigo-500/30">
             <FiCheck />
           </div>
 

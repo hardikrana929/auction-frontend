@@ -84,7 +84,7 @@ function Field({
           value={form[name]}
           onChange={change}
           placeholder={placeholders[name] || ""}
-          className={`w-full rounded-xl border bg-white py-3 pl-10 pr-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-slate-100 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:disabled:bg-slate-800 ${errors[name] ? "border-red-400 focus:ring-red-200 dark:border-red-500 dark:focus:ring-red-900/40" : "border-slate-200 focus:border-slate-900 focus:ring-slate-200 dark:border-slate-700 dark:focus:border-white dark:focus:ring-slate-700"}`}
+          className={`w-full rounded-xl border bg-white/55 py-3 pl-10 pr-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-slate-100 dark:bg-slate-900/45 dark:text-white dark:placeholder:text-slate-500 dark:disabled:bg-slate-800 ${errors[name] ? "border-red-400 focus:ring-red-200 dark:border-red-500 dark:focus:ring-red-900/40" : "border-white/70 focus:border-slate-900 focus:ring-slate-200 dark:border-white/10 dark:focus:border-white dark:focus:ring-slate-700"}`}
         />
         {errors[name] && (
           <p className="mt-1 text-xs font-semibold text-red-600 dark:text-red-400">
@@ -285,7 +285,7 @@ export default function AuctionForm({
             maxLength={500}
             rows={4}
             placeholder="Tell participants what to expect from this auction..."
-            className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
+            className="w-full rounded-xl border border-white/70 bg-white/55 py-3 pl-10 pr-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-2 focus:ring-slate-200 dark:border-white/10 dark:bg-slate-900/45 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-white dark:focus:ring-slate-700"
           />
         </div>
         <p className="mt-1 text-right text-xs text-slate-400 dark:text-slate-500">
@@ -308,7 +308,7 @@ export default function AuctionForm({
           <label
             className={`group block shrink-0 ${readOnly ? "" : "cursor-pointer"}`}
           >
-            <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800 sm:w-52">
+            <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white/40 dark:border-white/10 dark:bg-white/[0.05] sm:w-52">
               {preview ? (
                 <img
                   src={preview}
@@ -363,7 +363,7 @@ export default function AuctionForm({
           {form.bidRules.map((rule, index) => (
             <div
               key={index}
-              className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"
+              className="rounded-xl bg-white/40 p-3 dark:bg-white/[0.05]"
             >
               <label className="label">
                 {index === form.bidRules.length - 1
