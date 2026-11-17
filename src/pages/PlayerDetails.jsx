@@ -46,10 +46,10 @@ export default function PlayerDetails() {
   return (
     <section className="page-container">
       <Link
-        to={isAdmin ? "/admin/players" : "/auctions"}
+        to={isAdmin ? "/admin/players" : "/players"}
         className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400"
       >
-        <FiArrowLeft /> {isAdmin ? "Back to players" : "Back to auctions"}
+        <FiArrowLeft /> Back to players
       </Link>
 
       <div className="surface-card overflow-hidden">

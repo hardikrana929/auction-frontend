@@ -16,6 +16,8 @@ import TeamForm from "../../components/team/TeamForm";
 import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
 import LoadingScreen from "../../components/LoadingScreen";
+import Pagination from "../../components/Pagination";
+import usePagination from "../../hooks/usePagination";
 
 export default function TeamManagement() {
   const { confirm } = useConfirmDialog();
@@ -77,6 +79,11 @@ export default function TeamManagement() {
         team.ownerName?.toLowerCase().includes(query),
     );
   }, [teams, search]);
+
+  const pager = usePagination(filtered, {
+    initialPageSize: 6,
+    resetKey: [auctionId, search],
+  });
 
   const saveTeam = async (formData) => {
     setActionLoading(true);
@@ -240,21 +247,30 @@ export default function TeamManagement() {
           }
         />
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
-          {filtered.map((team) => (
-            <TeamCard
-              key={team._id}
-              team={team}
-              onView={setSelected}
-              onEdit={(item) => {
-                setEditing(item);
-                setShowForm(true);
-              }}
-              onToggleStatus={toggleStatus}
-              onDelete={remove}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+            {pager.pageItems.map((team) => (
+              <TeamCard
+                key={team._id}
+                team={team}
+                onView={setSelected}
+                onEdit={(item) => {
+                  setEditing(item);
+                  setShowForm(true);
+                }}
+                onToggleStatus={toggleStatus}
+                onDelete={remove}
+              />
+            ))}
+          </div>
+          <Pagination
+            {...pager}
+            onPageChange={pager.setPage}
+            onPageSizeChange={pager.setPageSize}
+            pageSizeOptions={[6, 12, 24, 48]}
+            label="teams"
+          />
+        </>
       )}
 
       {selected && (

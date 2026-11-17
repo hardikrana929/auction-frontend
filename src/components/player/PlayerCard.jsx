@@ -32,6 +32,11 @@ export default function PlayerCard({
         <div className="absolute right-3 top-3">
           <PlayerStatusBadge status={player.status} />
         </div>
+        {player.registrationSource === "self_registered" && (
+          <span className="absolute left-3 top-3 rounded-full bg-indigo-500/90 px-2.5 py-1 text-[11px] font-bold text-white shadow">
+            Self-registered
+          </span>
+        )}
       </div>
 
       <div className="p-5">

@@ -46,6 +46,8 @@ import LiveAuction from "./pages/LiveAuction";
 // Teams / Players (public-facing detail pages)
 import TeamDetails from "./pages/TeamDetails";
 import PlayerDetails from "./pages/PlayerDetails";
+import PlayersBrowse from "./pages/PlayersBrowse";
+import PlayerSelfRegistration from "./pages/PlayerSelfRegistration";
 import TeamDashboard from "./pages/TeamDashboard";
 
 // Account
@@ -163,6 +165,12 @@ export default function App() {
                 element={<ResetPassword />}
               />
 
+              {/* Public: players register themselves from a shared link (no login) */}
+              <Route
+                path="/player-registration/:token"
+                element={<PlayerSelfRegistration />}
+              />
+
               {/* Authenticated app */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<DashboardLayout />}>
@@ -208,6 +216,7 @@ export default function App() {
 
                   {/* Teams / players */}
                   <Route path="/teams/:id" element={<TeamDetails />} />
+                  <Route path="/players" element={<PlayersBrowse />} />
                   <Route path="/players/:id" element={<PlayerDetails />} />
                   <Route path="/team-dashboard" element={<TeamDashboard />} />
 

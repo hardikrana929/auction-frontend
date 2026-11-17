@@ -14,6 +14,7 @@ import {
   FiRadio,
   FiSettings,
   FiShield,
+  FiStar,
   FiTrendingUp,
   FiUser,
   FiUserCheck,
@@ -33,6 +34,10 @@ const baseLinks = [
   { to: "/profile", label: "Profile", icon: FiUser },
   { to: "/settings", label: "Settings", icon: FiSettings },
 ];
+
+// Normal users (team owners) get a "Players" tab to scout the auction pool.
+// Admins / auction managers already have Player Management.
+const playersLink = { to: "/players", label: "Players", icon: FiStar };
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
@@ -69,7 +74,11 @@ export default function DashboardLayout() {
           },
           { to: "/auctions", label: "Assigned Auction", icon: FiTrendingUp },
         ]
-      : baseLinks;
+      : [
+          ...baseLinks.slice(0, 3),
+          playersLink,
+          ...baseLinks.slice(3),
+        ];
 
   const doLogout = () => {
     logout();

@@ -1,7 +1,7 @@
 import GlassSelect from "../../components/GlassSelect";
 import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useEffect, useMemo, useState } from "react";
-import { FiPlus, FiRefreshCw, FiSearch, FiUser } from "react-icons/fi";
+import { FiLink, FiPlus, FiRefreshCw, FiSearch, FiUser } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { getAuctions } from "../../api/auctionApi";
 import {
@@ -16,6 +16,9 @@ import PlayerForm from "../../components/player/PlayerForm";
 import LoadingScreen from "../../components/LoadingScreen";
 import EmptyState from "../../components/EmptyState";
 import ErrorState from "../../components/ErrorState";
+import Pagination from "../../components/Pagination";
+import PlayerRegistrationLinkModal from "../../components/auction/PlayerRegistrationLinkModal";
+import usePagination from "../../hooks/usePagination";
 
 export default function PlayerManagement() {
   const { confirm, select } = useConfirmDialog();
@@ -27,6 +30,8 @@ export default function PlayerManagement() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [source, setSource] = useState("");
+  const [linkOpen, setLinkOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -76,9 +81,18 @@ export default function PlayerManagement() {
         `${player.fullName} ${player.lastName}`.toLowerCase().includes(query) ||
         player.role?.toLowerCase().includes(query) ||
         player.villageTown?.toLowerCase().includes(query);
-      return matchesSearch && (!status || player.status === status);
+      const matchesSource =
+        !source || (player.registrationSource || "admin") === source;
+      return (
+        matchesSearch && matchesSource && (!status || player.status === status)
+      );
     });
-  }, [players, search, status]);
+  }, [players, search, status, source]);
+
+  const pager = usePagination(filtered, {
+    initialPageSize: 12,
+    resetKey: [auctionId, search, status, source],
+  });
 
   const save = async (data) => {
     setSaving(true);
@@ -175,18 +189,28 @@ export default function PlayerManagement() {
             Manage registered cricket players for each auction.
           </p>
         </div>
-        <button
-          className="primary-btn w-full sm:w-fit"
-          onClick={() => {
-            setEditing(null);
-            setShowForm(true);
-          }}
-        >
-          <FiPlus /> Create player
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            className="secondary-btn w-full sm:w-fit"
+            onClick={() => setLinkOpen(true)}
+            disabled={!auctionId}
+            title="Let players register themselves with a shareable link"
+          >
+            <FiLink /> Registration link
+          </button>
+          <button
+            className="primary-btn w-full sm:w-fit"
+            onClick={() => {
+              setEditing(null);
+              setShowForm(true);
+            }}
+          >
+            <FiPlus /> Create player
+          </button>
+        </div>
       </div>
 
-      <div className="surface-card mb-6 grid gap-4 p-4 lg:grid-cols-[minmax(220px,1fr)_minmax(180px,1fr)_minmax(160px,auto)_auto]">
+      <div className="surface-card mb-6 grid gap-4 p-4 lg:grid-cols-[minmax(200px,1fr)_minmax(170px,1fr)_minmax(150px,auto)_minmax(170px,auto)_auto]">
         <div>
           <label className="label">Auction</label>
           <GlassSelect
@@ -227,6 +251,19 @@ export default function PlayerManagement() {
             ]}
           />
         </div>
+        <div>
+          <label className="label">Source</label>
+          <GlassSelect
+            ariaLabel="Source"
+            value={source}
+            onChange={setSource}
+            options={[
+              { value: "", label: "All sources" },
+              { value: "admin", label: "Added by admin" },
+              { value: "self_registered", label: "Self-registered" },
+            ]}
+          />
+        </div>
         <button
           className="secondary-btn self-end"
           onClick={() => loadPlayers()}
@@ -256,21 +293,44 @@ export default function PlayerManagement() {
           description="Try another filter or create a player."
         />
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {filtered.map((player) => (
-            <PlayerCard
-              key={player._id}
-              player={player}
-              onView={setSelected}
-              onEdit={(item) => {
-                setEditing(item);
-                setShowForm(true);
-              }}
-              onStatus={changeStatus}
-              onDelete={remove}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {pager.pageItems.map((player) => (
+              <PlayerCard
+                key={player._id}
+                player={player}
+                onView={setSelected}
+                onEdit={(item) => {
+                  setEditing(item);
+                  setShowForm(true);
+                }}
+                onStatus={changeStatus}
+                onDelete={remove}
+              />
+            ))}
+          </div>
+          <Pagination
+            {...pager}
+            onPageChange={pager.setPage}
+            onPageSizeChange={pager.setPageSize}
+            label="players"
+          />
+        </>
+      )}
+
+      {linkOpen && auctionId && (
+        <PlayerRegistrationLinkModal
+          auction={
+            auctions.find((a) => a._id === auctionId) || {
+              _id: auctionId,
+              name: "Auction",
+            }
+          }
+          onClose={() => {
+            setLinkOpen(false);
+            loadPlayers();
+          }}
+        />
       )}
 
       {selected && (
