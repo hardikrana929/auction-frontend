@@ -1,3 +1,4 @@
+import { roleLabel } from "../utils/roles";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -205,7 +206,7 @@ export default function DashboardLayout() {
           <div className="flex items-center gap-2">
             <ThemeToggle compact />
             <div className="hidden rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold dark:border-slate-700 sm:block">
-              {user?.role || "user"}
+              {roleLabel(user?.role)}
             </div>
           </div>
         </header>

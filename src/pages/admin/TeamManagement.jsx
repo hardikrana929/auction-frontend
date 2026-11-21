@@ -157,6 +157,7 @@ export default function TeamManagement() {
         <div className="surface-card p-5 sm:p-7">
           <TeamForm
             auctions={auctions}
+            defaultAuctionId={auctionId}
             team={editing}
             loading={actionLoading}
             onSubmit={saveTeam}
@@ -305,6 +306,7 @@ export default function TeamManagement() {
               />
               <Detail label="Auction" value={selected.auction?.name || "—"} />
               <Detail label="Status" value={selected.status} />
+              <Detail label="Owner email" value={selected.ownerEmail || selected.owner?.email || "—"} />
               <Detail label="Total budget" value={selected.totalBudget} />
               <Detail
                 label="Remaining budget"

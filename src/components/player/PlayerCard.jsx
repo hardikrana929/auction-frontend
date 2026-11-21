@@ -1,5 +1,8 @@
 import { FiEdit2, FiEye, FiPower, FiTrash2 } from "react-icons/fi";
 import PlayerStatusBadge from "./PlayerStatusBadge";
+import { formatShortAmount } from "../../utils/formatAmount";
+
+const CATEGORY_LABEL = { icon: "Icon player", owner: "Team owner" };
 
 const money = (value) =>
   new Intl.NumberFormat("en-IN", {
@@ -45,10 +48,17 @@ export default function PlayerCard({
         </h3>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {player.role} · {player.gender}
+          {player.auctionNumber ? ` · ID ${player.auctionNumber}` : ""}
         </p>
+        {CATEGORY_LABEL[player.category] && (
+          <p className="mt-1 text-xs font-bold text-violet-600 dark:text-violet-300">
+            {CATEGORY_LABEL[player.category]}
+            {player.team?.name ? ` of ${player.team.name}` : ""}
+          </p>
+        )}
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <Metric label="Base price" value={money(player.basePrice)} />
+          <Metric label="Base price" value={`${money(player.basePrice)}${formatShortAmount(player.basePrice) && player.basePrice >= 1000 ? ` (${formatShortAmount(player.basePrice)})` : ""}`} />
           <Metric label="Current bid" value={money(player.currentBid)} />
         </div>
 

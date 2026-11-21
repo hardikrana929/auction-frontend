@@ -11,6 +11,26 @@ import {
 } from "react-icons/fi";
 import { BsCurrencyRupee } from "react-icons/bs";
 import toast from "react-hot-toast";
+import AmountHint from "../AmountHint";
+
+// How the next player is picked while the auction is running.
+const SELECTION_MODES = [
+  {
+    value: "order",
+    title: "By order",
+    text: "Players come up one after another in their auction order.",
+  },
+  {
+    value: "manual",
+    title: "Manually by auction ID",
+    text: "The admin picks the next player by auction ID or from the list.",
+  },
+  {
+    value: "random",
+    title: "Random",
+    text: "A random player from those still available comes up next.",
+  },
+];
 
 const empty = {
   name: "",
@@ -25,6 +45,7 @@ const empty = {
   ],
   maxTeams: "",
   maxPlayersPerTeam: "",
+  playerSelectionMode: "order",
 };
 
 // Matches the backend's multer fileFilter exactly (JPEG/PNG only, 2MB) —
@@ -65,6 +86,7 @@ function Field({
   change,
   readOnly,
   help,
+  amount = false,
 }) {
   return (
     <div>
@@ -92,6 +114,7 @@ function Field({
           </p>
         )}
       </div>
+      {amount && <AmountHint value={form[name]} />}
     </div>
   );
 }
@@ -233,6 +256,7 @@ export default function AuctionForm({
     );
     data.append("maxTeams", Number(form.maxTeams));
     data.append("maxPlayersPerTeam", Number(form.maxPlayersPerTeam));
+    data.append("playerSelectionMode", form.playerSelectionMode || "order");
 
     if (imageFile) data.append("image", imageFile);
     else if (imageRemoved) data.append("removeImage", "true");
@@ -389,6 +413,7 @@ export default function AuctionForm({
                   }))
                 }
               />
+              <AmountHint value={rule.upTo} />
               <label className="label mt-3">
                 Required increase per bid (₹)
               </label>
@@ -410,6 +435,7 @@ export default function AuctionForm({
                   }))
                 }
               />
+              <AmountHint value={rule.increment} />
             </div>
           ))}
         </div>
@@ -433,6 +459,7 @@ export default function AuctionForm({
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <Field
             name="teamBudget"
+            amount
             label="Total budget per team (₹)"
             help="Each team starts with this purse. Example: ₹10,000,000 gives every team a ₹1 crore budget."
             icon={BsCurrencyRupee}
@@ -445,6 +472,7 @@ export default function AuctionForm({
           />
           <Field
             name="minimumBid"
+            amount
             label="Minimum opening bid (₹)"
             help="The lowest opening bid allowed for a player. It must not exceed the per-team budget."
             icon={BsCurrencyRupee}
@@ -479,6 +507,48 @@ export default function AuctionForm({
             change={change}
             readOnly={readOnly}
           />
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+        <div className="mb-3">
+          <h3 className="font-bold text-slate-900 dark:text-white">
+            Player selection while the auction is running
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Choose how the next player is picked. It can also be changed later
+            from the auction control screen.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {SELECTION_MODES.map((mode) => {
+            const active = form.playerSelectionMode === mode.value;
+            return (
+              <label
+                key={mode.value}
+                className={`flex cursor-pointer flex-col gap-1 rounded-xl border p-3 transition ${
+                  active
+                    ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-500/10"
+                    : "border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/60"
+                } ${readOnly ? "cursor-not-allowed opacity-70" : ""}`}
+              >
+                <span className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                  <input
+                    type="radio"
+                    name="playerSelectionMode"
+                    value={mode.value}
+                    checked={active}
+                    disabled={readOnly}
+                    onChange={change}
+                  />
+                  {mode.title}
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  {mode.text}
+                </span>
+              </label>
+            );
+          })}
         </div>
       </section>
 

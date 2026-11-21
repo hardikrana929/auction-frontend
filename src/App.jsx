@@ -42,6 +42,7 @@ import AuctionHistory from "./pages/AuctionHistory";
 import AuctionStatistics from "./pages/AuctionStatistics";
 import LiveAuctions from "./pages/LiveAuctions";
 import LiveAuction from "./pages/LiveAuction";
+import PublicLiveAuction from "./pages/PublicLiveAuction";
 
 // Teams / Players (public-facing detail pages)
 import TeamDetails from "./pages/TeamDetails";
@@ -58,8 +59,6 @@ import Notifications from "./pages/Notifications";
 // Admin
 import AdminAuctionManagement from "./pages/admin/AdminAuctionManagement";
 import AuctionFormPage from "./pages/admin/AuctionFormPage";
-import CreatePlayer from "./pages/admin/CreatePlayer";
-import EditPlayer from "./pages/admin/EditPlayer";
 import CreateTeam from "./pages/admin/CreateTeam";
 import EditTeam from "./pages/admin/EditTeam";
 import AdminTeamDetails from "./pages/admin/TeamDetails";
@@ -171,6 +170,10 @@ export default function App() {
                 element={<PlayerSelfRegistration />}
               />
 
+              {/* Public live auction screen: player + current bid only, no login */}
+              <Route path="/live" element={<PublicLiveAuction />} />
+              <Route path="/live/:auctionId" element={<PublicLiveAuction />} />
+
               {/* Authenticated app */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<DashboardLayout />}>
@@ -262,14 +265,15 @@ export default function App() {
                       path="/admin/players"
                       element={<PlayerManagement />}
                     />
-                    {/* Dedicated player pages kept for direct/bookmarked URLs. */}
+                    {/* Old player URLs now open the player screen, where the
+                        auction is already selected. */}
                     <Route
                       path="/admin/players/create"
-                      element={<CreatePlayer />}
+                      element={<Navigate to="/admin/players" replace />}
                     />
                     <Route
                       path="/admin/players/edit/:id"
-                      element={<EditPlayer />}
+                      element={<Navigate to="/admin/players" replace />}
                     />
 
                     <Route

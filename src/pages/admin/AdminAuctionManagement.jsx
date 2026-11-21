@@ -5,7 +5,10 @@ import {
   FiCalendar,
   FiEdit3,
   FiEye,
+  FiKey,
   FiLink,
+  FiRadio,
+  FiSliders,
   FiPlus,
   FiRefreshCw,
   FiTrash2,
@@ -14,9 +17,14 @@ import {
 import toast from "react-hot-toast";
 import {
   deleteAuction,
+  getAuctionManager,
   getAuctions,
+  resetAuctionManager,
   updateAuctionStatus,
 } from "../../api/auctionApi";
+import { completeAuction, startAuction } from "../../api/auctionControlApi";
+import AuctionCredentialsModal from "../../components/auction/AuctionCredentialsModal";
+import { copyText } from "../../utils/clipboard";
 import AuctionStatusBadge from "../../components/auction/AuctionStatusBadge";
 import LoadingScreen from "../../components/LoadingScreen";
 import ErrorState from "../../components/ErrorState";
@@ -33,6 +41,8 @@ export default function AdminAuctionManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [linkAuction, setLinkAuction] = useState(null);
+  const [adminAuction, setAdminAuction] = useState(null);
+  const [credentials, setCredentials] = useState(null);
   const pager = usePagination(rows, { initialPageSize: 10 });
 
   const load = useCallback(async () => {
@@ -52,10 +62,31 @@ export default function AdminAuctionManagement() {
     load();
   }, [load]);
 
+  // The cycle draft -> upcoming -> live -> completed is NOT strict: any status
+  // can be chosen. "live" and "completed" drive the live session, so they go
+  // through the auction-control endpoints (live also re-opens a completed one).
   const status = async (a, s) => {
     if (s === a.status) return;
     try {
-      await updateAuctionStatus(a._id, s);
+      if (s === "live") {
+        await startAuction(a._id);
+      } else if (s === "completed" && a.status === "live") {
+        try {
+          await completeAuction({ auctionId: a._id });
+        } catch (e) {
+          if (e.response?.data?.code !== "REMAINING_PLAYERS") throw e;
+          const ok = await confirm({
+            title: "Complete with players remaining?",
+            message: `${e.response.data.remainingPlayers} player(s) have not been auctioned yet. You can make the auction live again later.`,
+            confirmText: "Complete anyway",
+            tone: "primary",
+          });
+          if (!ok) return;
+          await completeAuction({ auctionId: a._id, force: true });
+        }
+      } else {
+        await updateAuctionStatus(a._id, s);
+      }
       toast.success(`Status changed to ${s}`);
       load();
     } catch (e) {
@@ -147,7 +178,7 @@ export default function AdminAuctionManagement() {
                         <StatusControl a={a} onChange={status} />
                       </td>
                       <td className="px-5 py-4">
-                        <RowActions a={a} onLink={setLinkAuction} onDelete={remove} />
+                        <RowActions a={a} onLink={setLinkAuction} onAdmin={setAdminAuction} onDelete={remove} />
                       </td>
                     </tr>
                   ))}
@@ -178,7 +209,7 @@ export default function AdminAuctionManagement() {
                 </p>
                 <StatusControl a={a} onChange={status} />
                 <div className="border-t border-slate-200 pt-3 dark:border-white/10">
-                  <RowActions a={a} onLink={setLinkAuction} onDelete={remove} />
+                  <RowActions a={a} onLink={setLinkAuction} onAdmin={setAdminAuction} onDelete={remove} />
                 </div>
               </article>
             ))}
@@ -192,6 +223,25 @@ export default function AdminAuctionManagement() {
             label="auctions"
           />
         </>
+      )}
+
+      {adminAuction && (
+        <AuctionAdminModal
+          auction={adminAuction}
+          onClose={() => setAdminAuction(null)}
+          onReset={(creds) => {
+            setCredentials({ ...creds, auctionName: adminAuction.name });
+            setAdminAuction(null);
+          }}
+        />
+      )}
+      {credentials && (
+        <AuctionCredentialsModal
+          credentials={credentials}
+          auctionName={credentials.auctionName}
+          closeLabel="Done"
+          onClose={() => setCredentials(null)}
+        />
       )}
 
       {linkAuction && (
@@ -231,10 +281,39 @@ function StatusControl({ a, onChange }) {
   );
 }
 
-function RowActions({ a, onLink, onDelete }) {
+function RowActions({ a, onLink, onAdmin, onDelete }) {
   const locked = ["live", "completed"].includes(a.status);
+  const publicLink = `${window.location.origin}/live/${a._id}`;
   return (
-    <div className="flex justify-end gap-2">
+    <div className="flex flex-wrap justify-end gap-2">
+      <Link
+        title="Auction control (bidding dashboard)"
+        aria-label="Auction control"
+        to={`/admin/auction-control/${a._id}`}
+        className="icon-btn border border-slate-200 text-indigo-600 dark:border-slate-700 dark:text-indigo-400"
+      >
+        <FiSliders />
+      </Link>
+      <button
+        title="Copy public live link (no login needed)"
+        aria-label="Copy public live link"
+        onClick={async () => {
+          const ok = await copyText(publicLink);
+          if (ok) toast.success("Public live link copied");
+          else toast.error("Could not copy the link");
+        }}
+        className="icon-btn border border-slate-200 text-rose-600 dark:border-slate-700 dark:text-rose-400"
+      >
+        <FiRadio />
+      </button>
+      <button
+        title="Auction admin credentials"
+        aria-label="Auction admin credentials"
+        onClick={() => onAdmin(a)}
+        className="icon-btn border border-slate-200 text-amber-600 dark:border-slate-700 dark:text-amber-400"
+      >
+        <FiKey />
+      </button>
       <button
         title="Player registration link"
         aria-label="Player registration link"
@@ -265,6 +344,81 @@ function RowActions({ a, onLink, onDelete }) {
       >
         <FiTrash2 />
       </button>
+    </div>
+  );
+}
+
+function AuctionAdminModal({ auction, onClose, onReset }) {
+  const [info, setInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [resetting, setResetting] = useState(false);
+
+  useEffect(() => {
+    getAuctionManager(auction._id)
+      .then(setInfo)
+      .catch((e) =>
+        toast.error(e.response?.data?.message || "Unable to load admin."),
+      )
+      .finally(() => setLoading(false));
+  }, [auction._id]);
+
+  const reset = async () => {
+    setResetting(true);
+    try {
+      const r = await resetAuctionManager(auction._id);
+      onReset(r.managerCredentials);
+    } catch (e) {
+      toast.error(e.response?.data?.message || "Unable to reset password.");
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/70 p-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900">
+        <h2 className="text-xl font-black text-slate-900 dark:text-white">
+          Admin of {auction.name}
+        </h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Each auction has one admin who runs only this auction.
+        </p>
+        <div className="mt-4 space-y-2 text-sm">
+          {loading ? (
+            <p className="text-slate-500">Loading…</p>
+          ) : (
+            <>
+              <Row label="Auction ID" value={info?.auctionId || "—"} />
+              <Row label="Username" value={info?.manager?.username || "No admin assigned"} />
+            </>
+          )}
+        </div>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+          Passwords are stored encrypted and cannot be shown. Reset to create a
+          new password (the admin is signed out).
+        </p>
+        <div className="mt-5 flex gap-2">
+          <button className="secondary-btn flex-1 justify-center" onClick={onClose}>
+            Close
+          </button>
+          <button
+            className="primary-btn flex-1 justify-center"
+            onClick={reset}
+            disabled={resetting}
+          >
+            {resetting ? "Resetting…" : info?.manager ? "Reset password" : "Create admin"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Row({ label, value }) {
+  return (
+    <div className="flex justify-between gap-4 rounded-lg bg-slate-50 px-3 py-2 dark:bg-white/[0.05]">
+      <span className="text-slate-500 dark:text-slate-400">{label}</span>
+      <span className="font-mono font-semibold text-slate-900 dark:text-white">{value}</span>
     </div>
   );
 }

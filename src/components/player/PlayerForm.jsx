@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { FiImage, FiSave, FiUpload } from "react-icons/fi";
 import toast from "react-hot-toast";
+import AmountHint from "../AmountHint";
+
+const CATEGORIES = [
+  { value: "auction", label: "Auction player" },
+  { value: "icon", label: "Icon player" },
+  { value: "owner", label: "Team owner" },
+];
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png"];
@@ -37,10 +44,14 @@ const empty = {
   bio: "",
   basePrice: "",
   auctionOrder: 0,
+  category: "auction",
+  teamId: "",
 };
 
 export default function PlayerForm({
   auctions,
+  teams = [],
+  defaultAuctionId = "",
   player,
   loading,
   onSubmit,
@@ -52,7 +63,8 @@ export default function PlayerForm({
 
   useEffect(() => {
     if (!player) {
-      setForm(empty);
+      // The auction is already chosen on the page, so it is not asked again.
+      setForm({ ...empty, auctionId: defaultAuctionId || "" });
       setPhoto(null);
       setPreview("");
       return;
@@ -77,10 +89,18 @@ export default function PlayerForm({
       bio: player.bio || "",
       basePrice: player.basePrice ?? "",
       auctionOrder: player.auctionOrder ?? 0,
+      category: player.category || "auction",
+      teamId: player.team?._id || player.team || player.soldTo?._id || player.soldTo || "",
     });
     setPhoto(null);
     setPreview(player.photo?.url || "");
-  }, [player]);
+  }, [player, defaultAuctionId]);
+
+  const selectedAuction = auctions.find(
+    (item) => String(item._id) === String(form.auctionId),
+  );
+  // A player on the block / already sold keeps price, order and category.
+  const locked = ["auctioning", "sold"].includes(player?.status);
 
   const set = (key, value) => setForm((v) => ({ ...v, [key]: value }));
 
@@ -165,8 +185,15 @@ export default function PlayerForm({
       return;
     }
 
+    if (player && form.category !== "auction" && !form.teamId) {
+      toast.error("Select the team for this icon player / team owner.");
+      return;
+    }
+
     const data = new FormData();
     Object.entries(form).forEach(([key, value]) => {
+      if (!player && (key === "category" || key === "teamId")) return;
+      if (key === "teamId" && (form.category === "auction" || locked)) return;
       if (key === "specialization") {
         const values = value
           .split(",")
@@ -218,20 +245,54 @@ export default function PlayerForm({
         </div>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Auction" required>
-            <select
-              className="input"
-              value={form.auctionId}
-              onChange={(e) => set("auctionId", e.target.value)}
-            >
-              <option value="">Select auction</option>
-              {auctions.map((auction) => (
-                <option key={auction._id} value={auction._id}>
-                  {auction.name}
-                </option>
-              ))}
-            </select>
+          <Field label="Auction">
+            <div className="input flex items-center bg-slate-50 font-semibold text-slate-700 dark:bg-white/[0.04] dark:text-slate-200">
+              {selectedAuction?.name || "Selected auction"}
+            </div>
           </Field>
+
+          {player && (
+            <>
+              <Field label="Team">
+                <select
+                  className="input"
+                  value={form.teamId}
+                  disabled={locked || form.category === "auction"}
+                  onChange={(e) => set("teamId", e.target.value)}
+                >
+                  <option value="">
+                    {form.category === "auction"
+                      ? "Not needed for an auction player"
+                      : "Select team"}
+                  </option>
+                  {teams.map((team) => (
+                    <option key={team._id} value={team._id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Player type">
+                <select
+                  className="input"
+                  value={form.category}
+                  disabled={locked}
+                  onChange={(e) => set("category", e.target.value)}
+                >
+                  {CATEGORIES.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {locked
+                    ? "A player on the block or already sold cannot change type."
+                    : "Icon players and team owners join their team directly and are not auctioned."}
+                </p>
+              </Field>
+            </>
+          )}
 
           <Field label="Role" required>
             <select
@@ -351,8 +412,10 @@ export default function PlayerForm({
               className="input"
               placeholder="e.g. 200000"
               value={form.basePrice}
+              disabled={locked}
               onChange={(e) => set("basePrice", e.target.value)}
             />
+            <AmountHint value={form.basePrice} />
           </Field>
           <Field label="Auction order">
             <input
@@ -361,6 +424,7 @@ export default function PlayerForm({
               className="input"
               placeholder="e.g. 1"
               value={form.auctionOrder}
+              disabled={locked}
               onChange={(e) => set("auctionOrder", e.target.value)}
             />
           </Field>

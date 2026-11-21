@@ -61,7 +61,18 @@ export const completeAuction = async (data) => {
   return response.data;
 };
 
+/* Everything the control dashboard shows, in one request. */
+export const getControlDashboard = async (auctionId) =>
+  (await api.get(`/api/auction-control/dashboard/${auctionId}`)).data;
+
+/* order | manual | random */
+export const setSelectionMode = async (auctionId, mode) =>
+  (await api.post("/api/auction-control/selection-mode", { auctionId, mode }))
+    .data;
+
 export default {
+  getControlDashboard,
+  setSelectionMode,
   startAuction,
   pauseAuction,
   resumeAuction,

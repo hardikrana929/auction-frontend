@@ -37,3 +37,25 @@ export const deletePlayer = async (playerId) => {
   const response = await api.delete(`/api/players/${playerId}`);
   return response.data;
 };
+
+// ---- Excel import -------------------------------------------------------
+export const getImportFormat = async () =>
+  (await api.get("/api/players/import/format")).data;
+
+export const downloadImportTemplate = async () => {
+  const response = await api.get("/api/players/import/template", {
+    responseType: "blob",
+  });
+  return response.data;
+};
+
+export const importPlayers = async (auctionId, file) => {
+  const form = new FormData();
+  form.append("auctionId", auctionId);
+  form.append("file", file);
+  const response = await api.post("/api/players/import", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 60000,
+  });
+  return response.data;
+};

@@ -1265,42 +1265,30 @@ const LiveAuction = () => {
               active={playerActive && !auctionPaused}
             />
 
-            {isAdmin ? (
-              <AdminControlBar
-                paused={auctionPaused}
-                playerActive={playerActive}
-                controlLoading={controlLoading}
-                onPauseResume={handlePauseResume}
-                onSell={handleSell}
-                onUnsold={handleUnsold}
-                onNext={handleNextPlayer}
-                onComplete={handleCompleteAuction}
-              />
-            ) : (
-              <BidPanel
-                currentBid={currentBid}
-                minimumBid={Math.max(
-                  Number(auction?.minimumBid || 0),
-                  Number(player?.basePrice || 0),
-                )}
-                bidIncrement={auction?.bidIncrement || 0}
-                bidRules={
-                  Array.isArray(auction?.bidRules) ? auction.bidRules : []
-                }
-                playerActive={playerActive}
-                auctionPaused={auctionPaused}
-                accessApproved={accessApproved}
-                canBid={!isAdmin}
-                submitting={bidSubmitting}
-                lastBidTeam={lastBidTeam}
-                approvedTeamCount={approvedTeamCount}
-                nextBid={serverNextBid}
-                teamName={myTeamData?.name || ""}
-                teamId={myTeamId}
-                purse={purse}
-                onPlaceBid={handlePlaceBid}
-              />
-            )}
+            {/* Teams do not bid: the admin runs the bidding from the control
+                dashboard (Bidding / Buy player), so this screen is view-only. */}
+            <div className="surface-card p-5 text-sm">
+              {isAdmin ? (
+                <p className="text-slate-600 dark:text-slate-300">
+                  Bidding and selling are done from the{" "}
+                  <Link
+                    to={`/admin/auction-control/${auctionId}`}
+                    className="font-bold text-indigo-600 underline dark:text-indigo-400"
+                  >
+                    auction control dashboard
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <p className="text-slate-600 dark:text-slate-300">
+                  Bidding is controlled by the auction admin. Watch the current
+                  bid here; the admin raises it when a team raises a hand.
+                  {myTeamData?.name
+                    ? ` Your team ${myTeamData.name} has ${formatCurrency(purse)} left.`
+                    : ""}
+                </p>
+              )}
+            </div>
 
             <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
               <BidHistory

@@ -70,6 +70,9 @@ export default function Navbar() {
           <NavLink to="/live-auctions" className={navLinkClass}>
             Live Auctions
           </NavLink>
+          <NavLink to="/live" className={navLinkClass}>
+            Watch live
+          </NavLink>
         </nav>
 
         {/* =====================================================

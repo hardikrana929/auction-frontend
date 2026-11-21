@@ -16,6 +16,7 @@ const initial = {
 
 export default function TeamForm({
   auctions,
+  defaultAuctionId = "",
   team,
   loading,
   onSubmit,
@@ -27,7 +28,8 @@ export default function TeamForm({
 
   useEffect(() => {
     if (!team) {
-      setForm(initial);
+      // The auction is already chosen on the page, so it is not asked again.
+      setForm({ ...initial, auction: defaultAuctionId || "" });
       setLogo(null);
       setPreview("");
       return;
@@ -43,7 +45,7 @@ export default function TeamForm({
     });
     setPreview(team.logo?.url || "");
     setLogo(null);
-  }, [team]);
+  }, [team, defaultAuctionId]);
 
   const update = (key, value) =>
     setForm((current) => ({ ...current, [key]: value }));
@@ -160,21 +162,11 @@ export default function TeamForm({
           />
 
           <div>
-            <label className="label">
-              Auction <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="input"
-              value={form.auction}
-              onChange={(e) => update("auction", e.target.value)}
-            >
-              <option value="">Select auction</option>
-              {auctions.map((auction) => (
-                <option key={auction._id} value={auction._id}>
-                  {auction.name}
-                </option>
-              ))}
-            </select>
+            <label className="label">Auction</label>
+            <div className="input flex items-center bg-slate-50 font-semibold text-slate-700 dark:bg-white/[0.04] dark:text-slate-200">
+              {auctions.find((a) => String(a._id) === String(form.auction))
+                ?.name || "Selected auction"}
+            </div>
           </div>
 
           {team && (
@@ -194,9 +186,9 @@ export default function TeamForm({
       </div>
 
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-300">
-        The owner's account is matched or created automatically from their email
-        — no manual user ID needed. Budget fields are also intentionally not
-        editable here. The backend initializes
+        The owner's email is only saved as contact information. It does not
+        have to belong to a registered account. Budget fields are intentionally
+        not editable here. The backend initializes
         <strong> totalBudget</strong> and <strong>remainingBudget</strong> from
         the selected auction and controls purse changes.
       </div>

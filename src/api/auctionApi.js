@@ -26,3 +26,11 @@ export const updateAuctionStatus = async (id, status) =>
   (await api.patch(`/api/auctions/${id}/status`, { status })).data;
 export const deleteAuction = async (id) =>
   (await api.delete(`/api/auctions/${id}`)).data;
+
+// Auction admin (the "auction_manager" account assigned to one auction).
+export const getAuctionManager = async (id) =>
+  (await api.get(`/api/auctions/${id}/manager`)).data;
+export const resetAuctionManager = async (id) =>
+  (await api.post(`/api/auctions/${id}/manager`)).data;
+export const removeAuctionManager = async (id) =>
+  (await api.delete(`/api/auctions/${id}/manager`)).data;

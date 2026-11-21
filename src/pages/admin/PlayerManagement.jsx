@@ -1,9 +1,22 @@
 import GlassSelect from "../../components/GlassSelect";
 import { useConfirmDialog } from "../../context/ConfirmDialogContext";
 import { useEffect, useMemo, useState } from "react";
-import { FiLink, FiPlus, FiRefreshCw, FiSearch, FiUser } from "react-icons/fi";
+import {
+  FiFileText,
+  FiLink,
+  FiPlus,
+  FiRefreshCw,
+  FiSearch,
+  FiUploadCloud,
+  FiUser,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { getAuctions } from "../../api/auctionApi";
+import { getTeamsByAuction } from "../../api/teamApi";
+import {
+  PlayerFormatModal,
+  PlayerImportModal,
+} from "../../components/player/PlayerImport";
 import {
   createPlayer,
   deletePlayer,
@@ -35,6 +48,9 @@ export default function PlayerManagement() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [teams, setTeams] = useState([]);
+  const [formatOpen, setFormatOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const loadAuctions = async () => {
     try {
@@ -71,6 +87,12 @@ export default function PlayerManagement() {
   }, []);
   useEffect(() => {
     loadPlayers();
+    // Teams of this auction fill the "Team" dropdown of the edit-player form.
+    if (auctionId)
+      getTeamsByAuction(auctionId)
+        .then((r) => setTeams(r.teams || []))
+        .catch(() => setTeams([]));
+    else setTeams([]);
   }, [auctionId]);
 
   const filtered = useMemo(() => {
@@ -112,7 +134,9 @@ export default function PlayerManagement() {
   };
 
   const changeStatus = async (player) => {
-    const statuses = ["available", "auctioning", "sold", "unsold"];
+    // Only these can be set by hand. "sold" comes from Buy Player; icon players /
+    // team owners ("retained") are set with the Player type dropdown.
+    const statuses = ["available", "unsold"];
     const next = await select({
       title: "Change player status",
       message: `Select a new status for ${player.fullName}.`,
@@ -166,6 +190,8 @@ export default function PlayerManagement() {
         <div className="surface-card p-5 sm:p-7">
           <PlayerForm
             auctions={auctions}
+            teams={teams}
+            defaultAuctionId={auctionId}
             player={editing}
             loading={saving}
             onSubmit={save}
@@ -197,6 +223,21 @@ export default function PlayerManagement() {
             title="Let players register themselves with a shareable link"
           >
             <FiLink /> Registration link
+          </button>
+          <button
+            className="secondary-btn w-full sm:w-fit"
+            onClick={() => setFormatOpen(true)}
+            title="See which columns the Excel file needs"
+          >
+            <FiFileText /> File format
+          </button>
+          <button
+            className="secondary-btn w-full sm:w-fit"
+            onClick={() => setImportOpen(true)}
+            disabled={!auctionId}
+            title="Add many players at once from an Excel file"
+          >
+            <FiUploadCloud /> Import player
           </button>
           <button
             className="primary-btn w-full sm:w-fit"
@@ -248,6 +289,7 @@ export default function PlayerManagement() {
               { value: "auctioning", label: "Auctioning" },
               { value: "sold", label: "Sold" },
               { value: "unsold", label: "Unsold" },
+              { value: "retained", label: "Icon / owner" },
             ]}
           />
         </div>
@@ -316,6 +358,20 @@ export default function PlayerManagement() {
             label="players"
           />
         </>
+      )}
+
+      {formatOpen && <PlayerFormatModal onClose={() => setFormatOpen(false)} />}
+      {importOpen && auctionId && (
+        <PlayerImportModal
+          auction={
+            auctions.find((a) => a._id === auctionId) || {
+              _id: auctionId,
+              name: "Auction",
+            }
+          }
+          onClose={() => setImportOpen(false)}
+          onImported={() => loadPlayers()}
+        />
       )}
 
       {linkOpen && auctionId && (

@@ -30,7 +30,26 @@ export const placeBid = async (data) => {
 };
 
 /*
- * Admin sells current player.
+ * Admin presses "Bidding": raises the current bid by the configured increment.
+ * POST /api/bidding/raise  { auctionId, playerId }
+ */
+export const raiseBid = async (data) =>
+  (await api.post("/api/bidding/raise", data)).data;
+
+/* Admin takes the last raise back. POST /api/bidding/undo */
+export const undoRaise = async (data) =>
+  (await api.post("/api/bidding/undo", data)).data;
+
+/*
+ * Admin reverses a wrong sale: the money goes back to the team.
+ * POST /api/bidding/rollback  { auctionId, playerId }
+ */
+export const rollbackSale = async (data) =>
+  (await api.post("/api/bidding/rollback", data)).data;
+
+/*
+ * "Buy Player": sells the current player to a team at the current bid.
+ * POST /api/bidding/sell  { auctionId, playerId, teamId }
  *
  * Backend:
  * POST /api/bidding/sell
@@ -79,6 +98,9 @@ export const getBidHistory = async (playerId) => {
 
 export default {
   getCurrentBid,
+  raiseBid,
+  undoRaise,
+  rollbackSale,
   placeBid,
   sellPlayer,
   markPlayerUnsold,
