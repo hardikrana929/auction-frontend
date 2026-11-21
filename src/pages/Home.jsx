@@ -50,12 +50,19 @@ function WorkflowItem({ icon, title, text }) {
           {title}
         </p>
 
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{text}</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          {text}
+        </p>
       </div>
     </div>
   );
 }
-const TEAMS = ["Mumbai Strikers", "Delhi Titans", "Chennai Kings", "Punjab Hawks"];
+const TEAMS = [
+  "Mumbai Strikers",
+  "Delhi Titans",
+  "Chennai Kings",
+  "Punjab Hawks",
+];
 const START_BID = 1250000;
 const STEP = 50000;
 const CAP = 1600000;
@@ -74,7 +81,8 @@ function useLiveAuction() {
   useEffect(() => {
     const id = setInterval(() => {
       setState((prev) => {
-        if (prev.sold) return { bid: START_BID, bids: 128, team: 0, sold: false };
+        if (prev.sold)
+          return { bid: START_BID, bids: 128, team: 0, sold: false };
         if (prev.bid >= CAP) return { ...prev, sold: true };
         return {
           bid: prev.bid + STEP,
@@ -124,10 +132,7 @@ export default function Home() {
               <span style={{ "--d": "120ms" }} className="ap-rise block">
                 Build your team.
               </span>
-              <span
-                style={{ "--d": "280ms" }}
-                className="ap-rise block pb-1"
-              >
+              <span style={{ "--d": "280ms" }} className="ap-rise block pb-1">
                 <span className="ap-shimmer-text">Win the auction.</span>
               </span>
             </h1>
@@ -291,7 +296,10 @@ export default function Home() {
               </div>
 
               {/* Floating notification: follows the live bids */}
-              <div className="ap-rise absolute -top-14 left-6 hidden sm:block" style={{ "--d": "900ms" }}>
+              <div
+                className="ap-rise absolute -top-14 left-6 hidden sm:block"
+                style={{ "--d": "900ms" }}
+              >
                 <div className="ap-float-slow rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xl shadow-slate-900/20 backdrop-blur-xl dark:border-white/15 dark:bg-slate-900/80 dark:shadow-black/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">
@@ -313,7 +321,10 @@ export default function Home() {
               </div>
 
               {/* Floating teams */}
-              <div className="ap-rise absolute -bottom-14 right-4 hidden sm:block" style={{ "--d": "1050ms" }}>
+              <div
+                className="ap-rise absolute -bottom-14 right-4 hidden sm:block"
+                style={{ "--d": "1050ms" }}
+              >
                 <div className="ap-float rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-2xl shadow-slate-900/20 backdrop-blur-xl dark:border-white/15 dark:bg-slate-900/80 dark:shadow-black/40">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
@@ -544,6 +555,9 @@ export default function Home() {
 
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Professional cricket auction management platform.
+            </p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              Created By: Asavala Hardik M.
             </p>
           </div>
 
