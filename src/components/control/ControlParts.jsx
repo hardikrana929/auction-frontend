@@ -160,6 +160,17 @@ export function TeamBuyList({ teams, onTheBlock, busy, paused, currentBid, onBuy
                     {" · "}
                     {team.playersCount}/{team.maxPlayers} players
                   </p>
+                  {team.slotsNeeded > 0 && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Needs {team.slotsNeeded} more player{team.slotsNeeded === 1 ? "" : "s"} · max bid{" "}
+                      <Money value={team.maxBid} className="font-semibold" />
+                      {team.reserve > 0 && (
+                        <>
+                          {" "}(<Money value={team.reserve} /> reserved)
+                        </>
+                      )}
+                    </p>
+                  )}
                   {onTheBlock && team.canBuy && (
                     <p className="text-xs text-emerald-600 dark:text-emerald-400">
                       After buying: <Money value={team.balanceAfter} />

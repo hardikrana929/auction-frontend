@@ -77,6 +77,8 @@ export default function DashboardLayout() {
         ]
       : [
           ...baseLinks.slice(0, 3),
+          // Team owners see what their team bought and can download it.
+          { to: "/team-dashboard", label: "My Team", icon: FiUsers },
           playersLink,
           ...baseLinks.slice(3),
         ];

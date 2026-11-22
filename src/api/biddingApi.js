@@ -36,6 +36,13 @@ export const placeBid = async (data) => {
 export const raiseBid = async (data) =>
   (await api.post("/api/bidding/raise", data)).data;
 
+/*
+ * Admin skips the player on the block (not "unsold"): he comes up again later.
+ * POST /api/bidding/skip  { auctionId, playerId }
+ */
+export const skipPlayer = async (data) =>
+  (await api.post("/api/bidding/skip", data)).data;
+
 /* Admin takes the last raise back. POST /api/bidding/undo */
 export const undoRaise = async (data) =>
   (await api.post("/api/bidding/undo", data)).data;
@@ -100,6 +107,7 @@ export default {
   getCurrentBid,
   raiseBid,
   undoRaise,
+  skipPlayer,
   rollbackSale,
   placeBid,
   sellPlayer,

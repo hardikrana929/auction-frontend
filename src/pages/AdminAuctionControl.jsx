@@ -11,6 +11,7 @@ import {
   FiRefreshCw,
   FiSkipForward,
   FiXCircle,
+  FiCornerUpRight,
 } from "react-icons/fi";
 
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
@@ -28,6 +29,7 @@ import {
   raiseBid,
   rollbackSale,
   sellPlayer,
+  skipPlayer,
   undoRaise,
 } from "../api/biddingApi";
 import AuctionStatusBadge from "../components/auction/AuctionStatusBadge";
@@ -190,6 +192,21 @@ export default function AdminAuctionControl() {
       run(() => markPlayerUnsold({ auctionId, playerId: player._id }), () => "Player marked unsold");
   };
 
+  const handleSkip = async () => {
+    const ok = await confirm({
+      title: "Skip this player?",
+      message:
+        "The player goes back into the auction and comes up again later, after the players who have not been skipped yet. Any raised bids are cleared.",
+      confirmText: "Skip player",
+      tone: "primary",
+    });
+    if (ok)
+      run(
+        () => skipPlayer({ auctionId, playerId: player._id }),
+        (r) => r.message,
+      );
+  };
+
   const handleRollback = async (sale) => {
     const ok = await confirm({
       title: "Roll back this sale?",
@@ -322,6 +339,9 @@ export default function AdminAuctionControl() {
             <button className="primary-btn disabled:opacity-50" onClick={handleNext} disabled={!canNext || busy}>
               <FiSkipForward /> {mode === "random" ? "Pick random player" : "Next player"}
             </button>
+            <button className="secondary-btn disabled:opacity-50" onClick={handleSkip} disabled={!onTheBlock || paused || busy} title="Pass for now: he comes up again later">
+              <FiCornerUpRight /> Skip
+            </button>
             <button className="secondary-btn disabled:opacity-50" onClick={handleUnsold} disabled={!onTheBlock || paused || busy}>
               <FiXCircle /> Unsold
             </button>
@@ -334,6 +354,13 @@ export default function AdminAuctionControl() {
           <FiCheckCircle className="shrink-0 text-xl text-violet-500" />
           This auction is completed. Use “Make live again” to continue (for
           example after adding players or rolling back a sale).
+        </div>
+      )}
+      {live && !onTheBlock && data.stats.available === 0 && data.stats.unsold > 0 && (
+        <div className="surface-card p-4 text-sm text-slate-600 dark:text-slate-300">
+          {data.stats.teamsNeedingPlayers > 0
+            ? `${data.stats.unsold} unsold player(s) will come back into the auction when you press Next player, because ${data.stats.teamsNeedingPlayers} team(s) still need players.`
+            : `${data.stats.unsold} player(s) went unsold and every team has a full squad.`}
         </div>
       )}
       {paused && live && (

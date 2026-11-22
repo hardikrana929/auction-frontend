@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiImage, FiSave, FiUpload } from "react-icons/fi";
 import toast from "react-hot-toast";
-import AmountHint from "../AmountHint";
 
 const CATEGORIES = [
   { value: "auction", label: "Auction player" },
@@ -42,7 +41,6 @@ const empty = {
   specialization: "",
   experience: 0,
   bio: "",
-  basePrice: "",
   auctionOrder: 0,
   category: "auction",
   teamId: "",
@@ -87,7 +85,6 @@ export default function PlayerForm({
         : "",
       experience: player.experience ?? 0,
       bio: player.bio || "",
-      basePrice: player.basePrice ?? "",
       auctionOrder: player.auctionOrder ?? 0,
       category: player.category || "auction",
       teamId: player.team?._id || player.team || player.soldTo?._id || player.soldTo || "",
@@ -101,6 +98,13 @@ export default function PlayerForm({
   );
   // A player on the block / already sold keeps price, order and category.
   const locked = ["auctioning", "sold"].includes(player?.status);
+  // An icon player / team owner who already has a team stays with that team.
+  // To move him: make him an Auction player, save, then assign the new team.
+  const assignedTeam =
+    player && player.category && player.category !== "auction"
+      ? player.team?._id || player.team || ""
+      : "";
+  const teamLocked = Boolean(assignedTeam) && form.category !== "auction";
 
   const set = (key, value) => setForm((v) => ({ ...v, [key]: value }));
 
@@ -130,9 +134,9 @@ export default function PlayerForm({
       !form.auctionId ||
       !form.fullName.trim() ||
       !form.lastName.trim() ||
+      !form.contactNo.trim() ||
       !form.villageTown.trim() ||
-      !form.role ||
-      !form.basePrice
+      !form.role
     ) {
       toast.error("Please complete all required player fields.");
       return;
@@ -147,7 +151,7 @@ export default function PlayerForm({
       );
       return;
     }
-    if (form.contactNo && !/^\d{10}$/.test(form.contactNo)) {
+    if (!/^\d{10}$/.test(form.contactNo)) {
       toast.error("Contact number must contain exactly 10 digits.");
       return;
     }
@@ -164,27 +168,6 @@ export default function PlayerForm({
       toast.error("Age must be a whole number between 10 and 60.");
       return;
     }
-    if (
-      !Number.isFinite(Number(form.basePrice)) ||
-      Number(form.basePrice) <= 0
-    ) {
-      toast.error("Base price must be a positive amount.");
-      return;
-    }
-    const selectedAuction = auctions.find(
-      (item) => String(item._id) === String(form.auctionId),
-    );
-    if (
-      selectedAuction &&
-      Number(form.basePrice) >
-        Number(selectedAuction.teamBudget ?? selectedAuction.startingBudget)
-    ) {
-      toast.error(
-        `Base price cannot exceed the team budget of ₹${Number(selectedAuction.teamBudget ?? selectedAuction.startingBudget).toLocaleString("en-IN")}.`,
-      );
-      return;
-    }
-
     if (player && form.category !== "auction" && !form.teamId) {
       toast.error("Select the team for this icon player / team owner.");
       return;
@@ -257,7 +240,7 @@ export default function PlayerForm({
                 <select
                   className="input"
                   value={form.teamId}
-                  disabled={locked || form.category === "auction"}
+                  disabled={locked || teamLocked || form.category === "auction"}
                   onChange={(e) => set("teamId", e.target.value)}
                 >
                   <option value="">
@@ -271,6 +254,13 @@ export default function PlayerForm({
                     </option>
                   ))}
                 </select>
+                {teamLocked && (
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Already assigned to this team. To give him to another team,
+                    change the type to Auction player, save, then assign the new
+                    team.
+                  </p>
+                )}
               </Field>
               <Field label="Player type">
                 <select
@@ -323,7 +313,7 @@ export default function PlayerForm({
               onChange={(e) => set("lastName", e.target.value)}
             />
           </Field>
-          <Field label="Contact number">
+          <Field label="Mobile number" required>
             <input
               className="input"
               placeholder="e.g. 9876543210"
@@ -395,28 +385,6 @@ export default function PlayerForm({
             </select>
           </Field>
 
-          <Field label="Base price" required>
-            <input
-              type="number"
-              min="1"
-              max={
-                auctions.find(
-                  (item) => String(item._id) === String(form.auctionId),
-                )?.teamBudget ||
-                auctions.find(
-                  (item) => String(item._id) === String(form.auctionId),
-                )?.startingBudget ||
-                undefined
-              }
-              step="1"
-              className="input"
-              placeholder="e.g. 200000"
-              value={form.basePrice}
-              disabled={locked}
-              onChange={(e) => set("basePrice", e.target.value)}
-            />
-            <AmountHint value={form.basePrice} />
-          </Field>
           <Field label="Auction order">
             <input
               type="number"

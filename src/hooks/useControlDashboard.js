@@ -16,6 +16,7 @@ const EVENTS = [
   "bid:new",
   "player:sold",
   "player:unsold",
+  "player:skipped",
   "player:rollback",
 ];
 
