@@ -70,7 +70,7 @@ export function PlayerDetailsCard({ player, onTheBlock }) {
               <Fact label="Experience" value={`${player.experience || 0} yrs`} />
               <Fact label="Batting" value={player.battingHand} />
               <Fact label="Bowling" value={player.bowlingStyle} />
-              <Fact label="Base price" value={<Money value={player.basePrice} />} />
+              <Fact label="Opening bid" value={<Money value={player.basePrice} />} />
               {player.contactNo && <Fact label="Contact" value={player.contactNo} />}
             </dl>
             {player.bio && (
@@ -133,6 +133,34 @@ export function BiddingPanel({ bidding, onTheBlock, paused, busy, onRaise, onUnd
 }
 
 /* ------------------------------------------------------------- team list */
+
+function Figure({ label, children, tone }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        {label}
+      </dt>
+      <dd
+        className={`text-sm font-bold ${
+          tone === "good"
+            ? "text-emerald-600 dark:text-emerald-400"
+            : tone === "warn"
+              ? "text-amber-600 dark:text-amber-400"
+              : "text-slate-900 dark:text-white"
+        }`}
+      >
+        {children}
+      </dd>
+    </div>
+  );
+}
+
+/**
+ * A team that cannot buy the player on the block (not enough purse, would break
+ * its reserve, squad full) is shown dimmed and compact while that player is up.
+ * The server recalculates for every new player, so the team is back to normal
+ * as soon as the next player comes.
+ */
 export function TeamBuyList({ teams, onTheBlock, busy, paused, currentBid, onBuy }) {
   return (
     <section className="surface-card p-5">
@@ -146,51 +174,65 @@ export function TeamBuyList({ teams, onTheBlock, busy, paused, currentBid, onBuy
       ) : (
         <ul className="divide-y divide-slate-100 dark:divide-slate-800">
           {teams.map((team) => {
+            const out = onTheBlock && !team.canBuy; // temporarily out for this player
             const disabled = !team.canBuy || paused || busy;
             const logo = toImageUrl(team.logo);
             return (
-              <li key={team._id} className="flex flex-wrap items-center gap-3 py-3">
-                <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-slate-100 text-sm font-black text-slate-500 dark:bg-slate-800">
-                  {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : team.name.slice(0, 1)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-bold text-slate-900 dark:text-white">{team.name}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Purse left <Money value={team.remainingBudget} className="font-semibold" />
-                    {" · "}
-                    {team.playersCount}/{team.maxPlayers} players
-                  </p>
-                  {team.slotsNeeded > 0 && (
+              <li
+                key={team._id}
+                className={`py-3 transition-opacity ${out ? "opacity-55 grayscale" : ""}`}
+                aria-disabled={out}
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-slate-100 text-sm font-black text-slate-500 dark:bg-slate-800">
+                    {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : team.name.slice(0, 1)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-bold text-slate-900 dark:text-white">{team.name}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Needs {team.slotsNeeded} more player{team.slotsNeeded === 1 ? "" : "s"} · max bid{" "}
-                      <Money value={team.maxBid} className="font-semibold" />
-                      {team.reserve > 0 && (
-                        <>
-                          {" "}(<Money value={team.reserve} /> reserved)
-                        </>
-                      )}
+                      {team.playersCount}/{team.maxPlayers} players
+                      {team.slotsNeeded > 0 && ` · needs ${team.slotsNeeded} more`}
                     </p>
-                  )}
-                  {onTheBlock && team.canBuy && (
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400">
-                      After buying: <Money value={team.balanceAfter} />
-                    </p>
-                  )}
-                  {onTheBlock && !team.canBuy && (
-                    <p className="text-xs font-semibold text-red-600 dark:text-red-400">
-                      {team.reason}
-                    </p>
+                  </div>
+                  {out ? (
+                    <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                      Out for this player
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onBuy(team)}
+                      disabled={disabled}
+                      title={team.canBuy ? `Sell at ${formatCurrency(currentBid)}` : team.reason}
+                      className="primary-btn disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Buy player
+                    </button>
                   )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => onBuy(team)}
-                  disabled={disabled}
-                  title={team.canBuy ? `Sell at ${formatCurrency(currentBid)}` : team.reason}
-                  className="primary-btn disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Buy player
-                </button>
+
+                <dl className="mt-2 grid grid-cols-3 gap-2 pl-[3.25rem]">
+                  <Figure label="Purse left">
+                    <Money value={team.remainingBudget} />
+                  </Figure>
+                  <Figure label={team.slotsAfter > 0 ? `Reserved (${team.slotsAfter} more)` : "Reserved"}>
+                    <Money value={team.reserve} />
+                  </Figure>
+                  <Figure label={onTheBlock ? "Max bid" : "Max bid (next)"} tone={out ? "warn" : undefined}>
+                    <Money value={team.maxBid} />
+                  </Figure>
+                </dl>
+
+                {out && (
+                  <p className="mt-1 pl-[3.25rem] text-xs font-semibold text-red-600 dark:text-red-400">
+                    {team.reason}
+                  </p>
+                )}
+                {onTheBlock && team.canBuy && (
+                  <p className="mt-1 pl-[3.25rem] text-xs text-emerald-600 dark:text-emerald-400">
+                    Purse after buying: <Money value={team.balanceAfter} />
+                  </p>
+                )}
               </li>
             );
           })}

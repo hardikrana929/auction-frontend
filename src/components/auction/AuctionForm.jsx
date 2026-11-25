@@ -39,7 +39,6 @@ const empty = {
   date: "",
   teamBudget: "",
   minimumBid: "",
-  playerBasePrice: "",
   bidRules: [
     { upTo: "1000000", increment: "100000" },
     { upTo: "3000000", increment: "200000" },
@@ -69,7 +68,6 @@ const placeholders = {
   date: "Select date & time",
   teamBudget: "e.g. 10000000",
   minimumBid: "e.g. 100000",
-  playerBasePrice: "e.g. 100000",
   requiredPlayersPerTeam: "e.g. 11",
   maxTeams: "e.g. 8",
   maxPlayersPerTeam: "e.g. 15",
@@ -155,11 +153,6 @@ export default function AuctionForm({
               increment: rule.increment ?? "",
             }))
           : empty.bidRules,
-      // Auctions created before the base price existed fall back to the minimum bid.
-      playerBasePrice:
-        initialValues?.playerBasePrice || initialValues?.minimumBid
-          ? String(initialValues.playerBasePrice || initialValues.minimumBid)
-          : "",
       requiredPlayersPerTeam: initialValues?.requiredPlayersPerTeam
         ? String(initialValues.requiredPlayersPerTeam)
         : "",
@@ -207,7 +200,7 @@ export default function AuctionForm({
     if (!form.date) e.date = "Auction date is required.";
     else if (new Date(form.date) <= new Date())
       e.date = "Auction date must be in the future.";
-    ["teamBudget", "minimumBid", "playerBasePrice", "maxTeams", "maxPlayersPerTeam"].forEach(
+    ["teamBudget", "minimumBid", "maxTeams", "maxPlayersPerTeam"].forEach(
       (k) => {
         if (form[k] === "" || Number(form[k]) <= 0)
           e[k] = "Enter a value greater than 0.";
@@ -237,10 +230,6 @@ export default function AuctionForm({
     }
     if (Number(form.minimumBid) > Number(form.teamBudget))
       e.minimumBid = "Minimum bid cannot exceed the budget per team.";
-    if (!e.playerBasePrice && Number(form.playerBasePrice) < Number(form.minimumBid))
-      e.playerBasePrice = "Base price cannot be lower than the minimum bid.";
-    if (!e.playerBasePrice && Number(form.playerBasePrice) > Number(form.teamBudget))
-      e.playerBasePrice = "Base price cannot exceed the budget per team.";
     if (form.requiredPlayersPerTeam !== "") {
       const required = Number(form.requiredPlayersPerTeam);
       if (!Number.isInteger(required) || required < 1)
@@ -248,11 +237,11 @@ export default function AuctionForm({
       else if (required > Number(form.maxPlayersPerTeam))
         e.requiredPlayersPerTeam = "Cannot be more than the maximum players per team.";
       else if (
-        !e.playerBasePrice &&
-        required * Number(form.playerBasePrice) > Number(form.teamBudget)
+        !e.minimumBid &&
+        required * Number(form.minimumBid) > Number(form.teamBudget)
       )
         e.requiredPlayersPerTeam =
-          "The budget is too low to fill this many players at the base price.";
+          "The budget is too low to fill this many players at the opening bid.";
     }
     if (Number(form.maxTeams) < 2)
       e.maxTeams = "At least 2 teams are required.";
@@ -274,7 +263,6 @@ export default function AuctionForm({
     data.append("teamBudget", Number(form.teamBudget));
     data.append("startingBudget", Number(form.teamBudget));
     data.append("minimumBid", Number(form.minimumBid));
-    data.append("playerBasePrice", Number(form.playerBasePrice));
     if (form.requiredPlayersPerTeam !== "")
       data.append("requiredPlayersPerTeam", Number(form.requiredPlayersPerTeam));
     data.append("bidIncrement", Number(form.bidRules[0]?.increment || 1));
@@ -507,7 +495,7 @@ export default function AuctionForm({
             name="minimumBid"
             amount
             label="Minimum opening bid (₹)"
-            help="The lowest opening bid allowed for a player. It must not exceed the per-team budget."
+            help="Every player starts bidding at this price. Change it later (e.g. 1 Lac to 2 Lac) and it applies to all players. It must not exceed the per-team budget."
             icon={BsCurrencyRupee}
             type="number"
             step="1"
@@ -516,19 +504,7 @@ export default function AuctionForm({
             change={change}
             readOnly={readOnly}
           />
-          <Field
-            name="playerBasePrice"
-            amount
-            label="Player base price"
-            help="Every player starts bidding at this price. It is set here once, not per player."
-            icon={BsCurrencyRupee}
-            type="number"
-            step="1"
-            form={form}
-            errors={errors}
-            change={change}
-            readOnly={readOnly}
-          />
+
           <Field
             name="maxTeams"
             label="Maximum teams"
@@ -624,7 +600,7 @@ export default function AuctionForm({
 /** Shows the purse-reserve rule with the numbers typed above. */
 function ReservePreview({ form }) {
   const budget = Number(form.teamBudget);
-  const base = Number(form.playerBasePrice);
+  const base = Number(form.minimumBid);
   const required = Number(form.requiredPlayersPerTeam || form.maxPlayersPerTeam);
   if (!(budget > 0 && base > 0 && required > 0)) return null;
   const reserve = Math.max(0, required - 1) * base;
@@ -633,8 +609,8 @@ function ReservePreview({ form }) {
     <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
       <p className="font-bold">Purse reserve rule</p>
       <p className="mt-1">
-        A team must always keep enough money to fill its squad at the base
-        price. With a squad of {required} and no players yet, a team keeps{" "}
+        A team must always keep enough money to fill its squad at the opening
+        bid. With a squad of {required} and no players yet, a team keeps{" "}
         {Math.max(0, required - 1)} × {formatShortAmount(base) || base} ={" "}
         <strong>{formatShortAmount(reserve) || reserve}</strong> reserved, so
         the most it can pay for its first player is{" "}

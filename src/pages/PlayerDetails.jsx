@@ -89,7 +89,7 @@ export default function PlayerDetails() {
                 value={`${player.experience || 0} years`}
               />
               <Info label="Auction order" value={player.auctionOrder ?? 0} />
-              <Info label="Base price" value={money(player.basePrice)} />
+              <Info label="Opening bid" value={money(player.basePrice)} />
               <Info label="Current bid" value={money(player.currentBid)} />
             </div>
 

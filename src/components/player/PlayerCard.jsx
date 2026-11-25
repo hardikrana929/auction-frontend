@@ -58,7 +58,7 @@ export default function PlayerCard({
         )}
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <Metric label="Base price" value={`${money(player.basePrice)}${formatShortAmount(player.basePrice) && player.basePrice >= 1000 ? ` (${formatShortAmount(player.basePrice)})` : ""}`} />
+          <Metric label="Opening bid" value={`${money(player.basePrice)}${formatShortAmount(player.basePrice) && player.basePrice >= 1000 ? ` (${formatShortAmount(player.basePrice)})` : ""}`} />
           <Metric label="Current bid" value={money(player.currentBid)} />
         </div>
 

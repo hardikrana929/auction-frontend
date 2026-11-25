@@ -399,7 +399,7 @@ function LiveScreen({ auctionId }) {
             )}
             {unsold && <p className="pl-status pl-unsold">Player unsold</p>}
             {phase === "bidding" && player.basePrice > 0 && (
-              <p className="pl-base">Base price {formatCurrency(player.basePrice)}</p>
+              <p className="pl-base">Opening bid {formatCurrency(player.basePrice)}</p>
             )}
           </section>
         </main>

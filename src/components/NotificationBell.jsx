@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import useSocket from "../hooks/useSocket";
+import { useAuth } from "../context/AuthContext";
 import useNotificationSocket from "../hooks/useNotificationSocket";
 
 import NotificationDropdown from "./NotificationDropdown";
@@ -106,7 +107,7 @@ const getUnreadCountFromResponse = (response) => {
    COMPONENT
 ========================================================= */
 
-const NotificationBell = ({ auctionId = null }) => {
+const NotificationBellInner = ({ auctionId = null }) => {
   const navigate = useNavigate();
 
   /* =====================================================
@@ -213,7 +214,9 @@ const NotificationBell = ({ auctionId = null }) => {
 
         setHasError(true);
 
-        if (!silent) {
+        // A 401 is handled by the session refresh / login redirect, so it is
+        // not shown as a "failed to load" error.
+        if (!silent && error?.response?.status !== 401) {
           toast.error(
             error?.response?.data?.message || "Failed to load notifications",
           );
@@ -702,6 +705,16 @@ const NotificationBell = ({ auctionId = null }) => {
       )}
     </div>
   );
+};
+
+/**
+ * The bell only starts loading once the saved session has been checked, so an
+ * expired token never produces a "failed to load notifications" error.
+ */
+const NotificationBell = (props) => {
+  const { loading, isAuthenticated } = useAuth();
+  if (loading || !isAuthenticated) return null;
+  return <NotificationBellInner {...props} />;
 };
 
 export default NotificationBell;

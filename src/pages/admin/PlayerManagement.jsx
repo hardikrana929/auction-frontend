@@ -432,7 +432,7 @@ export default function PlayerManagement() {
                     label="Experience"
                     value={`${selected.experience || 0} years`}
                   />
-                  <Info label="Base price" value={money(selected.basePrice)} />
+                  <Info label="Opening bid" value={money(selected.basePrice)} />
                   <Info
                     label="Current bid"
                     value={money(selected.currentBid)}

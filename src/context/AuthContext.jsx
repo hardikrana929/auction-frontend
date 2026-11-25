@@ -78,7 +78,13 @@ export const AuthProvider = ({ children }) => {
       setToken(null);
       setUser(null);
     };
+    const handleTokenRefreshed = (event) => {
+      const data = event.detail || {};
+      if (data.token) setToken(data.token);
+      if (data.user) setUser(data.user);
+    };
     window.addEventListener("auth:logout", handleForcedLogout);
+    window.addEventListener("auth:token", handleTokenRefreshed);
     let mounted = true;
     const bootstrap = async () => {
       if (!localStorage.getItem(TOKEN_KEY)) {
@@ -97,6 +103,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       mounted = false;
       window.removeEventListener("auth:logout", handleForcedLogout);
+      window.removeEventListener("auth:token", handleTokenRefreshed);
     };
   }, []);
 
