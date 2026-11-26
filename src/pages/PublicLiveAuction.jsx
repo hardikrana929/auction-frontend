@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
-import { FiDroplet, FiMaximize, FiMinimize, FiRadio, FiUser } from "react-icons/fi";
+import {
+  FiDroplet,
+  FiMaximize,
+  FiMinimize,
+  FiRadio,
+  FiUser,
+} from "react-icons/fi";
 import { useTheme } from "../context/ThemeContext";
 import {
   DEFAULT_LIVE_THEME,
@@ -28,7 +34,10 @@ const socketUrl =
 const POLL_MS = 5000;
 
 const messages = {
-  upcoming: ["This auction has not started yet", "Please check back when it goes live."],
+  upcoming: [
+    "This auction has not started yet",
+    "Please check back when it goes live.",
+  ],
   waiting: ["Next player coming up", "The auction is live. Stay tuned."],
   paused: ["Auction paused", "Bidding will continue shortly."],
   completed: ["This auction has ended", "Thank you for watching."],
@@ -51,7 +60,10 @@ function Shell({ children }) {
         <Link to="/" className="text-lg font-black tracking-tight">
           Auction<span className="text-emerald-400">Pro</span>
         </Link>
-        <Link to="/live" className="text-sm font-semibold text-slate-400 hover:text-white">
+        <Link
+          to="/live"
+          className="text-sm font-semibold text-slate-400 hover:text-white"
+        >
           All live auctions
         </Link>
       </header>
@@ -204,15 +216,30 @@ function ThemePanel({ settings, onChange, onClose }) {
       {settings.preset === "custom" && (
         <div className="pl-pick">
           <label htmlFor="pl-bg">Background color</label>
-          <input id="pl-bg" type="color" value={settings.bg} onChange={(e) => onChange({ ...settings, bg: e.target.value })} />
+          <input
+            id="pl-bg"
+            type="color"
+            value={settings.bg}
+            onChange={(e) => onChange({ ...settings, bg: e.target.value })}
+          />
           <label htmlFor="pl-card">Ground (card) color</label>
-          <input id="pl-card" type="color" value={settings.card} onChange={(e) => onChange({ ...settings, card: e.target.value })} />
+          <input
+            id="pl-card"
+            type="color"
+            value={settings.card}
+            onChange={(e) => onChange({ ...settings, card: e.target.value })}
+          />
         </div>
       )}
       <p style={{ marginTop: ".8rem", opacity: 0.7, fontSize: ".78rem" }}>
         Only changes this live screen. Text colour adjusts automatically.
       </p>
-      <button type="button" className="pl-btn" style={{ marginTop: ".6rem" }} onClick={onClose}>
+      <button
+        type="button"
+        className="pl-btn"
+        style={{ marginTop: ".6rem" }}
+        onClick={onClose}
+      >
         Done
       </button>
     </div>
@@ -304,14 +331,21 @@ function LiveScreen({ auctionId }) {
 
   const player = state?.player;
   const phase = state?.phase;
-  const short = state?.currentBid >= 1000 ? formatShortAmount(state.currentBid) : "";
+  const short =
+    state?.currentBid >= 1000 ? formatShortAmount(state.currentBid) : "";
   const sold = phase === "sold";
   const unsold = phase === "unsold";
 
   const style = {
-    "--bg": vars.bg, "--card": vars.card, "--fg": vars.fg, "--cardfg": vars.cardfg,
-    "--muted": vars.muted, "--accent": vars.accent, "--border": vars.border,
-    "--sold": vars.sold, "--unsold": vars.unsold,
+    "--bg": vars.bg,
+    "--card": vars.card,
+    "--fg": vars.fg,
+    "--cardfg": vars.cardfg,
+    "--muted": vars.muted,
+    "--accent": vars.accent,
+    "--border": vars.border,
+    "--sold": vars.sold,
+    "--unsold": vars.unsold,
   };
   const bidColor = sold ? "var(--sold)" : unsold ? "var(--unsold)" : undefined;
 
@@ -321,25 +355,48 @@ function LiveScreen({ auctionId }) {
 
       <header className="pl-head">
         <div>
-          <p className="pl-live"><i /> LIVE</p>
+          <p className="pl-live">
+            <i /> LIVE
+          </p>
           <h1 className="pl-title">{state?.auction?.name || "Live auction"}</h1>
         </div>
         <div className="pl-tools">
-          <button type="button" className="pl-btn" onClick={() => setPanelOpen((v) => !v)} aria-expanded={panelOpen} aria-label="Change screen theme">
+          <button
+            type="button"
+            className="pl-btn"
+            onClick={() => setPanelOpen((v) => !v)}
+            aria-expanded={panelOpen}
+            aria-label="Change screen theme"
+          >
             <FiDroplet /> Theme
           </button>
-          <button type="button" className="pl-btn" onClick={toggleFullscreen} aria-label={fullscreen ? "Exit full screen" : "Full screen"}>
+          <button
+            type="button"
+            className="pl-btn"
+            onClick={toggleFullscreen}
+            aria-label={fullscreen ? "Exit full screen" : "Full screen"}
+          >
             {fullscreen ? <FiMinimize /> : <FiMaximize />}
           </button>
         </div>
       </header>
 
       {panelOpen && (
-        <ThemePanel settings={settings} onChange={updateSettings} onClose={() => setPanelOpen(false)} />
+        <ThemePanel
+          settings={settings}
+          onChange={updateSettings}
+          onClose={() => setPanelOpen(false)}
+        />
       )}
 
-      {error && !state && <div className="pl-idle"><h2>{error}</h2></div>}
-      {error && state && <p style={{ color: "#f59e0b", fontSize: ".85rem" }}>{error}</p>}
+      {error && !state && (
+        <div className="pl-idle">
+          <h2>{error}</h2>
+        </div>
+      )}
+      {error && state && (
+        <p style={{ color: "#f59e0b", fontSize: ".85rem" }}>{error}</p>
+      )}
 
       {state && !player && messages[phase] && (
         <div className="pl-idle">
@@ -355,52 +412,90 @@ function LiveScreen({ auctionId }) {
           <section className="pl-card" aria-label="Player">
             <div className={`pl-photo ${unsold ? "is-unsold" : ""}`}>
               {player.photo ? (
-                <img src={player.photo} alt={`${player.fullName} ${player.lastName}`} />
+                <img
+                  src={player.photo}
+                  alt={`${player.fullName} ${player.lastName}`}
+                />
               ) : (
-                <div className="pl-ph"><FiUser /></div>
+                <div className="pl-ph">
+                  <FiUser />
+                </div>
               )}
               {(sold || unsold) && (
-                <span className={`pl-stamp ${sold ? "sold" : "unsold"}`}>{sold ? "SOLD" : "UNSOLD"}</span>
+                <span className={`pl-stamp ${sold ? "sold" : "unsold"}`}>
+                  {sold ? "SOLD" : "UNSOLD"}
+                </span>
               )}
             </div>
+          </section>
+
+          <section className="flex justify-start align-top gap-2 flex-col">
             <div className="pl-info">
-              <h2 className="pl-name">{player.fullName} {player.lastName}</h2>
+              <h2 className="pl-name">
+                {player.fullName} {player.lastName}
+              </h2>
               <p className="pl-sub">
-                {[player.role, player.villageTown, player.auctionNumber ? `ID ${player.auctionNumber}` : ""]
+                {[
+                  player.role,
+                  player.villageTown,
+                  // player.auctionNumber ? `ID ${player.auctionNumber}` : "",
+                ]
                   .filter(Boolean)
                   .join(" · ")}
               </p>
               <dl className="pl-stats">
-                <div><dt>Age</dt><dd>{player.age || "—"}</dd></div>
-                <div><dt>Batting</dt><dd>{player.battingHand || "—"}</dd></div>
-                <div><dt>Bowling</dt><dd>{player.bowlingStyle || "—"}</dd></div>
+                <div>
+                  <dt>Age</dt>
+                  <dd>{player.age || "—"}</dd>
+                </div>
+                <div>
+                  <dt>Batting</dt>
+                  <dd>{player.battingHand || "—"}</dd>
+                </div>
+                <div>
+                  <dt>Bowling</dt>
+                  <dd>{player.bowlingStyle || "—"}</dd>
+                </div>
               </dl>
             </div>
-          </section>
-
-          <section className="pl-side" aria-live="polite">
-            <p className="pl-label">{sold ? "Sold for" : unsold ? "Result" : "Current bidding:"}</p>
-            {unsold ? (
-              <p className="pl-bid pl-unsold">Unsold</p>
-            ) : (
-              <>
-                <p className={`pl-bid ${flash ? "flash" : ""}`} style={bidColor ? { color: bidColor } : undefined}>
-                  {formatCurrency(state.currentBid)}
-                </p>
-                {short && <p className="pl-short" style={bidColor ? { color: bidColor } : undefined}>{short}</p>}
-              </>
-            )}
-
-            {sold && (
-              <p className="pl-status pl-sold">
-                <small>Player sold in</small>
-                {state.soldTo?.name || "a team"}
+            <div className="pl-side" aria-live="polite">
+              <p className="pl-label">
+                {sold ? "Sold for" : unsold ? "Result" : "Current bidding:"}
               </p>
-            )}
-            {unsold && <p className="pl-status pl-unsold">Player unsold</p>}
-            {phase === "bidding" && player.basePrice > 0 && (
-              <p className="pl-base">Opening bid {formatCurrency(player.basePrice)}</p>
-            )}
+              {unsold ? (
+                <p className="pl-bid pl-unsold">Unsold</p>
+              ) : (
+                <>
+                  <p
+                    className={`pl-bid ${flash ? "flash" : ""}`}
+                    style={bidColor ? { color: bidColor } : undefined}
+                  >
+                    {formatCurrency(state.currentBid)}
+                  </p>
+                  {short && (
+                    <p
+                      className="pl-short"
+                      style={bidColor ? { color: bidColor } : undefined}
+                    >
+                      {short}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {sold && (
+                <p className="pl-status pl-sold">
+                  <small>Player sold in</small>
+                  {state.soldTo?.name || "a team"}
+                </p>
+              )}
+              {unsold && <p className="pl-status pl-unsold">Player unsold</p>}
+              {phase === "bidding" && player.basePrice > 0 && (
+                <p className="pl-base">
+                  Opening bid {formatCurrency(player.basePrice)}
+                </p>
+              )}
+            </div>
           </section>
         </main>
       )}
@@ -410,5 +505,9 @@ function LiveScreen({ auctionId }) {
 
 export default function PublicLiveAuction() {
   const { auctionId } = useParams();
-  return auctionId ? <LiveScreen key={auctionId} auctionId={auctionId} /> : <LiveList />;
+  return auctionId ? (
+    <LiveScreen key={auctionId} auctionId={auctionId} />
+  ) : (
+    <LiveList />
+  );
 }
