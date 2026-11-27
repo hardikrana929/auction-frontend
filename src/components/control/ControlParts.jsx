@@ -36,10 +36,10 @@ export function PlayerDetailsCard({ player, onTheBlock }) {
           Start the next player to begin bidding.
         </div>
       ) : (
-        <div className="flex flex-col gap-4 sm:flex-row lg:flex-col xl:flex-row">
-          <div className="h-56 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:w-48 lg:w-full xl:w-48 dark:bg-slate-800">
+        <div className="flex flex-col gap-4 sm:flex-row lg:flex-col xl:flex-col">
+          <div className="mx-auto h-56 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 sm:w-48 lg:w-full xl:h-70 xl:w-70 dark:bg-slate-800">
             {photo ? (
-              <img src={photo} alt={fullName(player)} className="h-full w-full object-cover" />
+              <img src={photo} alt={fullName(player)} className="h-full w-full object-cover object-center" />
             ) : (
               <div className="grid h-full place-items-center text-6xl text-slate-300 dark:text-slate-600">
                 <FiUser />
